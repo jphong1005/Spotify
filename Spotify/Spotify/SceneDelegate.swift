@@ -21,7 +21,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         
         window?.windowScene = windowScene
-        window?.rootViewController = ViewController()
+        
+        if (AuthManager.shared.isSignedIn == true) {
+            window?.rootViewController = TabBarViewController()
+        } else {
+            window?.rootViewController = UINavigationController(rootViewController: WelcomeViewController())
+        }
+        
         window?.makeKeyAndVisible()
         
         // MARK: - UI Structure Hierarchy
