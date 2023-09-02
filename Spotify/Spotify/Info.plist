@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Spotify</key>
+	<dict>
+		<key>Client_ID</key>
+		<string>$(Spotify_Client_ID)</string>
+		<key>Client_secret</key>
+		<string>$(Spotify_Client_secret)</string>
+		<key>Redirect_URI</key>
+		<string>$(Spotify_Redirect_URI)</string>
+	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
