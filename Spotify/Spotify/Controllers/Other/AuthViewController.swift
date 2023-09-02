@@ -68,6 +68,8 @@ class AuthViewController: UIViewController {
                     }
                     break;
                 case .failure(let error):
+                    print("error: \(error.localizedDescription)")
+                    fatalError(error.localizedDescription)
                     break;
                 }
             }

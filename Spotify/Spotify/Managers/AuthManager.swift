@@ -13,9 +13,6 @@ final class AuthManager {
     // MARK: - Singleton Instance
     static let shared: AuthManager = AuthManager()
     
-    private let baseAuthURL: String = "https://accounts.spotify.com/authorize"
-    private let scopes: String = "user-read-private"
-    
     // MARK: - Init
     private init() {}
     
