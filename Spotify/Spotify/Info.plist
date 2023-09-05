@@ -8,8 +8,6 @@
 		<string>$(Spotify_Client_ID)</string>
 		<key>Client_secret</key>
 		<string>$(Spotify_Client_secret)</string>
-		<key>Redirect_URI</key>
-		<string>$(Spotify_Redirect_URI)</string>
 	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

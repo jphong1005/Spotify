@@ -12,5 +12,8 @@ target 'Spotify' do
   
   # Alamofire
   pod 'Alamofire'
+  
+  # KeychainAccess
+  pod 'KeychainAccess'
 
 end

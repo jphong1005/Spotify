@@ -44,6 +44,7 @@ class WelcomeViewController: UIViewController {
     }
     
     private func applyConstraints() -> Void {
+        
         btnSignIn.snp.makeConstraints { make in
             make.left.right.equalTo(self.view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(50)
@@ -68,6 +69,21 @@ class WelcomeViewController: UIViewController {
     private func handleSignIn(success: Bool) -> Void {
         
         //  Log user in or yell at them for error.
+        guard (success == false) else {
+            let alert: UIAlertController = UIAlertController(title: "ALERT!",
+                                                             message: "Something went wrong when sign in.",
+                                                             preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Dismiss",
+                                          style: .cancel))
+            present(alert, animated: true)
+            return
+        }
+        
+        let tabBarVC: TabBarViewController = TabBarViewController()
+        
+        tabBarVC.modalPresentationStyle = .fullScreen
+        present(tabBarVC, animated: true)
     }
 }
 
