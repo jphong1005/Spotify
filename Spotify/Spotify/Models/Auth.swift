@@ -12,7 +12,7 @@ struct Auth {
     // MARK: - Stored-Props
     static let client_ID: String = Auth.loadSpotifyInfo()["Client_ID"] ?? ""
     static let client_secret: String = Auth.loadSpotifyInfo()["Client_secret"] ?? ""
-    static let redirect_URI: String = "https://www.iosacademy.io"
+    static let redirect_URI: String = "spotify://"
     static let accessToken_API_URL: String = "https://accounts.spotify.com/api/token"
     
     static let baseAuthURL: String = "https://accounts.spotify.com/authorize"
