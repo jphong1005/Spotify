@@ -25,11 +25,11 @@ final class AuthManager {
     // MARK: - Computed-Props
     public var signInURL: URL? {
         
-        let authorizationURL: String = "\(Auth.baseAuthURL)?" +
+        let authorizationURL: String = "\(AuthConstants.baseAuthURL)?" +
         "response_type=code" +
-        "&client_id=\(Auth.client_ID)" +
-        "&scope=\(Auth.scopes)" +
-        "&redirect_uri=\(Auth.redirect_URI)" +
+        "&client_id=\(AuthConstants.client_ID)" +
+        "&scope=\(AuthConstants.scopes)" +
+        "&redirect_uri=\(AuthConstants.redirect_URI)" +
         "&show_dialog=TRUE"
         
         return URL(string: authorizationURL)
@@ -55,34 +55,36 @@ final class AuthManager {
         
         guard let expirationDate = tokenExpirationDate else { return false }
         let currentDate: Date = Date()
-        let minuate: TimeInterval = 60
+        let sec: TimeInterval = 60
         
-        return currentDate.addingTimeInterval(minuate * 5) >= expirationDate
+        return currentDate.addingTimeInterval(sec * 5) >= expirationDate
     }
     
     // MARK: - Methods
     public func exchangeCodeForAccessToken(code: String, completionHandler: @escaping (Bool) -> Void) -> Void {
         
-        //  Get Access Token
-        guard let url: URL = URL(string: Auth.accessToken_API_URL) else { return }
+        //  Request Access Token
+        
+        //  url
+        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
         
         //  Header-Params
-        let headerParams: HTTPHeaders = [
-            "Authorization": "Basic \(translate(id: Auth.client_ID, secret: Auth.client_secret))",
+        let headers: HTTPHeaders = [
+            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         
         //  Body-Params
-        let bodyParams: [String : Any] = [
+        let form: [String : Any] = [
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": Auth.redirect_URI
+            "redirect_uri": AuthConstants.redirect_URI
         ]
         
         AF.request(url,
                    method: .post,
-                   parameters: bodyParams,
-                   headers: headerParams)
+                   parameters: form,
+                   headers: headers)
         .validate(statusCode: 200 ..< 300)
         .responseDecodable(of: AuthResponse.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
             switch response.result {
@@ -90,10 +92,12 @@ final class AuthManager {
                 print("authResponse: \(authResponse) \n")
                 
                 self?.cacheAccessToken(with: authResponse)
+                completionHandler(true)
                 break;
             case .failure(let error):
                 print("error: \(error.localizedDescription)")
-                fatalError(error.localizedDescription)
+                completionHandler(false)
+                break;
             }
         }
     }
@@ -143,15 +147,49 @@ final class AuthManager {
             try keychain.set("\(Date().addingTimeInterval(TimeInterval(result.expires_in)))", key: "expiration_date")
         } catch (let error) {
             print("keychain error: \(error.localizedDescription)")
-            fatalError(error.localizedDescription)
         }
     }
     
-    public func obtainingAnItem() -> Void {
+    public func refreshAccessTokenIfNeeded(completionHandler: @escaping (Bool) -> Void) -> Void {
         
-    }
-    
-    public func refreshAccessToken() -> Void {
+        //  guard (shouldRefreshToken == false) else { completionHandler(true); return }
+        guard let refreshToken = self.refreshToken else { return }
         
+        //  Request a refreshed Access Token
+        
+        //  url
+        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
+        
+        //  Header-Params
+        let headers: HTTPHeaders = [
+            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
+            "Content-Type": "application/x-www-form-urlencoded"
+        ]
+        
+        //  Body-Params
+        let form: [String : Any] = [
+            "grant_type": "refresh_token",
+            "refresh_token": refreshToken
+        ]
+        
+        AF.request(url,
+                   method: .post,
+                   parameters: form,
+                   headers: headers)
+        .validate(statusCode: 200 ..< 300)
+        .responseDecodable(of: AuthResponse.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
+            switch response.result {
+            case .success(let authResponse):
+                print("authResponse: \(authResponse) \n")
+                
+                self?.cacheAccessToken(with: authResponse)
+                completionHandler(true)
+                break;
+            case .failure(let error):
+                print("error: \(error.localizedDescription)")
+                completionHandler(false)
+                break;
+            }
+        }
     }
 }

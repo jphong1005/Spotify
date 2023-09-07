@@ -12,7 +12,7 @@ import Alamofire
 class AuthViewController: UIViewController {
 
     // MARK: - Stored-Prop
-    public var completionHandler: ((Bool) -> Void)?
+    public var completionHandler: ((Bool) -> Void)? = nil
     
     // MARK: - UI Component
     private let webView: WKWebView = {
@@ -62,19 +62,17 @@ class AuthViewController: UIViewController {
             .validate(statusCode: 200 ..< 300)
             .response(queue: DispatchQueue(label: "AuthVC.configureWebView.BackgroundQueue", qos: .background)) { response in
                 switch response.result {
-                case .success(let _):
+                case .success(_):
                     DispatchQueue.main.async {
                         self.webView.load(URLRequest(url: url))
                     }
                     break;
                 case .failure(let error):
                     print("error: \(error.localizedDescription)")
-                    fatalError(error.localizedDescription)
                     break;
                 }
             }
     }
-
 }
 
 extension AuthViewController: WKNavigationDelegate {
@@ -88,8 +86,6 @@ extension AuthViewController: WKNavigationDelegate {
         guard let code: String = URLComponents(string: url.absoluteString)?.queryItems?.first(where: { $0.name == "code" })?.value else { return }
         
         webView.isHidden = true
-        
-        print("code: \(code) \n")
         
         AuthManager.shared.exchangeCodeForAccessToken(code: code) { [weak self] success in
             DispatchQueue.main.async {

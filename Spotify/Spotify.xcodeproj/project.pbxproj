@@ -32,7 +32,7 @@
 		E89D04C12AA0B55200C4829C /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D04BE2AA0B55200C4829C /* APICaller.swift */; };
 		E89D04C22AA0B55200C4829C /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D04BF2AA0B55200C4829C /* HapticsManager.swift */; };
 		E89D04C32AA0B55200C4829C /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D04C02AA0B55200C4829C /* AuthManager.swift */; };
-		E8D767642AA32ACC0038AF90 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D767632AA32ACC0038AF90 /* Auth.swift */; };
+		E8D767642AA32ACC0038AF90 /* AuthConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D767632AA32ACC0038AF90 /* AuthConstants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +66,7 @@
 		E89D04BE2AA0B55200C4829C /* APICaller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
 		E89D04BF2AA0B55200C4829C /* HapticsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
 		E89D04C02AA0B55200C4829C /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
-		E8D767632AA32ACC0038AF90 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		E8D767632AA32ACC0038AF90 /* AuthConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,7 +198,6 @@
 				E89D04B82AA0B4F600C4829C /* AudioTrack.swift */,
 				E89D04B62AA0B4F600C4829C /* Artist.swift */,
 				E89D04B52AA0B4F600C4829C /* UserProfile.swift */,
-				E8D767632AA32ACC0038AF90 /* Auth.swift */,
 				E8575B072AA708160063A4D5 /* AuthResponse.swift */,
 			);
 			path = Models;
@@ -207,6 +206,7 @@
 		E89D04BD2AA0B55200C4829C /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				E8D767632AA32ACC0038AF90 /* AuthConstants.swift */,
 				E89D04C02AA0B55200C4829C /* AuthManager.swift */,
 				E89D04BE2AA0B55200C4829C /* APICaller.swift */,
 				E89D04BF2AA0B55200C4829C /* HapticsManager.swift */,
@@ -345,7 +345,7 @@
 				E89D04BB2AA0B4F600C4829C /* PlayList.swift in Sources */,
 				E89D04C12AA0B55200C4829C /* APICaller.swift in Sources */,
 				E89D049F2AA0B3BA00C4829C /* LibraryViewController.swift in Sources */,
-				E8D767642AA32ACC0038AF90 /* Auth.swift in Sources */,
+				E8D767642AA32ACC0038AF90 /* AuthConstants.swift in Sources */,
 				E89D04B22AA0B42700C4829C /* SettingsViewController.swift in Sources */,
 				E89D04A02AA0B3BA00C4829C /* TabBarViewController.swift in Sources */,
 				E89D04C22AA0B55200C4829C /* HapticsManager.swift in Sources */,
