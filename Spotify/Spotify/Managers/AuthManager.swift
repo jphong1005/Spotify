@@ -15,9 +15,12 @@ final class AuthManager {
     // MARK: - Singleton Instance
     static let shared: AuthManager = AuthManager()
     
-    // MARK: - Stored-Props
+    // MARK: - Static constant & Stored-Prop
     private static let serviceName: String = Bundle.main.bundleIdentifier ?? "UNKOWN VALUE"
     private let keychain: Keychain = Keychain(service: serviceName)
+    
+    private var refreshingToken: Bool = false
+    private var onRefreshBlocks: [(String) -> Void] = [(String) -> Void]()
     
     // MARK: - Init
     private init() {}
@@ -25,11 +28,11 @@ final class AuthManager {
     // MARK: - Computed-Props
     public var signInURL: URL? {
         
-        let authorizationURL: String = "\(AuthConstants.baseAuthURL)?" +
+        let authorizationURL: String = "\(AuthConstants.strBaseAuthURL)?" +
         "response_type=code" +
-        "&client_id=\(AuthConstants.client_ID)" +
+        "&client_id=\(AuthConstants.strClient_ID)" +
         "&scope=\(AuthConstants.scopes)" +
-        "&redirect_uri=\(AuthConstants.redirect_URI)" +
+        "&redirect_uri=\(AuthConstants.strRedirect_URI)" +
         "&show_dialog=TRUE"
         
         return URL(string: authorizationURL)
@@ -66,11 +69,11 @@ final class AuthManager {
         //  Request Access Token
         
         //  url
-        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
+        guard let url: URL = URL(string: AuthConstants.strToken_URL) else { return }
         
         //  Header-Params
         let headers: HTTPHeaders = [
-            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
+            "Authorization": "Basic \(translate(id: AuthConstants.strClient_ID, secret: AuthConstants.strClient_secret))",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         
@@ -78,7 +81,7 @@ final class AuthManager {
         let form: [String : Any] = [
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": AuthConstants.redirect_URI
+            "redirect_uri": AuthConstants.strRedirect_URI
         ]
         
         AF.request(url,
@@ -110,7 +113,7 @@ final class AuthManager {
         
         return data.base64EncodedString()
     }
-
+    
     public func cacheAccessToken(with result: AuthResponse) -> Void {
         
         //  Access Token의 경우 민감한 정보이기 때문에 UserDefaults가 아닌 Keychain Service를 사용!
@@ -118,8 +121,8 @@ final class AuthManager {
         let access_token: String = result.access_token
         
         // MARK: - ver. Security (-> import Security)
-        /*
         //  Access_Token을 utf-8 형식의 Data로 변환
+        /*
         if let data = access_token.data(using: .utf8) {
             
             //  Keychain에 저장하기 위해 query 생성
@@ -152,17 +155,19 @@ final class AuthManager {
     
     public func refreshAccessTokenIfNeeded(completionHandler: @escaping (Bool) -> Void) -> Void {
         
-        //  guard (shouldRefreshToken == false) else { completionHandler(true); return }
+        guard (!refreshingToken) else { return }
+        guard (shouldRefreshToken) else { completionHandler(true); return }
         guard let refreshToken = self.refreshToken else { return }
         
         //  Request a refreshed Access Token
+        refreshingToken = true
         
         //  url
-        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
+        guard let url: URL = URL(string: AuthConstants.strToken_URL) else { return }
         
         //  Header-Params
         let headers: HTTPHeaders = [
-            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
+            "Authorization": "Basic \(translate(id: AuthConstants.strClient_ID, secret: AuthConstants.strClient_secret))",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         
@@ -178,10 +183,14 @@ final class AuthManager {
                    headers: headers)
         .validate(statusCode: 200 ..< 300)
         .responseDecodable(of: AuthResponse.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
+            self?.refreshingToken = false
+            
             switch response.result {
             case .success(let authResponse):
                 print("authResponse: \(authResponse) \n")
                 
+                self?.onRefreshBlocks.forEach({ $0(authResponse.access_token) })
+                self?.onRefreshBlocks.removeAll()
                 self?.cacheAccessToken(with: authResponse)
                 completionHandler(true)
                 break;
@@ -190,6 +199,27 @@ final class AuthManager {
                 completionHandler(false)
                 break;
             }
+        }
+    }
+    
+    //  Supplies valid token to be used with API Calls
+    public func withValidToken(completionHandler: @escaping (String) -> Void) -> Void {
+        
+        guard (!refreshingToken) else {
+            //  Append the completionHandler    ->  중복적으로 새로고침을 원하지 않기 때문?
+            onRefreshBlocks.append(completionHandler)
+            
+            return
+        }
+        if (shouldRefreshToken == true) {
+            //  Refresh
+            refreshAccessTokenIfNeeded { [weak self] success in
+                if let token: String = self?.accessToken, success {
+                    completionHandler(token)
+                }
+            }
+        } else if let token: String = accessToken {
+            completionHandler(token)
         }
     }
 }

@@ -8,9 +8,10 @@
 import UIKit
 import WebKit
 import Alamofire
+import SnapKit
 
 class AuthViewController: UIViewController {
-
+    
     // MARK: - Stored-Prop
     public var completionHandler: ((Bool) -> Void)? = nil
     
@@ -34,7 +35,7 @@ class AuthViewController: UIViewController {
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .systemBackground
         
@@ -51,16 +52,16 @@ class AuthViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        webView.frame = self.view.bounds
+        self.webView.frame = self.view.bounds
     }
-
+    
     private func configureWebView() -> Void {
         
         guard let url: URL = AuthManager.shared.signInURL else { return }
         
         AF.request(url, method: .get)
             .validate(statusCode: 200 ..< 300)
-            .response(queue: DispatchQueue(label: "AuthVC.configureWebView.BackgroundQueue", qos: .background)) { response in
+            .response(queue: DispatchQueue.global(qos: .background)) { response in
                 switch response.result {
                 case .success(_):
                     DispatchQueue.main.async {
@@ -82,7 +83,7 @@ extension AuthViewController: WKNavigationDelegate {
         
         guard let url: URL = webView.url else { return }
         
-        //  Exchange the code for ACCESS TOKEN
+        //  Exchange the code for ACCESS TOKEN.
         guard let code: String = URLComponents(string: url.absoluteString)?.queryItems?.first(where: { $0.name == "code" })?.value else { return }
         
         webView.isHidden = true
@@ -101,23 +102,21 @@ extension AuthViewController: WKNavigationDelegate {
 import SwiftUI
 
 struct AuthViewControllerRepresentable: UIViewControllerRepresentable {
-
+    
     // MARK: - UIViewControllerRepresentable - (Required) Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
-
+        
         AuthViewController()
     }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-
-    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
 
 struct AuthViewControllerRepresentable_PreviewProvider: PreviewProvider {
-
+    
     static var previews: some View {
-
+        
         Group {
             AuthViewControllerRepresentable()
                 .ignoresSafeArea()

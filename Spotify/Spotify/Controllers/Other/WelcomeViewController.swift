@@ -48,7 +48,7 @@ class WelcomeViewController: UIViewController {
         btnSignIn.snp.makeConstraints { make in
             make.left.right.equalTo(self.view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     
@@ -69,7 +69,7 @@ class WelcomeViewController: UIViewController {
     private func handleSignIn(success: Bool) -> Void {
         
         //  Log user in or yell at them for error.
-        guard (success == false) else {
+        guard (success) else {
             let alert: UIAlertController = UIAlertController(title: "ALERT!",
                                                              message: "Something went wrong when sign in.",
                                                              preferredStyle: .alert)
@@ -100,9 +100,7 @@ struct WelcomeViewControllerRepresentable: UIViewControllerRepresentable {
         WelcomeViewController()
     }
     
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        
-    }
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
 
 struct WelcomeViewControllerRepresentable_PreviewProvider: PreviewProvider {

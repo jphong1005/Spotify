@@ -8,18 +8,17 @@
 import UIKit
 
 class TabBarViewController: UITabBarController {
-
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .systemBackground
         
         self.settingTabBarUI()
     }
     
-
     private func settingTabBarUI() -> Void {
         
         let homeVC: UINavigationController = UINavigationController(rootViewController: HomeViewController())
@@ -42,7 +41,6 @@ class TabBarViewController: UITabBarController {
         
         setViewControllers([homeVC, searchVC, libraryVC], animated: false)
     }
-
 }
 
 // MARK: - Live Preview
@@ -50,23 +48,21 @@ class TabBarViewController: UITabBarController {
 import SwiftUI
 
 struct TabBarViewControllerRepresentable: UIViewControllerRepresentable {
-
+    
     // MARK: - UIViewControllerRepresentable - (Required) Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
-
+        
         TabBarViewController()
     }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-
-    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
 
 struct TabBarViewControllerRepresentable_PreviewProvider: PreviewProvider {
-
+    
     static var previews: some View {
-
+        
         Group {
             TabBarViewControllerRepresentable()
                 .ignoresSafeArea()
