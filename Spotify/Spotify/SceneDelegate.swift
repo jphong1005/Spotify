@@ -22,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         if (AuthManager.shared.isSignedIn == true) {
+            AuthManager.shared.refreshAccessTokenIfNeeded(completionHandler: nil)
             window?.rootViewController = TabBarViewController()
         } else {
             window?.rootViewController = UINavigationController(rootViewController: WelcomeViewController())

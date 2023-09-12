@@ -51,7 +51,16 @@ final class AuthManager {
     }
     
     private var tokenExpirationDate: Date? {
-        return try? keychain.get("expiration_date") as? Date
+        
+        //  keychain에 저장되 'expiration_date'의 값을 optional binding으로 추출
+        guard let strDate = try? keychain.get("expiration_date") else { return nil }
+        let dateFormatter = DateFormatter()
+        
+        //  DateFormatter로 문자열을 Date 형식으로 지정하고
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        
+        //  return
+        return dateFormatter.date(from: strDate)
     }
     
     private var shouldRefreshToken: Bool {
@@ -153,13 +162,13 @@ final class AuthManager {
         }
     }
     
-    public func refreshAccessTokenIfNeeded(completionHandler: @escaping (Bool) -> Void) -> Void {
+    public func refreshAccessTokenIfNeeded(completionHandler: ((Bool) -> Void)?) -> Void {
         
         guard (!refreshingToken) else { return }
-        guard (shouldRefreshToken) else { completionHandler(true); return }
+        guard (shouldRefreshToken) else { completionHandler?(true); return }
         guard let refreshToken = self.refreshToken else { return }
         
-        //  Request a refreshed Access Token
+        //  Request a refreshed Access Token.
         refreshingToken = true
         
         //  url
@@ -192,11 +201,11 @@ final class AuthManager {
                 self?.onRefreshBlocks.forEach({ $0(authResponse.access_token) })
                 self?.onRefreshBlocks.removeAll()
                 self?.cacheAccessToken(with: authResponse)
-                completionHandler(true)
+                completionHandler?(true)
                 break;
             case .failure(let error):
                 print("error: \(error.localizedDescription)")
-                completionHandler(false)
+                completionHandler?(false)
                 break;
             }
         }

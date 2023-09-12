@@ -28,14 +28,17 @@ class TabBarViewController: UITabBarController {
         homeVC.title = "Home"
         homeVC.tabBarItem.image = UIImage(systemName: "house")
         homeVC.tabBarItem.selectedImage = UIImage(systemName: "house.fill")
+        homeVC.navigationBar.tintColor = .label
         
         searchVC.title = "Search"
         searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass.circle")
         searchVC.tabBarItem.selectedImage = UIImage(systemName: "magnifyingglass.circle.fill")
+        searchVC.navigationBar.tintColor = .label
         
         libraryVC.title = "Library"
         libraryVC.tabBarItem.image = UIImage(systemName: "square.on.square")
         libraryVC.tabBarItem.selectedImage = UIImage(systemName: "square.filled.on.square")
+        libraryVC.navigationBar.tintColor = .label
         
         tabBar.tintColor = .label
         
