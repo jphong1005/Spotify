@@ -47,6 +47,8 @@ class AuthViewController: UIViewController {
         self.view.addSubview(webView)
         
         configureWebView()
+        
+        applyConstraints()
     }
     
     override func viewDidLayoutSubviews() {
@@ -73,6 +75,13 @@ class AuthViewController: UIViewController {
                     break;
                 }
             }
+    }
+    
+    private func applyConstraints() -> Void {
+        
+        webView.snp.makeConstraints { make in
+            make.edges.equalTo(self.view.safeAreaLayoutGuide)
+        }
     }
 }
 

@@ -59,20 +59,10 @@ class ProfileViewController: UIViewController {
             .bind { [weak self] profile in
                 if (profile == nil) {
                     self?.failedToGetProfile()
-                } else if let profile = profile {
+                } else if let profile: UserProfile = profile {
                     self?.updateUI(with: profile)
                 }
             }.disposed(by: bag)
-    }
-    
-    private func addObserver() -> Void {
-        
-        APICaller.shared.getCurrentUserProfile()
-            .subscribe { [weak self] profile in
-                self?.spotifyViewModel.userProfile.onNext(profile)
-            } onError: { error in
-                self.spotifyViewModel.userProfile.onError(error)
-            }.disposed(by: self.spotifyViewModel.bag)
     }
     
     private func updateUI(with model: UserProfile) -> Void {
@@ -103,7 +93,7 @@ class ProfileViewController: UIViewController {
         label.center = view.center
     }
     
-    private func configureTableViewHeader(with images: [UserProfile.Images]) -> Void {
+    private func configureTableViewHeader(with images: [UserProfile.Image]) -> Void {
         
         let headerView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: (view.width) / 1.5))
         let imageSize: CGFloat = (headerView.height) / 2

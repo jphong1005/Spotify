@@ -16,7 +16,7 @@ final class APICaller {
     static let shared: APICaller = APICaller()
     
     // MARK: - Static constant
-    private static let endPoint: String = "https://api.spotify.com/v1"
+    private static let defaultEndPoint: String = "https://api.spotify.com/v1"
     
     // MARK: - Init
     private init() {}
@@ -30,7 +30,7 @@ final class APICaller {
                     "Authorization": "Bearer \(token)"
                 ])
                 
-                AF.request(APICaller.endPoint + "/me",
+                AF.request(APICaller.defaultEndPoint + "/me",
                            method: .get,
                            headers: headers)
                 .validate(statusCode: 200 ..< 300)
@@ -38,14 +38,45 @@ final class APICaller {
                 .responseDecodable(of: UserProfile.self, queue: DispatchQueue.global(qos: .background)) { response in
                     switch response.result {
                     case .success(let userProfile):
-                        print("userProfile: \(userProfile) \n")
+                        dump("\(userProfile) \n")
                         observer.onNext(userProfile)
-                        observer.onCompleted()
-                        break;
+                        observer.onCompleted(); break;
                     case .failure(let error):
                         print("error: \(error.localizedDescription)")
-                        observer.onError(error)
-                        break;
+                        observer.onError(error); break;
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }.asObservable()
+    }
+    
+    public func getNewReleases() -> Observable<NewReleasesResponse> {
+        
+        return Observable.create { observer in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                print(token)
+                print("?: \(headers)")
+                
+                AF.request(APICaller.defaultEndPoint + "/browse/new-releases?limit=50",
+                           method: .get,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .responseDecodable(of: NewReleasesResponse.self, queue: DispatchQueue.global(qos: .background)) { response in
+                    switch response.result {
+                    case .success(let newRelease):
+                            dump("\(newRelease) \n")
+                            observer.onNext(newRelease)
+                            observer.onCompleted(); break;
+                    case .failure(let error):
+                        print("error: \(error.localizedDescription)")
+                        observer.onError(error); break;
                     }
                 }
             }

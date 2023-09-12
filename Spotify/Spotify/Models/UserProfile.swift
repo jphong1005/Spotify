@@ -18,7 +18,7 @@ struct UserProfile: Codable {
     let followers: Followers
     let href: String
     let id: String
-    let images: [Images]
+    let images: [`Image`]
     let product: String
     let type: String
     let uri: String
@@ -43,7 +43,7 @@ struct UserProfile: Codable {
         let total: Int
     }
     
-    struct Images: Codable {
+    struct `Image`: Codable {
         
         // MARK: - Stored-Props
         let url: String
