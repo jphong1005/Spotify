@@ -56,12 +56,9 @@ class ProfileViewController: UIViewController {
         
         self.spotifyViewModel.userProfile
             .observe(on: MainScheduler.instance)
+            .compactMap({ $0 })
             .bind { [weak self] profile in
-                if (profile == nil) {
-                    self?.failedToGetProfile()
-                } else if let profile: UserProfile = profile {
-                    self?.updateUI(with: profile)
-                }
+                self?.updateUI(with: profile)
             }.disposed(by: bag)
     }
     
@@ -93,7 +90,7 @@ class ProfileViewController: UIViewController {
         label.center = view.center
     }
     
-    private func configureTableViewHeader(with images: [UserProfile.Image]) -> Void {
+    private func configureTableViewHeader(with images: [CommonGround.`Image`]) -> Void {
         
         let headerView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: (view.width) / 1.5))
         let imageSize: CGFloat = (headerView.height) / 2

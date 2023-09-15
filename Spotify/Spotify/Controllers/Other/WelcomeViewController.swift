@@ -18,6 +18,7 @@ class WelcomeViewController: UIViewController {
         button.backgroundColor = .white
         button.setTitle("Sign In with Spotify", for: .normal)
         button.setTitleColor(.blue, for: .normal)
+        button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(didTapBtnSignIn), for: .touchUpInside)
         
         return button

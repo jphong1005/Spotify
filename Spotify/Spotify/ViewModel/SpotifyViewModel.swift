@@ -14,6 +14,7 @@ final class SpotifyViewModel {
     // MARK: - Stored-Props
     var userProfile: BehaviorSubject<UserProfile?> = BehaviorSubject(value: nil)
     var newReleases: BehaviorSubject<NewReleasesResponse?> = BehaviorSubject(value: nil)
+    var recommendations: BehaviorSubject<RecommendationsResponse?> = BehaviorSubject(value: nil)
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
@@ -23,7 +24,7 @@ final class SpotifyViewModel {
     
     // MARK: - Method
     private func addObserver() -> Void {
-
+        
         APICaller.shared.getCurrentUserProfile()
             .subscribe { [weak self] profile in
                 self?.userProfile.onNext(profile)
@@ -37,5 +38,18 @@ final class SpotifyViewModel {
             } onError: { error in
                 self.newReleases.onError(error)
             }.disposed(by: self.bag)
+        
+        Task {
+            do {
+                try await APICaller.shared.performGetRecommendations().value
+                    .subscribe(onNext: { [weak self] recommendations in
+                        self?.recommendations.onNext(recommendations)
+                    }, onError: { error in
+                        self.recommendations.onError(error)
+                    }).disposed(by: self.bag)
+            } catch {
+                print("error: \(error.localizedDescription)")
+            }
+        }
     }
 }

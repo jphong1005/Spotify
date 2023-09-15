@@ -49,7 +49,7 @@ final class APICaller {
             }
             
             return Disposables.create()
-        }
+        }.asObservable()
     }
     
     //  PUBLIC API Methods
@@ -60,6 +60,65 @@ final class APICaller {
     
     public func getNewReleases() -> Observable<NewReleasesResponse> {
         
-        return performRequest(query: "/browse/new-releases?limit=50", method: .get)
+        return performRequest(query: "/browse/new-releases?limit=1", method: .get)
+    }
+    
+    public func getFeaturedPlaylists() -> Observable<FeaturedPlayListsResponse> {
+        
+        return performRequest(query: "/browse/featured-playlists?limit=1", method: .get)
+    }
+    
+    public func getAvailableGenreSeeds() async throws -> GenreResponse {
+        
+        //  .withCheckedThrowingContinuation()를 사용함으로써 비동기 코드 블록 내에서 값을 반환 or 오류를 던짐
+        return try await withCheckedThrowingContinuation({ continuation in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint + "/recommendations/available-genre-seeds",
+                           method: .get,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .responseDecodable(of: GenreResponse.self, queue: DispatchQueue.global(qos: .background)) { response in
+                    switch response.result {
+                    case .success(let genreResponse):
+                        continuation.resume(returning: genreResponse); break;
+                    case .failure(let error):
+                        print("error: \(error.localizedDescription)")
+                        continuation.resume(throwing: error); break;
+                    }
+                }
+            }
+        })
+    }
+    
+    public func getRecommendations(genres: Set<String>) -> Observable<RecommendationsResponse> {
+
+        let seeds: String = genres.joined(separator: ",")
+        
+        return performRequest(query: "/recommendations?limit=10&seed_genres=\(seeds)", method: .get)
+    }
+    
+    public func performGetRecommendations() -> Task<Observable<RecommendationsResponse>, Error> {
+        
+        return Task(priority: .background) { () -> Observable<RecommendationsResponse> in
+            do {
+                let genres: [String] = try await APICaller.shared.getAvailableGenreSeeds().genres
+                var seeds: Set<String> = Set<String>()
+
+                while seeds.count < 5 {
+                    if let randomGenre: String = genres.randomElement() {
+                        seeds.insert(randomGenre)
+                    }
+                }
+
+                return getRecommendations(genres: seeds)
+            } catch {
+                throw error
+            }
+        }
     }
 }
