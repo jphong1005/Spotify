@@ -54,12 +54,13 @@ class ProfileViewController: UIViewController {
     
     private func bind() -> Void {
         
-        self.spotifyViewModel.userProfile
+        //  UserProfile
+        self.spotifyViewModel.users.userProfile
             .observe(on: MainScheduler.instance)
-            .compactMap({ $0 })
+            .compactMap { $0 }
             .bind { [weak self] profile in
                 self?.updateUI(with: profile)
-            }.disposed(by: bag)
+            }.disposed(by: self.bag)
     }
     
     private func updateUI(with model: UserProfile) -> Void {
@@ -118,7 +119,7 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource Methods
-    //  Required Methods.
+    ///  Required Methods.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return models.count
@@ -149,7 +150,7 @@ import SwiftUI
 
 struct ProfileViewControllerRepresentable: UIViewControllerRepresentable {
     
-    // MARK: - UIViewControllerRepresentable - (Required) Methods
+    // MARK: - UIViewControllerRepresentable - Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
         

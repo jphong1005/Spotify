@@ -22,7 +22,7 @@ final class APICaller {
     private init() {}
     
     // MARK: - Methods
-    //  PRIVATE Helper Method
+    ///  PRIVATE Helper Method.
     private func performRequest<T: Codable>(query: String, method: HTTPMethod, params: Parameters? = nil, headers: HTTPHeaders? = nil) -> Observable<T> {
         
         return Observable.create { observser in
@@ -52,7 +52,7 @@ final class APICaller {
         }.asObservable()
     }
     
-    //  PUBLIC API Methods
+    ///  PUBLIC API Methods.
     public func getCurrentUserProfile() -> Observable<UserProfile> {
         
         return performRequest(query: "/me", method: .get)
@@ -60,12 +60,16 @@ final class APICaller {
     
     public func getNewReleases() -> Observable<NewReleasesResponse> {
         
-        return performRequest(query: "/browse/new-releases?limit=1", method: .get)
+        //  limit -> default: 20, range: 0 ~ 50
+        //  offset -> default: 0
+        return performRequest(query: "/browse/new-releases?limit=50", method: .get)
     }
     
     public func getFeaturedPlaylists() -> Observable<FeaturedPlayListsResponse> {
         
-        return performRequest(query: "/browse/featured-playlists?limit=1", method: .get)
+        //  limit -> default: 20, range: 0 ~ 50
+        //  offset -> default: 0
+        return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
     }
     
     public func getAvailableGenreSeeds() async throws -> GenreResponse {
@@ -99,7 +103,8 @@ final class APICaller {
 
         let seeds: String = genres.joined(separator: ",")
         
-        return performRequest(query: "/recommendations?limit=10&seed_genres=\(seeds)", method: .get)
+        //  limit -> default: 20, range: 1 ~ 100
+        return performRequest(query: "/recommendations?limit=40&seed_genres=\(seeds)", method: .get)
     }
     
     public func performGetRecommendations() -> Task<Observable<RecommendationsResponse>, Error> {

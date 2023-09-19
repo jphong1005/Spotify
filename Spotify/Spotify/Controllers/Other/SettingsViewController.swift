@@ -64,9 +64,7 @@ class SettingsViewController: UIViewController {
     
     private func viewProfile() -> Void {
         
-        let profileVC: ProfileViewController = ProfileViewController()
-        
-        self.navigationController?.pushViewController(profileVC, animated: true)
+        self.navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
     private func signOutTapped() -> Void {}
@@ -75,7 +73,7 @@ class SettingsViewController: UIViewController {
 extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource Methods
-    //  Required Methods.
+    ///  Required Methods.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return sections[section].arrOptions.count
@@ -98,7 +96,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    //  Optional Methods.
+    ///  Optional Methods.
     func numberOfSections(in tableView: UITableView) -> Int {
         
         return sections.count    //  Default is 1

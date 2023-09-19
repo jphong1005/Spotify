@@ -22,5 +22,8 @@ target 'Spotify' do
   
   # SDWebImage
   pod 'SDWebImage', '~> 5.0'
+  
+  # Then
+  pod 'Then'
 
 end

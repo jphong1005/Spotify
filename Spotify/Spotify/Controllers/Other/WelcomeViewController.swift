@@ -11,7 +11,7 @@ import SnapKit
 class WelcomeViewController: UIViewController {
     
     // MARK: - UI Component
-    private let btnSignIn: UIButton = {
+    private let signIn: UIButton = {
         
         let button: UIButton = UIButton()
         
@@ -19,7 +19,7 @@ class WelcomeViewController: UIViewController {
         button.setTitle("Sign In with Spotify", for: .normal)
         button.setTitleColor(.blue, for: .normal)
         button.layer.cornerRadius = 10
-        button.addTarget(self, action: #selector(didTapBtnSignIn), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapSignIn(_:)), for: .touchUpInside)
         
         return button
     }()
@@ -35,7 +35,7 @@ class WelcomeViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationItem.largeTitleDisplayMode = .always
         
-        self.view.addSubview(btnSignIn)
+        self.view.addSubview(signIn)
     }
     
     override func viewDidLayoutSubviews() {
@@ -46,7 +46,7 @@ class WelcomeViewController: UIViewController {
     
     private func applyConstraints() -> Void {
         
-        btnSignIn.snp.makeConstraints { make in
+        signIn.snp.makeConstraints { make in
             make.left.right.equalTo(self.view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(50)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
@@ -54,7 +54,7 @@ class WelcomeViewController: UIViewController {
     }
     
     // MARK: - Event Handler
-    @objc func didTapBtnSignIn() -> Void {
+    @objc func didTapSignIn(_ sender: UIButton) -> Void {
         
         let authVC: AuthViewController = AuthViewController()
         
@@ -94,7 +94,7 @@ import SwiftUI
 
 struct WelcomeViewControllerRepresentable: UIViewControllerRepresentable {
     
-    // MARK: - UIViewControllerRepresentable - (Required) Methods
+    // MARK: - UIViewControllerRepresentable - Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
         

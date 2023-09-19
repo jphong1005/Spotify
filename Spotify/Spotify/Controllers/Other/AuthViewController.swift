@@ -112,7 +112,7 @@ import SwiftUI
 
 struct AuthViewControllerRepresentable: UIViewControllerRepresentable {
     
-    // MARK: - UIViewControllerRepresentable - (Required) Methods
+    // MARK: - UIViewControllerRepresentable - Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
         

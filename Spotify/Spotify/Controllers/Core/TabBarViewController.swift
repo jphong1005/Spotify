@@ -52,7 +52,7 @@ import SwiftUI
 
 struct TabBarViewControllerRepresentable: UIViewControllerRepresentable {
     
-    // MARK: - UIViewControllerRepresentable - (Required) Methods
+    // MARK: - UIViewControllerRepresentable - Methods
     @available(iOS 15.0, *)
     func makeUIViewController(context: Context) -> some UIViewController {
         
