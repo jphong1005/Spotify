@@ -70,7 +70,7 @@ struct TabBarViewControllerRepresentable_PreviewProvider: PreviewProvider {
             TabBarViewControllerRepresentable()
                 .ignoresSafeArea()
                 .previewDisplayName("Preview")
-                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
                 .preferredColorScheme(.dark)
         }
     }

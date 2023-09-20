@@ -12,6 +12,9 @@ import SnapKit
 
 class NewReleasesCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Static constant
+    static let identifier: String = "NewReleaseCollectionViewCell"
+    
     // MARK: - UI Components
     private let albumCoverImageView: UIImageView = UIImageView().then {
         $0.image = UIImage(systemName: "photo")
@@ -35,9 +38,6 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         $0.numberOfLines = 0
     }
     
-    // MARK: - Static constant
-    static let identifier: String = "NewReleaseCollectionViewCell"
-    
     // MARK: - Inits
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,10 +45,10 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         self.contentView.backgroundColor = .secondarySystemBackground
         self.contentView.clipsToBounds = true
         
-        self.addSubview(albumCoverImageView)
-        self.addSubview(albumNameLabel)
-        self.addSubview(numberOfTracksLabel)
-        self.addSubview(artistNameLabel)
+        self.contentView.addSubview(albumCoverImageView)
+        self.contentView.addSubview(albumNameLabel)
+        self.contentView.addSubview(numberOfTracksLabel)
+        self.contentView.addSubview(artistNameLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -110,5 +110,48 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
             make.right.equalToSuperview().inset(10)
             make.height.equalTo(30)
         }
+        
+        /*
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            let imageSize: CGFloat = contentView.height-10
+            let albumLabelSize = albumNameLabel.sizeThatFits(
+                CGSize(
+                    width: contentView.width-imageSize-10,
+                    height: contentView.height-imageSize-10
+                )
+            )
+            
+            artistNameLabel.sizeToFit()
+            numberOfTrackLabel.sizeToFit()
+            //Image
+            albumCoverImageView.frame = CGRect(
+                x: 5,
+                y: 5,
+                width: imageSize,
+                height: imageSize)
+            
+            // Album Name Label
+            let albumLabelHeight = min(60, albumLabelSize.height)
+            
+            albumNameLabel.frame = CGRect(
+                x: albumCoverImageView.right+10,
+                y: 5,
+                width:  albumLabelSize.width,
+                height: albumLabelHeight)
+            
+            artistNameLabel.frame = CGRect(
+                x: albumCoverImageView.right+10,
+                y: albumNameLabel.bottom,
+                width:  contentView.width - albumCoverImageView.right-10,
+                height: 30)
+            
+            numberOfTrackLabel.frame = CGRect(
+                x: albumCoverImageView.right+10,
+                y: albumCoverImageView.bottom-44,
+                width:  numberOfTrackLabel.width,
+                height: 44)
+        }
+         */
     }
 }

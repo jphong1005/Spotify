@@ -59,7 +59,7 @@ class HomeViewController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    /// Before: Trouble! (-> UICollectionViewCell의 구성이 깨져버림)
+    //  Before: Trouble! (-> UICollectionViewCell의 구성이 깨져버림)
     /*
     private func bind() -> Void {
             
@@ -92,10 +92,10 @@ class HomeViewController: UIViewController {
         }
      */
     
-    /// After
+    //  After
     private func bind() -> Void {
         
-        //  각 ViewModel의 Property를 관찰하는 Observable 선언 및 초기화
+        /// 각 ViewModel의 Property를 관찰하는 Observable 선언 및 초기화
         let newReleasesObservable: BehaviorSubject<NewReleasesResponse?> = self.spotifyViewModel.albums.newReleases
         let featuredPlaylistsObservable: BehaviorSubject<FeaturedPlayListsResponse?> = self.spotifyViewModel.playlists.featuredPlaylist
         let recommendationsObservable: BehaviorSubject<RecommendationsResponse?> = self.spotifyViewModel.tracks.recommendations
@@ -114,13 +114,13 @@ class HomeViewController: UIViewController {
             }.disposed(by: self.bag)
          */
         
-        //  Observables를 결합
+        /// Observables를 결합
         let combinedObservable = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
         
         self.updateSectionsWhenDataArrives(combinedObservable: combinedObservable)
     }
     
-    //  SOLID의 '단일 책임 원칙'에 의거하여 메서드를 분리
+    /// SOLID의 '단일 책임 원칙 (= SRP)'에 의거하여 메서드를 분리
     private func updateSectionsWhenDataArrives(combinedObservable: Observable<(NewReleasesResponse?, FeaturedPlayListsResponse?, RecommendationsResponse?)>) -> Void {
         
         combinedObservable
@@ -315,8 +315,6 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case .newReleases(let newReleasesResponse):
             guard let cell: NewReleasesCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewReleasesCollectionViewCell.identifier, for: indexPath) as? NewReleasesCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.backgroundColor = .systemBackground
-            
             guard let item: NewReleasesResponse.Album.SimplifiedAlbum = newReleasesResponse?.albums.items[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureNewReleaseCollectionViewCellUI(value: item)
@@ -325,13 +323,17 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case .featuredPlaylists(let featuredPlaylistsResponse):
             guard let cell: FeaturedPlaylistCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.backgroundColor = .systemBackground
+            guard let item: PlayList.SimplifiedPlaylist = featuredPlaylistsResponse?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
+            
+            cell.configureFeaturedPlaylistCollectionViewCellUI(value: item)
             
             return cell;
-        case .recommendations(let reccomendationsResponse):
+        case .recommendations(let recommendationsResponse):
             guard let cell: RecommendationCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendationCollectionViewCell.identifier, for: indexPath) as? RecommendationCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.backgroundColor = .systemBackground
+            guard let track: Track = recommendationsResponse?.tracks[indexPath.row] else { return UICollectionViewCell() }
+            
+            cell.configureRecommendationCollectionViewCell(value: track)
             
             return cell;
         }
@@ -368,7 +370,7 @@ struct HomeViewControllerRepresentable_PreviewProvider: PreviewProvider {
             HomeViewControllerRepresentable()
                 .ignoresSafeArea()
                 .previewDisplayName("Preview")
-                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
                 .preferredColorScheme(.dark)
         }
     }

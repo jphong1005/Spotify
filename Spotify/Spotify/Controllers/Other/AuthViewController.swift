@@ -130,7 +130,7 @@ struct AuthViewControllerRepresentable_PreviewProvider: PreviewProvider {
             AuthViewControllerRepresentable()
                 .ignoresSafeArea()
                 .previewDisplayName("Preview")
-                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
                 .preferredColorScheme(.dark)
         }
     }
