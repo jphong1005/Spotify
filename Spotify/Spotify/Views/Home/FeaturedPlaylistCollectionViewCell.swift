@@ -27,14 +27,12 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
         $0.font = .systemFont(ofSize: 20, weight: .regular)
         $0.numberOfLines = 0
         $0.textAlignment = .center
-        //  $0.sizeToFit()
     }
     
     private let creatorNameLabel: UILabel = UILabel().then {
         $0.font = .systemFont(ofSize: 15, weight: .thin)
         $0.numberOfLines = 0
         $0.textAlignment = .center
-        //  $0.sizeToFit()
     }
     
     // MARK: - Inits

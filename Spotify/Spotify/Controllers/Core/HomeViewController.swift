@@ -59,40 +59,6 @@ class HomeViewController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    //  Before: Trouble! (-> UICollectionViewCell의 구성이 깨져버림)
-    /*
-    private func bind() -> Void {
-            
-            //  NewReleases
-            self.spotifyViewModel.albums.newReleases
-                .observe(on: MainScheduler.instance)
-                .bind { [weak self] newReleasesResponse in
-                    guard let _: HomeViewController = self else { return }
-                    self?.sections.append(.newReleases(newReleases: newReleasesResponse))
-                    self?.collectionView.reloadData()
-                }.disposed(by: self.bag)
-            
-            //  FeaturedPlaylists
-            self.spotifyViewModel.playlists.featuredPlaylist
-                .observe(on: MainScheduler.instance)
-                .bind { [weak self] featuredPlaylistsResponse in
-                    guard let _: HomeViewController = self else { return }
-                    self?.sections.append(.featuredPlaylists(playlists: featuredPlaylistsResponse))
-                    self?.collectionView.reloadData()
-                }.disposed(by: self.bag)
-
-            //  Recommendations
-            self.spotifyViewModel.tracks.recommendations
-                .observe(on: MainScheduler.instance)
-                .bind { [weak self] recommendationsResponse in
-                    guard let _: HomeViewController = self else { return }
-                    self?.sections.append(.recommendations(tracks: recommendationsResponse))
-                    self?.collectionView.reloadData()
-                }.disposed(by: self.bag)
-        }
-     */
-    
-    //  After
     private func bind() -> Void {
         
         /// 각 ViewModel의 Property를 관찰하는 Observable 선언 및 초기화
@@ -100,22 +66,8 @@ class HomeViewController: UIViewController {
         let featuredPlaylistsObservable: BehaviorSubject<FeaturedPlayListsResponse?> = self.spotifyViewModel.playlists.featuredPlaylist
         let recommendationsObservable: BehaviorSubject<RecommendationsResponse?> = self.spotifyViewModel.tracks.recommendations
         
-        /*
-        Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)
-            .observe(on: MainScheduler.instance)
-            .bind { [weak self] (newReleasesResponse, featuredPlaylistsResponse, recommendationsResponse) in
-                guard newReleasesResponse != nil, featuredPlaylistsResponse != nil, recommendationsResponse != nil else { return }
-                
-                self?.sections.append(.newReleases(newReleases: newReleasesResponse))
-                self?.sections.append(.featuredPlaylists(playlists: featuredPlaylistsResponse))
-                self?.sections.append(.recommendations(tracks: recommendationsResponse))
-                
-                self?.collectionView.reloadData()
-            }.disposed(by: self.bag)
-         */
-        
         /// Observables를 결합
-        let combinedObservable = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
+        let combinedObservable: Observable<(NewReleasesResponse?, FeaturedPlayListsResponse?, RecommendationsResponse?)> = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
         
         self.updateSectionsWhenDataArrives(combinedObservable: combinedObservable)
     }
