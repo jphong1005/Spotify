@@ -114,18 +114,18 @@ class HomeViewController: UIViewController {
             
             item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
             
-            //  Group   (-> Vertical group in horizontal group)
+            //  Groups   (-> Vertical group in horizontal group)
             let verticalGroup: NSCollectionLayoutGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(400)
+                    heightDimension: .absolute(350)
                 ),
                 subitem: item,
                 count: 3)
             let horizontalGroup: NSCollectionLayoutGroup = NSCollectionLayoutGroup.horizontal(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(0.9),
-                    heightDimension: .absolute(400)
+                    heightDimension: .absolute(350)
                 ),
                 subitem: verticalGroup,
                 count: 1)

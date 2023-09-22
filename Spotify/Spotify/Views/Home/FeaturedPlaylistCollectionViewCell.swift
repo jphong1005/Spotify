@@ -55,21 +55,8 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //  self.applyConstraints()
-        
-        creatorNameLabel.frame = CGRect(
-                    x: 3,
-                    y: contentView.height-30,
-                    width: contentView.width-6,
-                    height: 30)
-                playlistNameLabel.frame = CGRect(
-                    x: 3,
-                    y: contentView.height-60,
-                    width: contentView.width-6,
-                    height: 30)
-                // imagesize
-                let imageSize = contentView.height-70
-                playlistCoverImageView.frame = CGRect(x: (contentView.width-imageSize)/2, y: 3, width: imageSize, height: imageSize)
+        //  self.frameBasedLayout()
+        self.applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -87,20 +74,47 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
         creatorNameLabel.text = value.owner.display_name
     }
     
+    private func frameBasedLayout() -> Void {
+        
+        let imageSize: CGFloat = self.contentView.height - 70
+        
+        self.playlistCoverImageView.frame = CGRect(x: (self.contentView.width - imageSize) / 2,
+                                                   y: 5,
+                                                   width: imageSize,
+                                                   height: imageSize)
+        
+        self.playlistNameLabel.frame = CGRect(x: 3,
+                                              y: self.contentView.height - 50,
+                                              width: self.contentView.width - 5,
+                                              height: 30)
+        
+        self.creatorNameLabel.frame = CGRect(x: 3,
+                                             y: self.contentView.height - 30,
+                                             width: self.contentView.width - 8,
+                                             height: 30)
+    }
+    
     private func applyConstraints() -> Void {
         
-        //  playlistCoverImageView
-        playlistCoverImageView.snp.makeConstraints { make in
-            
+        let imageSize: CGFloat = self.contentView.height - 70
+        
+        self.playlistCoverImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(self.contentView.snp.centerX)
+            make.top.equalTo(self.contentView.snp.top).offset(5)
+            make.width.height.equalTo(imageSize)
         }
         
-        //  playlistNameLabel
-        playlistNameLabel.snp.makeConstraints { make in
+        self.playlistNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(self.contentView.snp.leading).offset(3)
+            make.top.equalTo(self.contentView.height - 50)
+            make.width.equalTo(self.contentView.width - 5)
             make.height.equalTo(30)
         }
         
-        //  creatorNameLabel
-        creatorNameLabel.snp.makeConstraints { make in
+        self.creatorNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(self.playlistNameLabel.snp.leading)
+            make.top.equalTo(self.contentView.height - 30)
+            make.width.equalTo(self.contentView.width - 8)
             make.height.equalTo(self.playlistNameLabel.snp.height)
         }
     }

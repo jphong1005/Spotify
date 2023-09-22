@@ -80,4 +80,12 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
         trackNameLabel.text = value.name
         artistNameLabel.text = value.artists.first?.name
     }
+    
+    private func frameBasedLayout() -> Void {
+        
+        self.albumCoverImageView.frame = CGRect(x: 5,
+                                                y: 2,
+                                                width: self.contentView.height,
+                                                height: self.contentView.height - 4)
+    }
 }

@@ -84,14 +84,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let model: Section.Option = sections[indexPath.section].arrOptions[indexPath.row]
         
-        if #available(iOS 14.0, *) {
-            var content: UIListContentConfiguration = cell.defaultContentConfiguration()
-            
-            content.text = model.strTitle
-            cell.contentConfiguration = content
-        } else {
-            cell.textLabel?.text = model.strTitle
-        }
+        cell.textLabel?.text = model.strTitle
         
         return cell
     }

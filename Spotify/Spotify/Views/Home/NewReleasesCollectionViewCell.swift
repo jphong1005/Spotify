@@ -19,6 +19,8 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
     private let albumCoverImageView: UIImageView = UIImageView().then {
         $0.image = UIImage(systemName: "photo")
         $0.contentMode = .scaleAspectFit
+        $0.layer.masksToBounds = true
+        $0.layer.cornerRadius = 5
     }
     
     private let albumNameLabel: UILabel = UILabel().then {
