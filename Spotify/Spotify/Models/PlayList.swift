@@ -28,24 +28,13 @@ struct PlayList: Codable {
         let id: String
         let images: [CommonGround.`Image`]
         let name: String
-        let owner: Owner
+        let owner: CommonGround.Owner
         let primary_color: String?
         let `public`: Bool?
         let snapshot_id: String
         let tracks: Track
         let type: String
         //  let url: String
-        
-        struct Owner: Codable {
-            
-            // MARK: - Stored-Props
-            let display_name: String?
-            let external_urls: CommonGround.ExternalURLs
-            let href: String
-            let id: String
-            let type: String
-            let uri: String
-        }
         
         struct Track: Codable {
             

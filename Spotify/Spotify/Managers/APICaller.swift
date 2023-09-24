@@ -60,15 +60,15 @@ final class APICaller {
     
     public func getNewReleases() -> Observable<NewReleasesResponse> {
         
-        //  limit -> default: 20, range: 0 ~ 50
-        //  offset -> default: 0
+        /// limit -> default: 20, range: 0 ~ 50
+        /// offset -> default: 0
         return performRequest(query: "/browse/new-releases?limit=50", method: .get)
     }
     
     public func getFeaturedPlaylists() -> Observable<FeaturedPlayListsResponse> {
         
-        //  limit -> default: 20, range: 0 ~ 50
-        //  offset -> default: 0
+        /// limit -> default: 20, range: 0 ~ 50
+        /// offset -> default: 0
         return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
     }
     
@@ -123,6 +123,64 @@ final class APICaller {
                 return getRecommendations(genres: seeds)
             } catch {
                 throw error
+            }
+        }
+    }
+    
+    public func getAlbum(for album: NewReleasesResponse.Album.SimplifiedAlbum) -> Void {
+        
+        AuthManager.shared.withValidToken { token in
+            let headers: HTTPHeaders = HTTPHeaders([
+                "Authorization": "Bearer \(token)"
+            ])
+            
+            AF.request(APICaller.defaultEndPoint + "/albums/\(album.id)",
+                       method: .get,
+                       headers: headers)
+            .validate(statusCode: 200 ..< 300)
+            .validate(contentType: ["application/json"])
+            .response(queue: DispatchQueue.global(qos: .background)) { response in
+                switch response.result {
+                case .success(let data):
+                    do {
+                        let data: AlbumResponse = try JSONDecoder().decode(AlbumResponse.self, from: data ?? Data())
+                        print(data)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                    break;
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    public func getPlaylist(for playlist: PlayList.SimplifiedPlaylist) -> Void {
+        
+        AuthManager.shared.withValidToken { token in
+            let headers: HTTPHeaders = HTTPHeaders([
+                "Authorization": "Bearer \(token)"
+            ])
+            
+            AF.request(APICaller.defaultEndPoint + "/playlists/\(playlist.id)",
+                       method: .get,
+                       headers: headers)
+            .validate(statusCode: 200 ..< 300)
+            .validate(contentType: ["application/json"])
+            .response(queue: DispatchQueue.global(qos: .background)) { response in
+                switch response.result {
+                case .success(let data):
+                    do {
+                        let data: PlaylistResponse = try JSONDecoder().decode(PlaylistResponse.self, from: data ?? Data())
+                        print(data)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                    break;
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
             }
         }
     }

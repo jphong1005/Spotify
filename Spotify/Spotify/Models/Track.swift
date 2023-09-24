@@ -16,7 +16,7 @@ struct Track: Codable {
     let disc_number: Int
     let duration_ms: Int
     let explicit: Bool
-    let external_ids: ExternalIDs
+    let external_ids: CommonGround.ExternalIDs
     let external_urls: CommonGround.ExternalURLs
     let href: String
     let id: String
@@ -45,14 +45,6 @@ struct Track: Codable {
         //  let popularity: Int
         let type: String
         let uri: String
-    }
-    
-    struct ExternalIDs: Codable {
-        
-        // MARK: - Stored-Props
-        let isrc: String?
-        let ean: String?
-        let upc: String?
     }
     
     struct LinkedForm: Codable {

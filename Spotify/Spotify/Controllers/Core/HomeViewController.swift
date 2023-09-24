@@ -296,6 +296,32 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         return sections.count
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
+        
+        switch sectionType {
+        case .newReleases(let newReleasesResponse):
+            guard let albumItem: NewReleasesResponse.Album.SimplifiedAlbum = newReleasesResponse?.albums.items[indexPath.row] else { return }
+            let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
+            
+            self.navigationController?.pushViewController(albumVC, animated: true)
+            break;
+        case .featuredPlaylists(let featuredPlaylistsResponse):
+            guard let playlistItem: PlayList.SimplifiedPlaylist = featuredPlaylistsResponse?.playlists.items[indexPath.row] else { return }
+            let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
+            
+            self.navigationController?.pushViewController(playlistVC, animated: true)
+            break;
+        case .recommendations(let recommendationsResponse):
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 // MARK: - Live Preview

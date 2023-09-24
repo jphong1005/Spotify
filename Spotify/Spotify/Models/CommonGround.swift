@@ -49,7 +49,7 @@ struct CommonGround: Codable {
         let external_urls: ExternalURLs
         let href: String
         let id: String
-        let images: [`Image`]
+        let images: [CommonGround.`Image`]
         let name: String
         let release_date: String
         let release_date_precision: String
@@ -64,5 +64,32 @@ struct CommonGround: Codable {
         // MARK: - Stored-Props
         let href: String?
         let total: Int
+    }
+    
+    struct ExternalIDs: Codable {
+        
+        // MARK: - Stored-Props
+        let isrc: String?
+        let ean: String?
+        let upc: String?
+    }
+    
+    struct Owner: Codable {
+        
+        // MARK: - Stored-Props
+        let external_urls: CommonGround.ExternalURLs
+        //  let followers: CommonGround.Followers
+        let href: String
+        let id: String
+        let type: String
+        let uri: String
+        let display_name: String?
+    }
+    
+    struct Copyright: Codable {
+        
+        // MARK: - Stored-Props
+        let text: String
+        let type: String
     }
 }
