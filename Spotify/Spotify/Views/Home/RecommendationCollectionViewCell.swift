@@ -106,7 +106,7 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
         
         self.artistNameLabel.snp.makeConstraints { make in
             make.leading.equalTo(self.trackNameLabel.snp.leading)
-            make.top.equalTo(self.contentView.snp.height).dividedBy(2)
+            make.top.equalTo(self.contentView.snp.centerY)
             make.width.equalTo((self.contentView.width) - (self.albumCoverImageView.right) - 15)
             make.height.equalTo(self.contentView.snp.height).dividedBy(2)
         }
