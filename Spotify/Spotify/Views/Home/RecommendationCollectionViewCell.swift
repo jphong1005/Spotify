@@ -19,6 +19,8 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     private let albumCoverImageView: UIImageView = UIImageView().then {
         $0.image = UIImage(systemName: "photo")
         $0.contentMode = .scaleAspectFit
+        $0.layer.masksToBounds = true
+        $0.layer.cornerRadius = 5
     }
     
     private let trackNameLabel: UILabel = UILabel().then {
@@ -51,19 +53,8 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        albumCoverImageView.frame = CGRect(x: 5, y: 2, width: contentView.height, height: contentView.height-4)
-                trackNameLabel.frame = CGRect(
-                    x: albumCoverImageView.right+10,
-                    y: 0,
-                    width: contentView.width-albumCoverImageView.right-15,
-                    height: contentView.height/2
-                )
-                artistNameLabel.frame = CGRect(
-                    x: albumCoverImageView.right+10,
-                    y: contentView.height/2 ,
-                    width: contentView.width-albumCoverImageView.right-15,
-                    height: contentView.height/2
-                )
+        //  self.frameBasedLayout()
+        self.applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -84,8 +75,40 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     private func frameBasedLayout() -> Void {
         
         self.albumCoverImageView.frame = CGRect(x: 5,
-                                                y: 2,
-                                                width: self.contentView.height,
-                                                height: self.contentView.height - 4)
+                                                y: 5,
+                                                width: self.contentView.height - 10,
+                                                height: self.contentView.height - 10)
+        
+        self.trackNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
+                                           y: 0, 
+                                           width: (self.contentView.width - self.albumCoverImageView.right) - 15,
+                                           height: (self.contentView.height) / 2)
+        
+        self.artistNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
+                                            y: (self.contentView.height) / 2,
+                                            width: (self.contentView.width - self.albumCoverImageView.right) - 15,
+                                            height: (self.contentView.height) / 2)
+    }
+    
+    private func applyConstraints() -> Void {
+        
+        self.albumCoverImageView.snp.makeConstraints { make in
+            make.top.left.equalTo(self.contentView).offset(5)
+            make.width.height.equalTo(self.contentView.snp.height).offset(-10)
+        }
+        
+        self.trackNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(self.albumCoverImageView.snp.trailing).offset(10)
+            make.top.equalTo(self.contentView.snp.top)
+            make.width.equalTo((self.contentView.width) - (self.albumCoverImageView.height) - 15)
+            make.height.equalTo(self.contentView.snp.height).dividedBy(2)
+        }
+        
+        self.artistNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(self.trackNameLabel.snp.leading)
+            make.top.equalTo(self.contentView.snp.height).dividedBy(2)
+            make.width.equalTo((self.contentView.width) - (self.albumCoverImageView.right) - 15)
+            make.height.equalTo(self.contentView.snp.height).dividedBy(2)
+        }
     }
 }

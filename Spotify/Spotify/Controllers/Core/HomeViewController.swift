@@ -212,7 +212,7 @@ class HomeViewController: UIViewController {
     
     private func configureCollectionView() -> Void {
         
-        view.addSubview(collectionView)
+        view.addSubview(self.collectionView)
         
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(NewReleasesCollectionViewCell.self, forCellWithReuseIdentifier: NewReleasesCollectionViewCell.identifier)
