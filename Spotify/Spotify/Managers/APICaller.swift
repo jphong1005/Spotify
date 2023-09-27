@@ -23,7 +23,7 @@ final class APICaller {
     
     // MARK: - Methods
     ///  PRIVATE Helper Method.
-    private func performRequest<T: Codable>(query: String, method: HTTPMethod, params: Parameters? = nil, headers: HTTPHeaders? = nil) -> Observable<T> {
+    private func performRequest<T: Codable>(query: String?, method: HTTPMethod?, params: Parameters? = nil, headers: HTTPHeaders? = nil) -> Observable<T> {
         
         return Observable.create { observser in
             AuthManager.shared.withValidToken { token in
@@ -31,19 +31,21 @@ final class APICaller {
                     "Authorization": "Bearer \(token)"
                 ])
                 
-                AF.request(APICaller.defaultEndPoint + query,
-                           method: .get,
-                           headers: headers)
-                .validate(statusCode: 200 ..< 300)
-                .validate(contentType: ["application/json"])
-                .responseDecodable(of: T.self,
-                                   queue: DispatchQueue.global(qos: .background)) { response in
-                    switch response.result {
-                    case .success(let data):
-                        observser.onNext(data)
-                        observser.onCompleted(); break;
-                    case .failure(let error):
-                        observser.onError(error); break;
+                if let query: String = query {
+                    AF.request(APICaller.defaultEndPoint + query,
+                               method: .get,
+                               headers: headers)
+                    .validate(statusCode: 200 ..< 300)
+                    .validate(contentType: ["application/json"])
+                    .responseDecodable(of: T.self,
+                                       queue: DispatchQueue.global(qos: .background)) { response in
+                        switch response.result {
+                        case .success(let data):
+                            observser.onNext(data)
+                            observser.onCompleted(); break;
+                        case .failure(let error):
+                            observser.onError(error); break;
+                        }
                     }
                 }
             }
@@ -53,26 +55,26 @@ final class APICaller {
     }
     
     ///  PUBLIC API Methods.
-    public func getCurrentUserProfile() -> Observable<UserProfile> {
+    public func getCurrentUserProfile() -> Observable<User> {
         
         return performRequest(query: "/me", method: .get)
     }
     
-    public func getNewReleases() -> Observable<NewReleasesResponse> {
+    public func getNewReleases() -> Observable<NewReleases> {
         
         /// limit -> default: 20, range: 0 ~ 50
         /// offset -> default: 0
         return performRequest(query: "/browse/new-releases?limit=50", method: .get)
     }
     
-    public func getFeaturedPlaylists() -> Observable<FeaturedPlayListsResponse> {
+    public func getFeaturedPlaylists() -> Observable<FeaturedPlaylists> {
         
         /// limit -> default: 20, range: 0 ~ 50
         /// offset -> default: 0
         return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
     }
     
-    public func getAvailableGenreSeeds() async throws -> GenreResponse {
+    public func getAvailableGenreSeeds() async throws -> Genre {
         
         //  .withCheckedThrowingContinuation()를 사용함으로써 비동기 코드 블록 내에서 값을 반환 or 오류를 던짐
         return try await withCheckedThrowingContinuation({ continuation in
@@ -86,7 +88,7 @@ final class APICaller {
                            headers: headers)
                 .validate(statusCode: 200 ..< 300)
                 .validate(contentType: ["application/json"])
-                .responseDecodable(of: GenreResponse.self, queue: DispatchQueue.global(qos: .background)) { response in
+                .responseDecodable(of: Genre.self, queue: DispatchQueue.global(qos: .background)) { response in
                     switch response.result {
                     case .success(let genreResponse):
                         continuation.resume(returning: genreResponse); break;
@@ -99,17 +101,17 @@ final class APICaller {
         })
     }
     
-    public func getRecommendations(genres: Set<String>) -> Observable<RecommendationsResponse> {
+    public func getRecommendations(genres: Set<String>) -> Observable<Recommendations> {
 
         let seeds: String = genres.joined(separator: ",")
         
-        //  limit -> default: 20, range: 1 ~ 100
+        /// limit -> default: 20, range: 1 ~ 100
         return performRequest(query: "/recommendations?limit=40&seed_genres=\(seeds)", method: .get)
     }
     
-    public func performGetRecommendations() -> Task<Observable<RecommendationsResponse>, Error> {
+    public func performGetRecommendations() -> Task<Observable<Recommendations>, Error> {
         
-        return Task(priority: .background) { () -> Observable<RecommendationsResponse> in
+        return Task(priority: .background) { () -> Observable<Recommendations> in
             do {
                 let genres: [String] = try await APICaller.shared.getAvailableGenreSeeds().genres
                 var seeds: Set<String> = Set<String>()
@@ -127,7 +129,7 @@ final class APICaller {
         }
     }
     
-    public func getAlbum(for album: NewReleasesResponse.Album.SimplifiedAlbum) -> Void {
+    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Void {
         
         AuthManager.shared.withValidToken { token in
             let headers: HTTPHeaders = HTTPHeaders([
@@ -143,7 +145,7 @@ final class APICaller {
                 switch response.result {
                 case .success(let data):
                     do {
-                        let data: AlbumResponse = try JSONDecoder().decode(AlbumResponse.self, from: data ?? Data())
+                        let data: Album = try JSONDecoder().decode(Album.self, from: data ?? Data())
                         print(data)
                     } catch {
                         print(error.localizedDescription)
@@ -156,32 +158,8 @@ final class APICaller {
         }
     }
     
-    public func getPlaylist(for playlist: PlayList.SimplifiedPlaylist) -> Void {
+    public func getPlaylist(for playlist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Observable<Playlist> {
         
-        AuthManager.shared.withValidToken { token in
-            let headers: HTTPHeaders = HTTPHeaders([
-                "Authorization": "Bearer \(token)"
-            ])
-            
-            AF.request(APICaller.defaultEndPoint + "/playlists/\(playlist.id)",
-                       method: .get,
-                       headers: headers)
-            .validate(statusCode: 200 ..< 300)
-            .validate(contentType: ["application/json"])
-            .response(queue: DispatchQueue.global(qos: .background)) { response in
-                switch response.result {
-                case .success(let data):
-                    do {
-                        let data: PlaylistResponse = try JSONDecoder().decode(PlaylistResponse.self, from: data ?? Data())
-                        print(data)
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                    break;
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
+        return performRequest(query: "/playlists/\(playlist.id)", method: .get)
     }
 }

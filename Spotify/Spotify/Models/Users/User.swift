@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct UserProfile: Codable {
+struct User: Codable {
     
     // MARK: - Stored-Props
     let country: String
     let display_name: String
     let email: String
     let explicit_content: ExplicitContent
-    let external_urls: CommonGround.ExternalURLs
-    //  let followers: CommonGround.Followers
+    let external_urls: CommonGround.ExternalURL
+    //  let followers: CommonGround.Follower
     let href: String
     let id: String
     let images: [CommonGround.`Image`]

@@ -12,7 +12,7 @@ import RxCocoa
 final class UsersViewModel {
     
     // MARK: - Stored-Props
-    var userProfile: BehaviorSubject<UserProfile?> = BehaviorSubject(value: nil)
+    var userProfile: BehaviorSubject<User?> = BehaviorSubject(value: nil)
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init

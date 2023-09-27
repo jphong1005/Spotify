@@ -12,7 +12,7 @@ import RxCocoa
 final class NewReleasesViewModel {
     
     // MARK: - Stored-Props
-    var newReleases: BehaviorSubject<NewReleasesResponse?> = BehaviorSubject(value: nil)
+    var newReleases: BehaviorSubject<NewReleases?> = BehaviorSubject(value: nil)
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init

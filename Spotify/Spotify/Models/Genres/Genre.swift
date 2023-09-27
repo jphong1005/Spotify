@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GenreResponse: Codable {
+struct Genre: Codable {
     
     // MARK: - Stored-Prop
     let genres: [String]

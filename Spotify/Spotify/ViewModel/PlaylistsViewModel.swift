@@ -12,11 +12,13 @@ import RxCocoa
 final class PlaylistsViewModel {
     
     // MARK: - Stored-Props
-    var featuredPlaylist: BehaviorSubject<FeaturedPlayListsResponse?> = BehaviorSubject(value: nil)
+    var playlist: PublishSubject<Playlist>
+    var featuredPlaylists: BehaviorSubject<FeaturedPlaylists?> = BehaviorSubject(value: nil)
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
     init() {
+        self.playlist = PublishSubject<Playlist>.init()
         self.addObserver()
     }
     
@@ -25,9 +27,9 @@ final class PlaylistsViewModel {
         
         APICaller.shared.getFeaturedPlaylists()
             .subscribe { [weak self] featuredPlaylist in
-                self?.featuredPlaylist.onNext(featuredPlaylist)
+                self?.featuredPlaylists.onNext(featuredPlaylist)
             } onError: { error in
-                self.featuredPlaylist.onError(error)
+                self.featuredPlaylists.onError(error)
             }.disposed(by: self.bag)
     }
 }

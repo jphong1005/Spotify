@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController {
             }.disposed(by: self.bag)
     }
     
-    private func updateUI(with model: UserProfile) -> Void {
+    private func updateUI(with model: User) -> Void {
         
         tableView.isHidden = false
         

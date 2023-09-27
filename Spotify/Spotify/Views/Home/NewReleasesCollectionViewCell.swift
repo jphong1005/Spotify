@@ -72,11 +72,10 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         numberOfTracksLabel.text = nil
     }
     
-    public func configureNewReleaseCollectionViewCellUI(value: NewReleasesResponse.Album.SimplifiedAlbum) -> Void {
+    public func configureNewReleaseCollectionViewCellUI(value: CommonGround.SimplifiedAlbum) -> Void {
         
         self.albumCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
         self.albumNameLabel.text = value.name
-        self.artistNameLabel.text = value.artists.first?.name ?? ""
         self.numberOfTracksLabel.text = "Tracks: \(value.total_tracks)"
     }
     

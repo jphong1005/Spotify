@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct RecommendationsResponse: Codable {
+struct Recommendations: Codable {
     
     // MARK: - Stored-Props
-    let seeds: [Seed]
-    let tracks: [Track]
+    let seeds: [RecommendationSeed]
+    let tracks: [TrackObject]
     
-    struct Seed: Codable {
+    struct RecommendationSeed: Codable {
         
         // MARK: - Stored-Props
         let afterFilteringSize: Int

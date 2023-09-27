@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AuthResponse: Codable {
+struct Authorization: Codable {
     
     // MARK: - Stored-Props
     let refresh_token: String?

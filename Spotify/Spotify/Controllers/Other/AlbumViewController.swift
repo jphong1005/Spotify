@@ -10,11 +10,11 @@ import UIKit
 class AlbumViewController: UIViewController {
 
     // MARK: - Stored-Prop
-    private let albumItem: NewReleasesResponse.Album.SimplifiedAlbum
+    private let albumItem: CommonGround.SimplifiedAlbum
     
     // MARK: - Inits
-    init(item: NewReleasesResponse.Album.SimplifiedAlbum) {
-        self.albumItem = item
+    init(item: CommonGround.SimplifiedAlbum) {
+        albumItem = item
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,18 +27,18 @@ class AlbumViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
         
-        self.title = "Album"
-        self.navigationItem.largeTitleDisplayMode = .never
+        title = "Album"
+        navigationItem.largeTitleDisplayMode = .never
         
-        self.configureAlbumViewController(with: albumItem)
+        configureAlbumViewController(with: albumItem)
         
         APICaller.shared.getAlbum(for: albumItem)
     }
     
-    private func configureAlbumViewController(with item: NewReleasesResponse.Album.SimplifiedAlbum) -> Void {
+    private func configureAlbumViewController(with item: CommonGround.SimplifiedAlbum) -> Void {
         
-        self.title = item.name
+        title = item.name
     }
 }

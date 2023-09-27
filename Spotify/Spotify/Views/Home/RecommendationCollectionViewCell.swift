@@ -65,11 +65,17 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
         artistNameLabel.text = nil
     }
     
-    public func configureRecommendationCollectionViewCell(value: Track) -> Void {
+    public func configureRecommendationCollectionViewCell(playlist: Playlist.Track.PlaylistTrack?, recommendation: TrackObject?) -> Void {
         
-        albumCoverImageView.sd_setImage(with: URL(string: value.album.images.first?.url ?? ""))
-        trackNameLabel.text = value.name
-        artistNameLabel.text = value.artists.first?.name
+        if let playlist = playlist {
+            albumCoverImageView.sd_setImage(with: URL(string: playlist.track.album.images.first?.url ?? ""))
+            trackNameLabel.text = playlist.track.name
+            artistNameLabel.text = playlist.track.artists.first?.name
+        } else if let recommendation = recommendation {
+            albumCoverImageView.sd_setImage(with: URL(string: recommendation.album.images.first?.url ?? ""))
+            trackNameLabel.text = recommendation.name
+            artistNameLabel.text = recommendation.artists.first?.name
+        }
     }
     
     private func frameBasedLayout() -> Void {

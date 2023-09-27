@@ -98,7 +98,7 @@ final class AuthManager {
                    parameters: form,
                    headers: headers)
         .validate(statusCode: 200 ..< 300)
-        .responseDecodable(of: AuthResponse.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
+        .responseDecodable(of: Authorization.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
             switch response.result {
             case .success(let authResponse):
                 print("authResponse: \(authResponse) \n")
@@ -123,7 +123,7 @@ final class AuthManager {
         return data.base64EncodedString()
     }
     
-    public func cacheAccessToken(with result: AuthResponse) -> Void {
+    public func cacheAccessToken(with result: Authorization) -> Void {
         
         //  Access Token의 경우 민감한 정보이기 때문에 UserDefaults가 아닌 Keychain Service를 사용!
         guard let refresh_token: String = result.refresh_token else { return }
@@ -191,7 +191,7 @@ final class AuthManager {
                    parameters: form,
                    headers: headers)
         .validate(statusCode: 200 ..< 300)
-        .responseDecodable(of: AuthResponse.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
+        .responseDecodable(of: Authorization.self, queue: DispatchQueue.global(qos: .background)) { [weak self] response in
             self?.refreshingToken = false
             
             switch response.result {

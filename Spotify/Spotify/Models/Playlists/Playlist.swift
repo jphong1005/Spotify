@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct PlaylistResponse: Codable {
+struct Playlist: Codable {  //  Get Playlist
     
     // MARK: - Stored-Props
     let collaborative: Bool
     let description: String?
-    let external_urls: CommonGround.ExternalURLs
-    //  let followers: CommonGround.Followers
+    let external_urls: CommonGround.ExternalURL
+    //  let followers: CommonGround.Follower
     let href: String
     let id: String
     let images: [CommonGround.`Image`]
@@ -21,11 +21,11 @@ struct PlaylistResponse: Codable {
     let owner: CommonGround.Owner
     let `public`: Bool
     let snapshot_id: String
-    let tracks: Tracks
+    let tracks: Track
     let type: String
     let uri: String
     
-    struct Tracks: Codable {
+    struct Track: Codable {
         
         // MARK: - Stored-Props
         let href: String
@@ -42,25 +42,18 @@ struct PlaylistResponse: Codable {
             let added_at: String
             let added_by: AddedBy
             let is_local: Bool
-            let track: OneOf
-        }
-        
-        struct AddedBy: Codable {
+            let track: TrackObject
             
-            // MARK: - Stored-Props
-            let external_urls: CommonGround.ExternalURLs
-            //  let followers: CommonGround.Followers
-            let href: String
-            let id: String
-            let type: String
-            let uri: String
-        }
-        
-        struct OneOf: Codable {
-            
-            // MARK: - Stored-Props
-            let trackObject: Track?
-            let episodeObject: EpisodeObject?
+            struct AddedBy: Codable {
+                
+                // MARK: - Stored-Props
+                let external_urls: CommonGround.ExternalURL
+                //  let followers: CommonGround.Follower
+                let href: String
+                let id: String
+                let type: String
+                let uri: String
+            }
             
             struct EpisodeObject: Codable {
                 
@@ -70,7 +63,7 @@ struct PlaylistResponse: Codable {
                 let html_description: String
                 let duration_ms: Int
                 let explicit: Bool
-                let external_urls: CommonGround.ExternalURLs
+                let external_urls: CommonGround.ExternalURL
                 let href: String
                 let id: String
                 let images: [CommonGround.`Image`]
@@ -101,7 +94,7 @@ struct PlaylistResponse: Codable {
                     let description: String
                     let html_description: String
                     let explicit: Bool
-                    let external_urls: CommonGround.ExternalURLs
+                    let external_urls: CommonGround.ExternalURL
                     let href: String
                     let id: String
                     let images: [CommonGround.`Image`]
