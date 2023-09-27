@@ -24,7 +24,7 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     }
     
     private let trackNameLabel: UILabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 20, weight: .regular)
+        $0.font = .systemFont(ofSize: 17, weight: .regular)
         $0.numberOfLines = 0
     }
     

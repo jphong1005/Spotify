@@ -24,7 +24,7 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     }
     
     private let playlistNameLabel: UILabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 20, weight: .regular)
+        $0.font = .systemFont(ofSize: 20, weight: .bold)
         $0.numberOfLines = 0
         $0.textAlignment = .center
     }

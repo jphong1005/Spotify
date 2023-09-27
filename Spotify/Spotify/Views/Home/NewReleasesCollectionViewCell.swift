@@ -29,7 +29,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
     }
     
     private let artistNameLabel: UILabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 18, weight: .semibold)
+        $0.font = .systemFont(ofSize: 17, weight: .semibold)
         $0.numberOfLines = 0
     }
     
@@ -76,6 +76,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         
         self.albumCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
         self.albumNameLabel.text = value.name
+        self.artistNameLabel.text = value.artists.first?.name
         self.numberOfTracksLabel.text = "Tracks: \(value.total_tracks)"
     }
     

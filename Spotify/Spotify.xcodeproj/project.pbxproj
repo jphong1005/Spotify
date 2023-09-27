@@ -24,6 +24,7 @@
 		E86D56442AC029FF00BD3E1F /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D56432AC029FF00BD3E1F /* AlbumViewController.swift */; };
 		E86D56462AC03A1F00BD3E1F /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D56452AC03A1F00BD3E1F /* Album.swift */; };
 		E86D56482AC047C200BD3E1F /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86D56472AC047C200BD3E1F /* Playlist.swift */; };
+		E898AC2E2AC43FA8009579F3 /* PlaylistHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E898AC2D2AC43FA8009579F3 /* PlaylistHeaderCollectionReusableView.swift */; };
 		E89D049F2AA0B3BA00C4829C /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D049C2AA0B3BA00C4829C /* LibraryViewController.swift */; };
 		E89D04A02AA0B3BA00C4829C /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D049D2AA0B3BA00C4829C /* TabBarViewController.swift */; };
 		E89D04A12AA0B3BA00C4829C /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89D049E2AA0B3BA00C4829C /* SearchViewController.swift */; };
@@ -73,6 +74,7 @@
 		E86D56432AC029FF00BD3E1F /* AlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
 		E86D56452AC03A1F00BD3E1F /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		E86D56472AC047C200BD3E1F /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		E898AC2D2AC43FA8009579F3 /* PlaylistHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		E89D049C2AA0B3BA00C4829C /* LibraryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		E89D049D2AA0B3BA00C4829C /* TabBarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		E89D049E2AA0B3BA00C4829C /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			children = (
 				E8A1680D2AB594820096C8E0 /* Home */,
 				E83F9C0B2AA072CF00231762 /* LaunchScreen.storyboard */,
+				E898AC2D2AC43FA8009579F3 /* PlaylistHeaderCollectionReusableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				E89D049F2AA0B3BA00C4829C /* LibraryViewController.swift in Sources */,
 				E8D767642AA32ACC0038AF90 /* AuthConstants.swift in Sources */,
 				E8A168112AB595890096C8E0 /* FeaturedPlaylistCollectionViewCell.swift in Sources */,
+				E898AC2E2AC43FA8009579F3 /* PlaylistHeaderCollectionReusableView.swift in Sources */,
 				E86D56462AC03A1F00BD3E1F /* Album.swift in Sources */,
 				E86394712AADC73900BB4EB0 /* SpotifyViewModel.swift in Sources */,
 				E8A168352AB5CD4F0096C8E0 /* UsersViewModel.swift in Sources */,

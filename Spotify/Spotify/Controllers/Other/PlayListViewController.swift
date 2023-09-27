@@ -53,8 +53,6 @@ class PlaylistViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        //APICaller.shared.getPlaylist(for: playlistItem)
-        
         bind()
     }
     
@@ -110,12 +108,19 @@ class PlaylistViewController: UIViewController {
         let group: NSCollectionLayoutGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(80)
+                heightDimension: .absolute(50)
             ),
             subitem: item,
             count: 1)
         
         let section: NSCollectionLayoutSection = NSCollectionLayoutSection(group: group)
+        
+        section.boundarySupplementaryItems = [
+            NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                           heightDimension: .fractionalWidth(1.0)),
+                                                        elementKind: UICollectionView.elementKindSectionHeader,
+                                                        alignment: .top)
+        ]
         
         return section;
     }
@@ -125,6 +130,9 @@ class PlaylistViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.register(RecommendationCollectionViewCell.self,
                                 forCellWithReuseIdentifier: RecommendationCollectionViewCell.identifier)
+        collectionView.register(PlaylistHeaderCollectionReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: PlaylistHeaderCollectionReusableView.identifier)
     }
 }
 
@@ -151,6 +159,17 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
         return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                           withReuseIdentifier: PlaylistHeaderCollectionReusableView.identifier,
+                                                                           for: indexPath) as? PlaylistHeaderCollectionReusableView, (kind == UICollectionView.elementKindSectionHeader) else { return UICollectionReusableView() }
+        
+        header.configure(with: playlistItem)
+        
+        return header
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
