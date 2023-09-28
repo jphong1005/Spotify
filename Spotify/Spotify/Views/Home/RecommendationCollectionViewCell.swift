@@ -37,12 +37,12 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.backgroundColor = .secondarySystemBackground
-        self.contentView.clipsToBounds = true
+        contentView.backgroundColor = .secondarySystemBackground
+        contentView.clipsToBounds = true
         
-        self.contentView.addSubview(albumCoverImageView)
-        self.contentView.addSubview(trackNameLabel)
-        self.contentView.addSubview(artistNameLabel)
+        contentView.addSubview(albumCoverImageView)
+        contentView.addSubview(trackNameLabel)
+        contentView.addSubview(artistNameLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -53,8 +53,8 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //  self.frameBasedLayout()
-        self.applyConstraints()
+        //  frameBasedLayout()
+        applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -80,41 +80,41 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     
     private func frameBasedLayout() -> Void {
         
-        self.albumCoverImageView.frame = CGRect(x: 5,
+        albumCoverImageView.frame = CGRect(x: 5,
                                                 y: 5,
-                                                width: self.contentView.height - 10,
-                                                height: self.contentView.height - 10)
+                                                width: contentView.height - 10,
+                                                height: contentView.height - 10)
         
-        self.trackNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
+        trackNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
                                            y: 0, 
-                                           width: (self.contentView.width - self.albumCoverImageView.right) - 15,
-                                           height: (self.contentView.height) / 2)
+                                           width: (contentView.width - albumCoverImageView.right) - 15,
+                                           height: (contentView.height) / 2)
         
-        self.artistNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
-                                            y: (self.contentView.height) / 2,
-                                            width: (self.contentView.width - self.albumCoverImageView.right) - 15,
-                                            height: (self.contentView.height) / 2)
+        artistNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
+                                            y: (contentView.height) / 2,
+                                            width: (contentView.width - albumCoverImageView.right) - 15,
+                                            height: (contentView.height) / 2)
     }
     
     private func applyConstraints() -> Void {
         
-        self.albumCoverImageView.snp.makeConstraints { make in
-            make.top.left.equalTo(self.contentView).offset(5)
-            make.width.height.equalTo(self.contentView.snp.height).offset(-10)
+        albumCoverImageView.snp.makeConstraints { make in
+            make.top.left.equalTo(contentView).offset(5)
+            make.width.height.equalTo(contentView.snp.height).offset(-10)
         }
         
-        self.trackNameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.albumCoverImageView.snp.trailing).offset(10)
-            make.top.equalTo(self.contentView.snp.top)
-            make.width.equalTo((self.contentView.width) - (self.albumCoverImageView.height) - 15)
-            make.height.equalTo(self.contentView.snp.height).dividedBy(2)
+        trackNameLabel.snp.makeConstraints { make in
+            make.left.equalTo(albumCoverImageView.snp.right).offset(10)
+            make.top.equalTo(contentView.snp.top)
+            make.width.equalTo((contentView.width) - (albumCoverImageView.right) - 15)
+            make.height.equalTo(contentView.snp.height).dividedBy(2)
         }
         
-        self.artistNameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.trackNameLabel.snp.leading)
-            make.top.equalTo(self.contentView.snp.centerY)
-            make.width.equalTo((self.contentView.width) - (self.albumCoverImageView.right) - 15)
-            make.height.equalTo(self.contentView.snp.height).dividedBy(2)
+        artistNameLabel.snp.makeConstraints { make in
+            make.left.equalTo(trackNameLabel.snp.left)
+            make.top.equalTo(contentView.snp.centerY)
+            make.width.equalTo(trackNameLabel.snp.width)
+            make.height.equalTo(trackNameLabel.snp.height)
         }
     }
 }

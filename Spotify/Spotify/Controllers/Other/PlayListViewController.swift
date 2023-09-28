@@ -19,6 +19,7 @@ class PlaylistViewController: UIViewController {
     
     // MARK: - Stored-Props
     private let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist
+    
     private let spotifyViewModel: SpotifyViewModel = SpotifyViewModel()
     private var bag: DisposeBag = DisposeBag()
     private var disposeBag: DisposeBag = DisposeBag()
@@ -27,7 +28,9 @@ class PlaylistViewController: UIViewController {
     
     // MARK: - Inits
     init(item: FeaturedPlaylists.PlayList.SimplifiedPlaylist) {
+        
         playlistItem = item
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -46,20 +49,21 @@ class PlaylistViewController: UIViewController {
         
         configurePlaylistViewController(with: playlistItem)
         
-        view.addSubview(collectionView)
+        view.addSubview(self.collectionView)
         
-        configureCollectionView()
-        
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
         
         bind()
+        configureCollectionView()
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare(_:)))
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        collectionView.frame = view.bounds
+        self.collectionView.frame = view.bounds
     }
     
     private func bind() -> Void {
@@ -127,12 +131,24 @@ class PlaylistViewController: UIViewController {
     
     private func configureCollectionView() -> Void {
         
-        collectionView.backgroundColor = .systemBackground
-        collectionView.register(RecommendationCollectionViewCell.self,
-                                forCellWithReuseIdentifier: RecommendationCollectionViewCell.identifier)
-        collectionView.register(PlaylistHeaderCollectionReusableView.self,
+        self.collectionView.backgroundColor = .systemBackground
+        
+        self.collectionView.register(PlaylistHeaderCollectionReusableView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: PlaylistHeaderCollectionReusableView.identifier)
+        self.collectionView.register(RecommendationCollectionViewCell.self,
+                                forCellWithReuseIdentifier: RecommendationCollectionViewCell.identifier)
+    }
+    
+    @objc private func didTapShare(_ sender: UIBarButtonItem) -> Void {
+        
+        guard let url: URL = URL(string: playlistItem.external_urls.spotify) else { return }
+        
+        let vc: UIActivityViewController = UIActivityViewController(activityItems: [url],
+                                          applicationActivities: [])
+        
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
     }
 }
 
@@ -163,11 +179,12 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+        guard let header: PlaylistHeaderCollectionReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                            withReuseIdentifier: PlaylistHeaderCollectionReusableView.identifier,
                                                                            for: indexPath) as? PlaylistHeaderCollectionReusableView, (kind == UICollectionView.elementKindSectionHeader) else { return UICollectionReusableView() }
         
         header.configure(with: playlistItem)
+        header.delegate = self
         
         return header
     }
@@ -175,5 +192,15 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         collectionView.deselectItem(at: indexPath, animated: true)
+    }
+}
+
+extension PlaylistViewController: PlaylistHeaderCollectionReusableViewDelegate {
+    
+    // MARK: - Function Implementation
+    func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {
+        
+        //  Start playlist play in queue
+        print("Playing All")
     }
 }

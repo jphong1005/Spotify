@@ -18,8 +18,10 @@ final class PlaylistsViewModel {
     
     // MARK: - Init
     init() {
+        
         self.playlist = PublishSubject<Playlist>.init()
-        self.addObserver()
+        
+        addObserver()
     }
     
     // MARK: - Method

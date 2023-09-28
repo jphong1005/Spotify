@@ -16,7 +16,7 @@ class TabBarViewController: UITabBarController {
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .systemBackground
         
-        self.settingTabBarUI()
+        settingTabBarUI()
     }
     
     private func settingTabBarUI() -> Void {

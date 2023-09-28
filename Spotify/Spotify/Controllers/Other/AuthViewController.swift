@@ -37,14 +37,14 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
         
-        self.title = "Sign In"
-        self.navigationController?.navigationItem.largeTitleDisplayMode = .never
+        title = "Sign In"
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
         
         self.webView.navigationDelegate = self
         
-        self.view.addSubview(webView)
+        view.addSubview(self.webView)
         
         configureWebView()
         
@@ -54,7 +54,7 @@ class AuthViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.webView.frame = self.view.bounds
+        self.webView.frame = view.bounds
     }
     
     private func configureWebView() -> Void {
@@ -79,8 +79,8 @@ class AuthViewController: UIViewController {
     
     private func applyConstraints() -> Void {
         
-        webView.snp.makeConstraints { make in
-            make.edges.equalTo(self.view.safeAreaLayoutGuide)
+        self.webView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }

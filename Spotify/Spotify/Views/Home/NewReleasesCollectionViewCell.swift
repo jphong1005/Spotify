@@ -42,13 +42,13 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.backgroundColor = .secondarySystemBackground
-        self.contentView.clipsToBounds = true
+        contentView.backgroundColor = .secondarySystemBackground
+        contentView.clipsToBounds = true
         
-        self.contentView.addSubview(albumCoverImageView)
-        self.contentView.addSubview(albumNameLabel)
-        self.contentView.addSubview(artistNameLabel)
-        self.contentView.addSubview(numberOfTracksLabel)
+        contentView.addSubview(albumCoverImageView)
+        contentView.addSubview(albumNameLabel)
+        contentView.addSubview(artistNameLabel)
+        contentView.addSubview(numberOfTracksLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -59,8 +59,8 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //  self.frameBasedLayout()
-        self.applyConstraints()
+        //  frameBasedLayout()
+        applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -74,69 +74,69 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
     
     public func configureNewReleaseCollectionViewCellUI(value: CommonGround.SimplifiedAlbum) -> Void {
         
-        self.albumCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
-        self.albumNameLabel.text = value.name
-        self.artistNameLabel.text = value.artists.first?.name
-        self.numberOfTracksLabel.text = "Tracks: \(value.total_tracks)"
+        albumCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
+        albumNameLabel.text = value.name
+        artistNameLabel.text = value.artists.first?.name
+        numberOfTracksLabel.text = "Tracks: \(value.total_tracks)"
     }
     
     private func frameBasedLayout() -> Void {
         
-        self.artistNameLabel.sizeToFit()
-        self.numberOfTracksLabel.sizeToFit()
+        artistNameLabel.sizeToFit()
+        numberOfTracksLabel.sizeToFit()
         
-        let imageSize: CGFloat = self.contentView.height - 10
-        let albumNameLabelSize = self.albumNameLabel.sizeThatFits(CGSize(width: (self.contentView.width - imageSize) - 10,
-                                                                         height: (self.contentView.height - imageSize) - 10))
+        let imageSize: CGFloat = contentView.height - 10
+        let albumNameLabelSize = albumNameLabel.sizeThatFits(CGSize(width: (contentView.width - imageSize) - 10,
+                                                                         height: (contentView.height - imageSize) - 10))
         
-        self.albumCoverImageView.frame = CGRect(x: 5,
+        albumCoverImageView.frame = CGRect(x: 5,
                                                 y: 5,
                                                 width: imageSize,
                                                 height: imageSize)
         
         let albumLabelHeight: CGFloat = min(50, albumNameLabelSize.height)
         
-        self.albumNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
+        albumNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
                                            y: 5,
                                            width: albumNameLabelSize.width,
                                            height: albumLabelHeight)
         
-        self.artistNameLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
-                                            y: self.albumNameLabel.bottom,
-                                            width: (self.contentView.width - self.albumCoverImageView.right) - 10,
+        artistNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
+                                            y: albumNameLabel.bottom,
+                                            width: (contentView.width - albumCoverImageView.right) - 10,
                                             height: 30)
         
-        self.numberOfTracksLabel.frame = CGRect(x: self.albumCoverImageView.right + 10,
-                                                y: self.albumCoverImageView.bottom - 40,
-                                                width: self.numberOfTracksLabel.width,
+        numberOfTracksLabel.frame = CGRect(x: albumCoverImageView.right + 10,
+                                                y: albumCoverImageView.bottom - 40,
+                                                width: numberOfTracksLabel.width,
                                                 height: 40)
     }
     
     private func applyConstraints() -> Void {
         
-        self.albumCoverImageView.snp.makeConstraints { make in
-            make.top.left.equalTo(self.contentView).offset(5)
-            make.width.height.equalTo(self.contentView.snp.height).offset(-10)
+        albumCoverImageView.snp.makeConstraints { make in
+            make.top.left.equalTo(contentView).offset(5)
+            make.width.height.equalTo(contentView.snp.height).offset(-10)
         }
         
-        self.albumNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(self.contentView.snp.top).offset(5)
-            make.leading.equalTo(self.albumCoverImageView.snp.trailing).offset(10)
-            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
+        albumNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentView.snp.top).offset(5)
+            make.left.equalTo(albumCoverImageView.snp.right).offset(10)
+            make.right.equalTo(contentView.snp.right).offset(-10)
             make.height.lessThanOrEqualTo(50)
         }
         
-        self.artistNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(self.albumNameLabel.snp.bottom)
-            make.leading.equalTo(self.albumCoverImageView.snp.trailing).offset(10)
-            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
+        artistNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(albumNameLabel.snp.bottom)
+            make.left.equalTo(albumCoverImageView.snp.right).offset(10)
+            make.right.equalTo(contentView.snp.right).offset(-10)
             make.height.equalTo(30)
         }
         
-        self.numberOfTracksLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.albumCoverImageView.snp.trailing).offset(10)
-            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
-            make.top.equalTo(self.albumCoverImageView.snp.bottom).offset(-40)
+        numberOfTracksLabel.snp.makeConstraints { make in
+            make.left.equalTo(albumCoverImageView.snp.right).offset(10)
+            make.right.equalTo(contentView.snp.right).offset(-10)
+            make.top.equalTo(albumCoverImageView.snp.bottom).offset(-40)
             make.height.equalTo(40)
         }
     }

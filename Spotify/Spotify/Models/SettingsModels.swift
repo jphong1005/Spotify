@@ -10,13 +10,13 @@ import Foundation
 struct Section {
     
     // MARK: - Stored-Props
-    let strTitle: String
-    let arrOptions: [Option]
+    let title: String
+    let options: [Option]
     
     struct Option {
         
         // MARK: - Stored-Props
-        let strTitle: String
+        let title: String
         let handler: (() -> Void)
     }
 }

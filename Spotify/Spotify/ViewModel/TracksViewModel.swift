@@ -17,7 +17,8 @@ final class TracksViewModel {
     
     // MARK: - Init
     init() {
-        self.addObserver()
+        
+        addObserver()
     }
     
     // MARK: - Method

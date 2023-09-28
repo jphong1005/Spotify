@@ -14,7 +14,9 @@ class AlbumViewController: UIViewController {
     
     // MARK: - Inits
     init(item: CommonGround.SimplifiedAlbum) {
+        
         albumItem = item
+        
         super.init(nibName: nil, bundle: nil)
     }
     

@@ -29,13 +29,13 @@ class WelcomeViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .systemGreen
+        view.backgroundColor = .systemGreen
         
-        self.title = "Spotify"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationController?.navigationItem.largeTitleDisplayMode = .always
+        title = "Spotify"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
         
-        self.view.addSubview(signIn)
+        view.addSubview(signIn)
     }
     
     override func viewDidLayoutSubviews() {
@@ -47,9 +47,9 @@ class WelcomeViewController: UIViewController {
     private func applyConstraints() -> Void {
         
         signIn.snp.makeConstraints { make in
-            make.left.right.equalTo(self.view.safeAreaLayoutGuide).inset(20)
+            make.left.right.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(50)
-            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     
@@ -64,7 +64,7 @@ class WelcomeViewController: UIViewController {
             }
         }
         
-        self.navigationController?.pushViewController(authVC, animated: true)
+        navigationController?.pushViewController(authVC, animated: true)
     }
     
     private func handleSignIn(success: Bool) -> Void {

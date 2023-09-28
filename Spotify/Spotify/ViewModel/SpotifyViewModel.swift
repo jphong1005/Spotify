@@ -17,6 +17,7 @@ final class SpotifyViewModel {
     
     // MARK: - Init
     init() {
+        
         self.users = UsersViewModel()
         self.albums = NewReleasesViewModel()
         self.playlists = PlaylistsViewModel()

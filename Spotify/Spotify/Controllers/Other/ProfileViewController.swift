@@ -33,15 +33,15 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
         
-        self.title = "Profile"
-        self.navigationItem.largeTitleDisplayMode = .never
+        title = "Profile"
+        navigationItem.largeTitleDisplayMode = .never
         
         self.tableView.dataSource = self
         self.tableView.delegate = self
         
-        self.view.addSubview(tableView)
+        view.addSubview(self.tableView)
         
         bind()
     }
@@ -49,7 +49,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.tableView.frame = self.view.bounds
+        self.tableView.frame = view.bounds
     }
     
     private func bind() -> Void {
@@ -60,12 +60,13 @@ class ProfileViewController: UIViewController {
             .compactMap { $0 }
             .bind { [weak self] profile in
                 self?.updateUI(with: profile)
+                self?.tableView.reloadData()
             }.disposed(by: self.bag)
     }
     
     private func updateUI(with model: User) -> Void {
         
-        tableView.isHidden = false
+        self.tableView.isHidden = false
         
         //  Configure table models.
         models.append("Name: \(model.display_name)")
@@ -74,8 +75,6 @@ class ProfileViewController: UIViewController {
         models.append("Plan: \(model.product)")
         
         configureTableViewHeader(with: model.images)
-        
-        tableView.reloadData()
     }
     
     private func failedToGetProfile() -> Void {
@@ -112,7 +111,7 @@ class ProfileViewController: UIViewController {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = (imageSize) / 2
         
-        tableView.tableHeaderView = headerView
+        self.tableView.tableHeaderView = headerView
     }
 }
 

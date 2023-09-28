@@ -10,10 +10,17 @@ import Then
 import SDWebImage
 import SnapKit
 
+protocol PlaylistHeaderCollectionReusableViewDelegate: AnyObject {
+    
+    // MARK: - Function Prototype
+    func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) -> Void
+}
+
 final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     
-    // MARK: - Static constant
+    // MARK: - Static constant & Stored-Prop
     static let identifier: String = "PlaylistHeaderCollectionReusableView"
+    weak var delegate: PlaylistHeaderCollectionReusableViewDelegate?    //  Dependency Injection
     
     // MARK: - UI Components
     private let playlistImageView: UIImageView = UIImageView().then {
@@ -36,6 +43,18 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         $0.textColor = .secondaryLabel
     }
     
+    private let playButton: UIButton = UIButton().then {
+        $0.backgroundColor = .systemGreen
+        $0.setImage(UIImage(
+            systemName: "play.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 30,
+                                                           weight: .regular)),
+                    for: .normal)
+        $0.tintColor = .white
+        $0.layer.cornerRadius = 30
+        $0.layer.masksToBounds = true
+        $0.addTarget(self, action: #selector(didTapPlayAll(_:)), for: .touchUpInside)
+    }
     
     // MARK: - Inits
     override init(frame: CGRect) {
@@ -47,6 +66,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         self.addSubview(playlistNameLabel)
         self.addSubview(playlistDescriptionLabel)
         self.addSubview(playlistOwnerLabel)
+        self.addSubview(playButton)
     }
     
     required init?(coder: NSCoder) {
@@ -57,8 +77,8 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //  self.frameBasedLayout()
-        self.applyConstraints()
+        frameBasedLayout()
+        //  applyConstraints()
     }
     
     public func configure(with featuredPlaylist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Void {
@@ -70,7 +90,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     private func frameBasedLayout() -> Void {
-        print(self)
+        
         let imageSize: CGFloat = self.height / 2.0
         
         playlistImageView.frame = CGRect(x: (self.width - imageSize) / 2,
@@ -80,15 +100,23 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         
         playlistNameLabel.frame = CGRect(x: 10,
                                          y: playlistImageView.bottom,
-                                         width: self.width - 20, height: 45)
+                                         width: self.width - 20, 
+                                         height: 45)
         
         playlistDescriptionLabel.frame = CGRect(x: 10,
                                          y: playlistNameLabel.bottom,
-                                         width: self.width - 20, height: 45)
+                                         width: self.width - 20, 
+                                                height: 45)
         
         playlistOwnerLabel.frame = CGRect(x: 10,
                                          y: playlistDescriptionLabel.bottom,
-                                         width: self.width - 20, height: 45)
+                                         width: self.width - 20, 
+                                          height: 45)
+        
+        playButton.frame = CGRect(x: self.width - 80,
+                                  y: self.height - 80,
+                                  width: 60,
+                                  height: 60)
     }
     
     private func applyConstraints() -> Void {
@@ -102,21 +130,26 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         }
         
         playlistNameLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(self).inset(10)
+            make.left.right.equalTo(self).inset(10)
             make.top.equalTo(self.playlistImageView.snp.bottom)
             make.height.equalTo(45)
         }
         
         playlistDescriptionLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(self).inset(10)
+            make.left.right.equalTo(self).inset(10)
             make.top.equalTo(self.playlistNameLabel.snp.bottom)
             make.height.equalTo(self.playlistNameLabel.snp.height)
         }
         
         playlistOwnerLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(self).inset(10)
+            make.left.right.equalTo(self).inset(10)
             make.top.equalTo(self.playlistDescriptionLabel.snp.bottom)
             make.height.equalTo(self.playlistDescriptionLabel.snp.height)
         }
+    }
+    
+    @objc private func didTapPlayAll(_ sender: UIButton) -> Void {
+        
+        delegate?.PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: self)
     }
 }

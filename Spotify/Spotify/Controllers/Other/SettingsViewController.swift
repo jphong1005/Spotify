@@ -27,14 +27,14 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.title = "Settings"
+        title = "Settings"
         
-        self.view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
         
         self.tableView.dataSource = self
         self.tableView.delegate = self
         
-        self.view.addSubview(tableView)
+        view.addSubview(self.tableView)
         
         configureModels()
     }
@@ -47,15 +47,15 @@ class SettingsViewController: UIViewController {
     
     private func configureModels() -> Void {
         
-        sections.append(Section(strTitle: "Profile",
-                                arrOptions: [Section.Option(strTitle: "View Your Profile", handler: { [weak self] in
+        sections.append(Section(title: "Profile",
+                                options: [Section.Option(title: "View Your Profile", handler: { [weak self] in
             DispatchQueue.main.async {
                 self?.viewProfile()
             }
         })]))
         
-        sections.append(Section(strTitle: "Account",
-                                arrOptions: [Section.Option(strTitle: "Sign Out", handler: { [weak self] in
+        sections.append(Section(title: "Account",
+                                options: [Section.Option(title: "Sign Out", handler: { [weak self] in
             DispatchQueue.main.async {
                 self?.signOutTapped()
             }
@@ -64,7 +64,7 @@ class SettingsViewController: UIViewController {
     
     private func viewProfile() -> Void {
         
-        self.navigationController?.pushViewController(ProfileViewController(), animated: true)
+        navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
     private func signOutTapped() -> Void {}
@@ -76,15 +76,15 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     ///  Required Methods.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return sections[section].arrOptions.count
+        return sections[section].options.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let model: Section.Option = sections[indexPath.section].arrOptions[indexPath.row]
+        let model: Section.Option = sections[indexPath.section].options[indexPath.row]
         
-        cell.textLabel?.text = model.strTitle
+        cell.textLabel?.text = model.title
         
         return cell
     }
@@ -99,7 +99,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         
         let model: Section = sections[section]
         
-        return model.strTitle
+        return model.title
     }
     
     // MARK: - UITableViewDelegate - (Optional) Method
@@ -108,7 +108,7 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         //  Call handler for cell.
-        let model: Section.Option = sections[indexPath.section].arrOptions[indexPath.row]
+        let model: Section.Option = sections[indexPath.section].options[indexPath.row]
         
         model.handler()
     }

@@ -39,12 +39,12 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.backgroundColor = .secondarySystemBackground
-        self.contentView.clipsToBounds = true
+        contentView.backgroundColor = .secondarySystemBackground
+        contentView.clipsToBounds = true
         
-        self.contentView.addSubview(playlistCoverImageView)
-        self.contentView.addSubview(playlistNameLabel)
-        self.contentView.addSubview(creatorNameLabel)
+        contentView.addSubview(playlistCoverImageView)
+        contentView.addSubview(playlistNameLabel)
+        contentView.addSubview(creatorNameLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -55,8 +55,8 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        //  self.frameBasedLayout()
-        self.applyConstraints()
+        //  frameBasedLayout()
+        applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -76,46 +76,46 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     
     private func frameBasedLayout() -> Void {
         
-        let imageSize: CGFloat = self.contentView.height - 70
+        let imageSize: CGFloat = contentView.height - 70
         
-        self.playlistCoverImageView.frame = CGRect(x: (self.contentView.width - imageSize) / 2,
+        playlistCoverImageView.frame = CGRect(x: (contentView.width - imageSize) / 2,
                                                    y: 5,
                                                    width: imageSize,
                                                    height: imageSize)
         
-        self.playlistNameLabel.frame = CGRect(x: 3,
-                                              y: self.contentView.height - 50,
-                                              width: self.contentView.width - 5,
+        playlistNameLabel.frame = CGRect(x: 3,
+                                              y: contentView.height - 50,
+                                              width: contentView.width - 5,
                                               height: 30)
         
-        self.creatorNameLabel.frame = CGRect(x: 3,
-                                             y: self.contentView.height - 30,
-                                             width: self.contentView.width - 8,
+        creatorNameLabel.frame = CGRect(x: 3,
+                                             y: contentView.height - 30,
+                                             width: contentView.width - 8,
                                              height: 30)
     }
     
     private func applyConstraints() -> Void {
         
-        let imageSize: CGFloat = self.contentView.height - 70
+        let imageSize: CGFloat = contentView.height - 70
         
-        self.playlistCoverImageView.snp.makeConstraints { make in
-            make.centerX.equalTo(self.contentView.snp.centerX)
-            make.top.equalTo(self.contentView.snp.top).offset(5)
+        playlistCoverImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(contentView.snp.centerX)
+            make.top.equalTo(contentView.snp.top).offset(5)
             make.width.height.equalTo(imageSize)
         }
         
-        self.playlistNameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.contentView.snp.leading).offset(3)
-            make.top.equalTo(self.contentView.height - 50)
-            make.width.equalTo(self.contentView.width - 5)
+        playlistNameLabel.snp.makeConstraints { make in
+            make.left.right.equalTo(contentView).inset(3)
+            make.top.equalTo(contentView.height - 50)
+            make.width.equalTo(contentView.width - 5)
             make.height.equalTo(30)
         }
         
-        self.creatorNameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(self.playlistNameLabel.snp.leading)
-            make.top.equalTo(self.contentView.height - 30)
-            make.width.equalTo(self.contentView.width - 8)
-            make.height.equalTo(self.playlistNameLabel.snp.height)
+        creatorNameLabel.snp.makeConstraints { make in
+            make.left.right.equalTo(playlistNameLabel)
+            make.top.equalTo(contentView.height - 30)
+            make.width.equalTo(contentView.width - 8)
+            make.height.equalTo(playlistNameLabel.snp.height)
         }
     }
 }
