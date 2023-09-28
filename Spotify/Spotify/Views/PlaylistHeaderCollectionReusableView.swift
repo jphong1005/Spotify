@@ -8,6 +8,7 @@
 import UIKit
 import Then
 import SDWebImage
+import SnapKit
 
 final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     
@@ -39,6 +40,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - Inits
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         self.backgroundColor = .systemBackground
         
         self.addSubview(playlistImageView)
@@ -54,7 +56,9 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     // MARK: - Method
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.frameBasedLayout()
+        
+        //  self.frameBasedLayout()
+        self.applyConstraints()
     }
     
     public func configure(with featuredPlaylist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Void {
@@ -66,7 +70,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     private func frameBasedLayout() -> Void {
-        
+        print(self)
         let imageSize: CGFloat = self.height / 2.0
         
         playlistImageView.frame = CGRect(x: (self.width - imageSize) / 2,
@@ -85,5 +89,34 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         playlistOwnerLabel.frame = CGRect(x: 10,
                                          y: playlistDescriptionLabel.bottom,
                                          width: self.width - 20, height: 45)
+    }
+    
+    private func applyConstraints() -> Void {
+        
+        let imageSize: CGFloat = self.height / 2.0
+        
+        playlistImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(self)
+            make.top.equalTo(self).offset(20)
+            make.width.height.equalTo(imageSize)
+        }
+        
+        playlistNameLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(self).inset(10)
+            make.top.equalTo(self.playlistImageView.snp.bottom)
+            make.height.equalTo(45)
+        }
+        
+        playlistDescriptionLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(self).inset(10)
+            make.top.equalTo(self.playlistNameLabel.snp.bottom)
+            make.height.equalTo(self.playlistNameLabel.snp.height)
+        }
+        
+        playlistOwnerLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(self).inset(10)
+            make.top.equalTo(self.playlistDescriptionLabel.snp.bottom)
+            make.height.equalTo(self.playlistDescriptionLabel.snp.height)
+        }
     }
 }
