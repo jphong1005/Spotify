@@ -22,7 +22,7 @@ struct TrackObject: Codable {
     let href: String
     let id: String
     //  let is_playable: Bool
-    //  let linked_from: CommonGround.LinkedFrom
+    let linked_from: CommonGround.LinkedFrom?
     //  let restrictions: CommonGround.Restriction = CommonGround.Restriction(reason: "")
     let name: String
     let popularity: Int

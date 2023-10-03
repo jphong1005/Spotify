@@ -47,19 +47,25 @@ class SettingsViewController: UIViewController {
     
     private func configureModels() -> Void {
         
-        sections.append(Section(title: "Profile",
-                                options: [Section.Option(title: "View Your Profile", handler: { [weak self] in
-            DispatchQueue.main.async {
-                self?.viewProfile()
-            }
-        })]))
+        sections.append(Section(
+            title: "Profile",
+            options: [Section.Option(
+                title: "View Your Profile",
+                handler: { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.viewProfile()
+                    }
+                })]))
         
-        sections.append(Section(title: "Account",
-                                options: [Section.Option(title: "Sign Out", handler: { [weak self] in
-            DispatchQueue.main.async {
-                self?.signOutTapped()
-            }
-        })]))
+        sections.append(Section(
+            title: "Account",
+            options: [Section.Option(
+                title: "Sign Out",
+                handler: { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.signOutTapped()
+                    }
+                })]))
     }
     
     private func viewProfile() -> Void {
@@ -70,6 +76,7 @@ class SettingsViewController: UIViewController {
     private func signOutTapped() -> Void {}
 }
 
+// MARK: - Extension ViewController
 extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource Methods

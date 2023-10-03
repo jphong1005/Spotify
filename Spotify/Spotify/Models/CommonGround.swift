@@ -97,6 +97,10 @@ struct CommonGround: Codable {
     struct LinkedFrom: Codable {
         
         // MARK: - Stored-Props
-        //  No Props
+        let external_urls: ExternalURL
+        let href: String
+        let id: String
+        let type: String
+        let uri: String
     }
 }

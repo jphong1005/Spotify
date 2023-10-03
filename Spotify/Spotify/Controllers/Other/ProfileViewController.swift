@@ -115,6 +115,7 @@ class ProfileViewController: UIViewController {
     }
 }
 
+// MARK: - Extension ViewController
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     
     // MARK: - UITableViewDataSource Methods

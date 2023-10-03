@@ -129,33 +129,9 @@ final class APICaller {
         }
     }
     
-    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Void {
+    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Observable<Album> {
         
-        AuthManager.shared.withValidToken { token in
-            let headers: HTTPHeaders = HTTPHeaders([
-                "Authorization": "Bearer \(token)"
-            ])
-            
-            AF.request(APICaller.defaultEndPoint + "/albums/\(album.id)",
-                       method: .get,
-                       headers: headers)
-            .validate(statusCode: 200 ..< 300)
-            .validate(contentType: ["application/json"])
-            .response(queue: DispatchQueue.global(qos: .background)) { response in
-                switch response.result {
-                case .success(let data):
-                    do {
-                        let data: Album = try JSONDecoder().decode(Album.self, from: data ?? Data())
-                        print(data)
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                    break;
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
+        return performRequest(query: "/albums/\(album.id)", method: .get)
     }
     
     public func getPlaylist(for playlist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Observable<Playlist> {

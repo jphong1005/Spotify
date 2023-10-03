@@ -86,30 +86,35 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         numberOfTracksLabel.sizeToFit()
         
         let imageSize: CGFloat = contentView.height - 10
-        let albumNameLabelSize = albumNameLabel.sizeThatFits(CGSize(width: (contentView.width - imageSize) - 10,
-                                                                         height: (contentView.height - imageSize) - 10))
+        let albumNameLabelSize = albumNameLabel.sizeThatFits(CGSize(
+            width: (contentView.width - imageSize) - 10,
+            height: (contentView.height - imageSize) - 10))
         
-        albumCoverImageView.frame = CGRect(x: 5,
-                                                y: 5,
-                                                width: imageSize,
-                                                height: imageSize)
+        albumCoverImageView.frame = CGRect(
+            x: 5,
+            y: 5,
+            width: imageSize,
+            height: imageSize)
         
         let albumLabelHeight: CGFloat = min(50, albumNameLabelSize.height)
         
-        albumNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
-                                           y: 5,
-                                           width: albumNameLabelSize.width,
-                                           height: albumLabelHeight)
+        albumNameLabel.frame = CGRect(
+            x: albumCoverImageView.right + 10,
+            y: 5,
+            width: albumNameLabelSize.width,
+            height: albumLabelHeight)
         
-        artistNameLabel.frame = CGRect(x: albumCoverImageView.right + 10,
-                                            y: albumNameLabel.bottom,
-                                            width: (contentView.width - albumCoverImageView.right) - 10,
-                                            height: 30)
+        artistNameLabel.frame = CGRect(
+            x: albumCoverImageView.right + 10,
+            y: albumNameLabel.bottom,
+            width: (contentView.width - albumCoverImageView.right) - 10,
+            height: 30)
         
-        numberOfTracksLabel.frame = CGRect(x: albumCoverImageView.right + 10,
-                                                y: albumCoverImageView.bottom - 40,
-                                                width: numberOfTracksLabel.width,
-                                                height: 40)
+        numberOfTracksLabel.frame = CGRect(
+            x: albumCoverImageView.right + 10, 
+            y: albumCoverImageView.bottom - 40,
+            width: numberOfTracksLabel.width,
+            height: 40)
     }
     
     private func applyConstraints() -> Void {

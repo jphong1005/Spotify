@@ -44,14 +44,21 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     }
     
     private let playButton: UIButton = UIButton().then {
+        
+        let buttonSize: CGFloat = 50
+        
         $0.backgroundColor = .systemGreen
         $0.setImage(UIImage(
             systemName: "play.fill",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 30,
-                                                           weight: .regular)),
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 20, 
+                weight: .regular))?
+            .withTintColor(
+                .black,
+                renderingMode: .alwaysOriginal),
                     for: .normal)
         $0.tintColor = .white
-        $0.layer.cornerRadius = 30
+        $0.layer.cornerRadius = buttonSize / 2
         $0.layer.masksToBounds = true
         $0.addTarget(self, action: #selector(didTapPlayAll(_:)), for: .touchUpInside)
     }
@@ -73,7 +80,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Method
+    // MARK: - Methods
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -81,42 +88,58 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         //  applyConstraints()
     }
     
-    public func configure(with featuredPlaylist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Void {
+    public func configurePlaylistHeader<T>(args params: T) -> Void {
         
-        playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
-        playlistNameLabel.text = featuredPlaylist.name
-        playlistDescriptionLabel.text = featuredPlaylist.description
-        playlistOwnerLabel.text = featuredPlaylist.owner.display_name
+        switch params {
+        case let featuredPlaylist as FeaturedPlaylists.PlayList.SimplifiedPlaylist:
+            playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
+            playlistNameLabel.text = featuredPlaylist.name
+            playlistDescriptionLabel.text = featuredPlaylist.description
+            playlistOwnerLabel.text = featuredPlaylist.owner.display_name
+            break;
+        case let album as Album:
+            playlistImageView.sd_setImage(with: URL(string: album.images.first?.url ?? ""))
+            playlistNameLabel.text = album.name
+            playlistDescriptionLabel.text = "Release Date: \(String.formattedDate(args: album.release_date))"
+            playlistOwnerLabel.text = album.artists.first?.name
+        default:
+            break;
+        }
     }
     
     private func frameBasedLayout() -> Void {
         
         let imageSize: CGFloat = self.height / 2.0
         
-        playlistImageView.frame = CGRect(x: (self.width - imageSize) / 2,
-                                         y: 20,
-                                         width: imageSize,
-                                         height: imageSize)
+        playlistImageView.frame = CGRect(
+            x: (self.width - imageSize) / 2, 
+            y: 20,
+            width: imageSize,
+            height: imageSize)
         
-        playlistNameLabel.frame = CGRect(x: 10,
-                                         y: playlistImageView.bottom,
-                                         width: self.width - 20, 
-                                         height: 45)
+        playlistNameLabel.frame = CGRect(
+            x: 10, 
+            y: playlistImageView.bottom,
+            width: self.width - 20,
+            height: 45)
         
-        playlistDescriptionLabel.frame = CGRect(x: 10,
-                                         y: playlistNameLabel.bottom,
-                                         width: self.width - 20, 
-                                                height: 45)
+        playlistDescriptionLabel.frame = CGRect(
+            x: 10, 
+            y: playlistNameLabel.bottom,
+            width: self.width - 20,
+            height: 45)
         
-        playlistOwnerLabel.frame = CGRect(x: 10,
-                                         y: playlistDescriptionLabel.bottom,
-                                         width: self.width - 20, 
-                                          height: 45)
+        playlistOwnerLabel.frame = CGRect(
+            x: 10, 
+            y: playlistDescriptionLabel.bottom,
+            width: self.width - 20,
+            height: 45)
         
-        playButton.frame = CGRect(x: self.width - 80,
-                                  y: self.height - 80,
-                                  width: 60,
-                                  height: 60)
+        playButton.frame = CGRect(
+            x: self.width - 80, 
+            y: self.height - 80,
+            width: 50,
+            height: 50)
     }
     
     private func applyConstraints() -> Void {
@@ -146,8 +169,15 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
             make.top.equalTo(self.playlistDescriptionLabel.snp.bottom)
             make.height.equalTo(self.playlistDescriptionLabel.snp.height)
         }
+        
+        playButton.snp.makeConstraints { make in
+            make.left.equalTo(self.width).offset(80)
+            make.top.equalTo(self.height).offset(80)
+            make.width.height.equalTo(50)
+        }
     }
     
+    // MARK: - Event Handler Method
     @objc private func didTapPlayAll(_ sender: UIButton) -> Void {
         
         delegate?.PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: self)

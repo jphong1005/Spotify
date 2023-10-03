@@ -76,7 +76,6 @@ final class AuthManager {
     public func exchangeCodeForAccessToken(code: String, completionHandler: @escaping (Bool) -> Void) -> Void {
         
         //  Request Access Token
-        
         //  url
         guard let url: URL = URL(string: AuthConstants.strToken_URL) else { return }
         
@@ -130,7 +129,7 @@ final class AuthManager {
         let access_token: String = result.access_token
         
         // MARK: - ver. Security (-> import Security)
-        //  Access_Token을 utf-8 형식의 Data로 변환
+        //  Access_Token을 UTF-8 형식의 Data로 변환
         /*
         if let data = access_token.data(using: .utf8) {
             

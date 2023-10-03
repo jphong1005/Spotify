@@ -10,17 +10,19 @@ import Foundation
 final class SpotifyViewModel {
     
     // MARK: - Stored-Props
-    let users: UsersViewModel
+    let album: AlbumViewModel
     let albums: NewReleasesViewModel
     let playlists: PlaylistsViewModel
     let tracks: TracksViewModel
+    let users: UsersViewModel
     
     // MARK: - Init
     init() {
         
-        self.users = UsersViewModel()
+        self.album = AlbumViewModel()
         self.albums = NewReleasesViewModel()
         self.playlists = PlaylistsViewModel()
         self.tracks = TracksViewModel()
+        self.users = UsersViewModel()
     }
 }

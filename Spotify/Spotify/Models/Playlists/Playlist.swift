@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Playlist: Codable {  //  Get Playlist
+struct Playlist: Codable {
     
     // MARK: - Stored-Props
     let collaborative: Bool

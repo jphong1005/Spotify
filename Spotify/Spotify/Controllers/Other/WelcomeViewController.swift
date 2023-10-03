@@ -53,7 +53,7 @@ class WelcomeViewController: UIViewController {
         }
     }
     
-    // MARK: - Event Handler
+    // MARK: - Event Handler Methods
     @objc func didTapSignIn(_ sender: UIButton) -> Void {
         
         let authVC: AuthViewController = AuthViewController()
@@ -71,9 +71,10 @@ class WelcomeViewController: UIViewController {
         
         //  Log user in or yell at them for error.
         guard (success) else {
-            let alert: UIAlertController = UIAlertController(title: "ALERT!",
-                                                             message: "Something went wrong when sign in.",
-                                                             preferredStyle: .alert)
+            let alert: UIAlertController = UIAlertController(
+                title: "ALERT!",
+                message: "Something went wrong when sign in.",
+                preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Dismiss",
                                           style: .cancel))

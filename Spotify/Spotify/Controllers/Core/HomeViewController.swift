@@ -1,4 +1,4 @@
- //
+ 
 //  ViewController.swift
 //  Spotify
 //
@@ -16,11 +16,25 @@ class HomeViewController: UIViewController {
         case newReleases(newReleases: NewReleases?)
         case featuredPlaylists(featuredPlaylists: FeaturedPlaylists?)
         case recommendations(tracks: Recommendations?)
+        
+        var headerTitle: String {
+            get {
+                switch self {
+                case .newReleases:
+                    return "New Releases"
+                case .featuredPlaylists:
+                    return "Featured Playlists"
+                case .recommendations:
+                    return "Recommendations"
+                }
+            }
+        }
     }
     
     // MARK: - UI Components
-    private let collectionView: UICollectionView = UICollectionView(frame: .zero,
-                                                                    collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIdx, _ in
+    private let collectionView: UICollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIdx, _ in
         return HomeViewController.configureSectionLayout(section: sectionIdx)
     }))
     
@@ -103,9 +117,18 @@ class HomeViewController: UIViewController {
         
         let inset: CGFloat = 1.0
         
+        let supplementaryItem: [NSCollectionLayoutBoundarySupplementaryItem] = [
+            NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(50)),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top)
+        ]
+        
         switch section {
         case 0:
-            //  Item
+            /// Item
             let item: NSCollectionLayoutItem = NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -114,7 +137,7 @@ class HomeViewController: UIViewController {
             
             item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
             
-            //  Groups   (-> Vertical group in horizontal group)
+            /// Groups   (-> Vertical group in horizontal group)
             let verticalGroup: NSCollectionLayoutGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -130,9 +153,10 @@ class HomeViewController: UIViewController {
                 subitem: verticalGroup,
                 count: 1)
             
-            //  Section
+            /// Section
             let section: NSCollectionLayoutSection = NSCollectionLayoutSection(group: horizontalGroup)
             
+            section.boundarySupplementaryItems = supplementaryItem
             section.orthogonalScrollingBehavior = .groupPaging
             
             return section;
@@ -162,6 +186,7 @@ class HomeViewController: UIViewController {
             
             let section: NSCollectionLayoutSection = NSCollectionLayoutSection(group: horizontalGroup)
             
+            section.boundarySupplementaryItems = supplementaryItem
             section.orthogonalScrollingBehavior = .continuous
             
             return section;
@@ -183,6 +208,8 @@ class HomeViewController: UIViewController {
                 count: 1)
             
             let section: NSCollectionLayoutSection = NSCollectionLayoutSection(group: group)
+            
+            section.boundarySupplementaryItems = supplementaryItem
             
             return section;
         default:
@@ -215,9 +242,12 @@ class HomeViewController: UIViewController {
         view.addSubview(self.collectionView)
         
         self.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        
         self.collectionView.register(NewReleasesCollectionViewCell.self, forCellWithReuseIdentifier: NewReleasesCollectionViewCell.identifier)
         self.collectionView.register(FeaturedPlaylistCollectionViewCell.self, forCellWithReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier)
         self.collectionView.register(RecommendationCollectionViewCell.self, forCellWithReuseIdentifier: RecommendationCollectionViewCell.identifier)
+        
+        self.collectionView.register(TitleHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleHeaderCollectionReusableView.identifier)
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -225,6 +255,7 @@ class HomeViewController: UIViewController {
         self.collectionView.backgroundColor = .systemBackground
     }
     
+    // MARK: - Event Handler Method
     @objc func didTapSettings(_ sender: UIBarButtonItem) -> Void {
         
         let settingsVC: SettingsViewController = SettingsViewController()
@@ -233,6 +264,7 @@ class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - Extension ViewController
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     // MARK: - UICollectionViewDataSource Methods
@@ -285,7 +317,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             guard let track: TrackObject = recommendations?.tracks[indexPath.row] else { return UICollectionViewCell() }
             
-            cell.configureRecommendationCollectionViewCell(playlist: nil, recommendation: track)
+            cell.configureRecommendationCollectionViewCell(args: track)
             
             return cell;
         }
@@ -297,6 +329,18 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return sections.count
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        guard let header: TitleHeaderCollectionReusableView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: TitleHeaderCollectionReusableView.identifier,
+            for: indexPath) as? TitleHeaderCollectionReusableView, (kind == UICollectionView.elementKindSectionHeader) else { return UICollectionViewCell() }
+        
+        header.configureTitleHeader(args: sections[indexPath.section].headerTitle)
+        
+        return header
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         collectionView.deselectItem(at: indexPath, animated: true)
@@ -304,19 +348,19 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
         
         switch sectionType {
-        case .newReleases(let newReleasesResponse):
-            guard let albumItem: CommonGround.SimplifiedAlbum = newReleasesResponse?.albums.items[indexPath.row] else { return }
+        case .newReleases(let newReleases):
+            guard let albumItem: CommonGround.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
             let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
             
             navigationController?.pushViewController(albumVC, animated: true)
             break;
-        case .featuredPlaylists(let featuredPlaylistsResponse):
-            guard let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylistsResponse?.playlists.items[indexPath.row] else { return }
+        case .featuredPlaylists(let featuredPlaylists):
+            guard let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
             let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
             
             navigationController?.pushViewController(playlistVC, animated: true)
             break;
-        case .recommendations(let recommendationsResponse):
+        case .recommendations(_):
             break;
         default:
             break;
