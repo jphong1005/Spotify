@@ -35,7 +35,7 @@ class HomeViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIdx, _ in
-        return HomeViewController.configureSectionLayout(section: sectionIdx)
+        return HomeViewController.configureCollectionViewLayout(section: sectionIdx)
     }))
     
     private let spinner: UIActivityIndicatorView = UIActivityIndicatorView().then {
@@ -53,11 +53,11 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .systemBackground
+        defaultConfigureHomeViewController()
         
-        title = "Home"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.backgroundColor = .systemBackground
         
         bind()
         
@@ -71,6 +71,15 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         self.collectionView.frame = view.bounds
+    }
+    
+    private func defaultConfigureHomeViewController() -> Void {
+        
+        view.backgroundColor = .systemBackground
+        
+        title = "Home"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
     private func bind() -> Void {
@@ -113,7 +122,7 @@ class HomeViewController: UIViewController {
             action: #selector(didTapSettings(_:)))
     }
     
-    private static func configureSectionLayout(section: Int) -> NSCollectionLayoutSection {
+    private static func configureCollectionViewLayout(section: Int) -> NSCollectionLayoutSection {
         
         let inset: CGFloat = 1.0
         
@@ -248,11 +257,6 @@ class HomeViewController: UIViewController {
         self.collectionView.register(RecommendationCollectionViewCell.self, forCellWithReuseIdentifier: RecommendationCollectionViewCell.identifier)
         
         self.collectionView.register(TitleHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleHeaderCollectionReusableView.identifier)
-        
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
-        
-        self.collectionView.backgroundColor = .systemBackground
     }
     
     // MARK: - Event Handler Method
@@ -266,6 +270,34 @@ class HomeViewController: UIViewController {
 
 // MARK: - Extension ViewController
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    // MARK: - UICollectionViewDelegate Method
+    /// Optional Methods.
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
+        
+        switch sectionType {
+        case .newReleases(let newReleases):
+            guard let albumItem: CommonGround.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
+            let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
+            
+            navigationController?.pushViewController(albumVC, animated: true)
+            break;
+        case .featuredPlaylists(let featuredPlaylists):
+            guard let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
+            let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
+            
+            navigationController?.pushViewController(playlistVC, animated: true)
+            break;
+        case .recommendations(_):
+            break;
+        default:
+            break;
+        }
+    }
     
     // MARK: - UICollectionViewDataSource Methods
     ///  Required Methods.
@@ -339,32 +371,6 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         header.configureTitleHeader(args: sections[indexPath.section].headerTitle)
         
         return header
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        collectionView.deselectItem(at: indexPath, animated: true)
-        
-        let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
-        
-        switch sectionType {
-        case .newReleases(let newReleases):
-            guard let albumItem: CommonGround.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
-            let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
-            
-            navigationController?.pushViewController(albumVC, animated: true)
-            break;
-        case .featuredPlaylists(let featuredPlaylists):
-            guard let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
-            let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
-            
-            navigationController?.pushViewController(playlistVC, animated: true)
-            break;
-        case .recommendations(_):
-            break;
-        default:
-            break;
-        }
     }
 }
 

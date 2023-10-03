@@ -15,7 +15,7 @@ class AlbumViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ in
-        return AlbumViewController.configureSectionLayout()
+        return AlbumViewController.configureCollectionViewLayout()
     }))
     
     // MARK: - Stored-Props
@@ -97,7 +97,7 @@ class AlbumViewController: UIViewController {
             }.disposed(by: spotifyViewModel.album.bag)
     }
     
-    private static func configureSectionLayout() -> NSCollectionLayoutSection {
+    private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {
         
         let inset: CGFloat = 1.0
         

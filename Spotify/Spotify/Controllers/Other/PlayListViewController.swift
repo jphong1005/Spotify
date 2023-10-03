@@ -15,7 +15,7 @@ class PlaylistViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ in
-        return PlaylistViewController.configureSectionLayout()
+        return PlaylistViewController.configureCollectionViewLayout()
     }))
     
     // MARK: - Stored-Props
@@ -96,7 +96,7 @@ class PlaylistViewController: UIViewController {
             }.disposed(by: spotifyViewModel.playlists.bag)
     }
     
-    private static func configureSectionLayout() -> NSCollectionLayoutSection {
+    private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {
         
         let inset: CGFloat = 1.0
         
