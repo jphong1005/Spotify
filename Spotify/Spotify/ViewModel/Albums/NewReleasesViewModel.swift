@@ -17,7 +17,6 @@ final class NewReleasesViewModel {
     
     // MARK: - Init
     init() {
-        
         addObserver()
     }
     

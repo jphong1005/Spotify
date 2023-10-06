@@ -54,30 +54,56 @@ final class APICaller {
         }.asObservable()
     }
     
-    ///  PUBLIC API Methods.
-    public func getCurrentUserProfile() -> Observable<User> {
+    ///  PUBLIC, PRIVATE API Methods.
+    ///
+    /// Albums
+    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Observable<Album> {
         
-        return performRequest(query: "/me", method: .get)
+        return performRequest(query: "/albums/\(album.id)", method: .get)
     }
     
     public func getNewReleases() -> Observable<NewReleases> {
         
-        /// limit -> default: 20, range: 0 ~ 50
-        /// offset -> default: 0
         return performRequest(query: "/browse/new-releases?limit=50", method: .get)
     }
     
-    public func getFeaturedPlaylists() -> Observable<FeaturedPlaylists> {
+    /// Categories
+    public func getSeveralBrowseCategories() -> Observable<SeveralBrowseCategories> {
         
-        /// limit -> default: 20, range: 0 ~ 50
-        /// offset -> default: 0
-        return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
+        return performRequest(query: "/browse/categories?limit=50", method: .get)
     }
     
-    public func getAvailableGenreSeeds() async throws -> Genre {
+    private func performGetSeveralBrowseCategories() async throws -> SeveralBrowseCategories {
         
-        //  .withCheckedThrowingContinuation()를 사용함으로써 비동기 코드 블록 내에서 값을 반환 or 오류를 던짐
-        return try await withCheckedThrowingContinuation({ continuation in
+        return try await withCheckedThrowingContinuation { continuation in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint +
+                           "/browse/categories?limit=50",
+                           method: .get,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .responseDecodable(of: SeveralBrowseCategories.self, queue: DispatchQueue.global(qos: .background)) { response in
+                    switch response.result {
+                    case .success(let severalBrowseCategories):
+                        continuation.resume(returning: severalBrowseCategories); break;
+                    case .failure(let error):
+                        continuation.resume(throwing: error); break;
+                    }
+                }
+            }
+        }
+    }
+    
+    /// Genres
+    private func getAvailableGenreSeeds() async throws -> Genre {
+        
+        /// .withCheckedThrowingContinuation()를 사용함으로써 비동기 코드 블록 내에서 값을 반환 or 오류를 던짐
+        return try await withCheckedThrowingContinuation { continuation in
             AuthManager.shared.withValidToken { token in
                 let headers: HTTPHeaders = HTTPHeaders([
                     "Authorization": "Bearer \(token)"
@@ -90,26 +116,51 @@ final class APICaller {
                 .validate(contentType: ["application/json"])
                 .responseDecodable(of: Genre.self, queue: DispatchQueue.global(qos: .background)) { response in
                     switch response.result {
-                    case .success(let genreResponse):
-                        continuation.resume(returning: genreResponse); break;
+                    case .success(let genre):
+                        continuation.resume(returning: genre); break;
                     case .failure(let error):
                         print("error: \(error.localizedDescription)")
                         continuation.resume(throwing: error); break;
                     }
                 }
             }
-        })
+        }
     }
     
-    public func getRecommendations(genres: Set<String>) -> Observable<Recommendations> {
-
-        let seeds: String = genres.joined(separator: ",")
+    /// Playlists
+    public func getPlaylist(for playlist: Playlists.Playlist.SimplifiedPlaylist) -> Observable<Playlist> {
         
-        /// limit -> default: 20, range: 1 ~ 100
-        return performRequest(query: "/recommendations?limit=40&seed_genres=\(seeds)", method: .get)
+        return performRequest(query: "/playlists/\(playlist.id)", method: .get)
     }
     
-    public func performGetRecommendations() -> Task<Observable<Recommendations>, Error> {
+    public func getFeaturedPlaylists() -> Observable<Playlists> {
+        
+        return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
+    }
+    
+    public func getCategoryPlaylists(args category: CommonGround.Category) -> Task<Observable<Playlists>, Error> {
+        
+        /// Get Category's Playlists
+        return Task(priority: .background) { () -> Observable<Playlists> in
+            do {
+                return performRequest(query: "/browse/categories/\(category.id)/playlists?limit=50", method: .get)
+            } catch {
+                throw error
+            }
+        }
+    }
+    
+    /*
+    public func performGetCategorysPlaylists(args param: CommonGround.Category?) -> Observable<FeaturedPlaylists> {
+        
+        guard let category_id: String = param?.id else { return Observable.empty() }
+        
+        return performRequest(query: "/browse/categories/\(category_id)/playlists?limit=50", method: .get)
+    }
+     */
+    
+    /// Tracks
+    public func getRecommendations() -> Task<Observable<Recommendations>, Error> {
         
         return Task(priority: .background) { () -> Observable<Recommendations> in
             do {
@@ -122,20 +173,29 @@ final class APICaller {
                     }
                 }
 
-                return getRecommendations(genres: seeds)
+//                return performGetRecommendations(genres: seeds)
+                
+                let seed_genres: String = seeds.joined(separator: ",")
+                
+                return performRequest(query: "/recommendations?limit=40&seed_genres=\(seed_genres)", method: .get)
             } catch {
                 throw error
             }
         }
     }
     
-    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Observable<Album> {
+    /*
+    public func performGetRecommendations(genres: Set<String>) -> Observable<Recommendations> {
+
+        let seeds: String = genres.joined(separator: ",")
         
-        return performRequest(query: "/albums/\(album.id)", method: .get)
+        return performRequest(query: "/recommendations?limit=40&seed_genres=\(seeds)", method: .get)
     }
+     */
     
-    public func getPlaylist(for playlist: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Observable<Playlist> {
+    ///  Users
+    public func getCurrentUserProfile() -> Observable<User> {
         
-        return performRequest(query: "/playlists/\(playlist.id)", method: .get)
+        return performRequest(query: "/me", method: .get)
     }
 }

@@ -67,11 +67,11 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
         creatorNameLabel.text = nil
     }
     
-    public func configureFeaturedPlaylistCollectionViewCellUI(value: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Void {
+    public func configureFeaturedPlaylistCollectionViewCellUI(args param: Playlists.Playlist.SimplifiedPlaylist) -> Void {
         
-        playlistCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
-        playlistNameLabel.text = value.name
-        creatorNameLabel.text = value.owner.display_name
+        playlistCoverImageView.sd_setImage(with: URL(string: param.images.first?.url ?? ""))
+        playlistNameLabel.text = param.name
+        creatorNameLabel.text = param.owner.display_name
     }
     
     private func frameBasedLayout() -> Void {

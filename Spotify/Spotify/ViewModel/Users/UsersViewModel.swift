@@ -17,7 +17,6 @@ final class UsersViewModel {
     
     // MARK: - Init
     init() {
-        
         addObserver()
     }
     

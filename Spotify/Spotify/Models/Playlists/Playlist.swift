@@ -89,7 +89,7 @@ struct Playlist: Codable {
                 struct Show: Codable {
                     
                     // MARK: - Stored-Props
-                    let available_markets: [String]
+                    let available_markets: [String]?
                     let copyrights: [CommonGround.Copyright]
                     let description: String
                     let html_description: String

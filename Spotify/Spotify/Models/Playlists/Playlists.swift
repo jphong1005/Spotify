@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct FeaturedPlaylists: Codable {
+struct Playlists: Codable {
     
     // MARK: - Stored-Props
-    let message: String
-    let playlists: PlayList
+    let message: String?
+    let playlists: Playlist
     
-    struct PlayList: Codable {
+    struct Playlist: Codable {
         
         // MARK: - Stored-Props
         let href: String
@@ -22,7 +22,7 @@ struct FeaturedPlaylists: Codable {
         let offset: Int
         let previous: String?
         let total: Int
-        let items: [SimplifiedPlaylist]
+        let items: [SimplifiedPlaylist?]
         
         struct SimplifiedPlaylist: Codable {
             
@@ -44,8 +44,8 @@ struct FeaturedPlaylists: Codable {
             struct Track: Codable {
                 
                 // MARK: - Stored-Props
-                let href: String
-                let total: Int
+                let href: String?
+                let total: Int?
             }
         }
     }

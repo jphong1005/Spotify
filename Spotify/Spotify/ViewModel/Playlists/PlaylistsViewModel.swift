@@ -13,13 +13,15 @@ final class PlaylistsViewModel {
     
     // MARK: - Stored-Props
     var playlist: PublishSubject<Playlist>
-    var featuredPlaylists: BehaviorSubject<FeaturedPlaylists?> = BehaviorSubject(value: nil)
+    var featuredPlaylists: BehaviorSubject<Playlists?> = BehaviorSubject(value: nil)
+    var categoryPlaylists: PublishSubject<Playlists>
+    
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
     init() {
-        
         self.playlist = PublishSubject<Playlist>.init()
+        self.categoryPlaylists = PublishSubject<Playlists>.init()
         
         addObserver()
     }

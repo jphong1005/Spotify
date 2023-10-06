@@ -13,7 +13,7 @@ import SDWebImage
 class ProfileViewController: UIViewController {
     
     // MARK: - Stored-Props
-    private let spotifyViewModel: SpotifyViewModel = SpotifyViewModel()
+    private let usersViewModel: UsersViewModel = UsersViewModel()
     private var models: [String] = [String]()
     private var bag: DisposeBag = DisposeBag()
     
@@ -54,8 +54,7 @@ class ProfileViewController: UIViewController {
     
     private func bind() -> Void {
         
-        //  UserProfile
-        self.spotifyViewModel.users.userProfile
+        usersViewModel.userProfile
             .observe(on: MainScheduler.instance)
             .compactMap { $0 }
             .bind { [weak self] profile in

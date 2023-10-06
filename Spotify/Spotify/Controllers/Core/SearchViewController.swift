@@ -7,6 +7,8 @@
 
 import UIKit
 import Then
+import RxSwift
+import RxCocoa
 
 class SearchViewController: UIViewController {
     
@@ -30,6 +32,13 @@ class SearchViewController: UIViewController {
                 return configureCollectionViewLayout()
             }))
     
+    // MARK: - Stored-Props
+    private var categories: [CommonGround.Category] = [CommonGround.Category]()
+    
+    private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
+    private let categoriesViewModel: CategoriesViewModel = CategoriesViewModel()
+    private var bag: DisposeBag = DisposeBag()
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +54,8 @@ class SearchViewController: UIViewController {
         navigationItem.searchController = searchController
         
         configureCollectionView()
+        
+        bind()
     }
     
     override func viewDidLayoutSubviews() {
@@ -60,6 +71,16 @@ class SearchViewController: UIViewController {
         title = "Search"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    private func bind() -> Void {
+        
+        categoriesViewModel.categories
+            .observe(on: MainScheduler.instance)
+            .bind { [weak self] severalBrowseCategories in
+                self?.categories = severalBrowseCategories?.categories.items ?? []
+                self?.collectionView.reloadData()
+            }.disposed(by: self.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {
@@ -92,9 +113,9 @@ class SearchViewController: UIViewController {
     
     private func configureCollectionView() -> Void {
         
-        view.addSubview(self.collectionView)
+        self.collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier)
         
-        self.collectionView.register(GenreCollectionViewCell.self, forCellWithReuseIdentifier: GenreCollectionViewCell.identifier)
+        view.addSubview(self.collectionView)
     }
 }
 
@@ -113,19 +134,31 @@ extension SearchViewController: UISearchResultsUpdating, UICollectionViewDelegat
     }
     
     // MARK: - UICollectionViewDelegate Method
+    ///  Optional Method.
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let categoryViewController: CategoryViewController = CategoryViewController(category: self.categories[indexPath.row])
+        
+//        print(type(of: categories[indexPath.row]))
+//        print("didSelectItemAt value: \(categories[indexPath.row])")
+        
+        navigationController?.pushViewController(categoryViewController, animated: true)
+    }
     
     // MARK: - UICollectionViewDataSource Method
-    ///  Required Method.
+    ///  Required Methods.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 20
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell: GenreCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: GenreCollectionViewCell.identifier, for: indexPath) as? GenreCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell: CategoryCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionViewCell.identifier, for: indexPath) as? CategoryCollectionViewCell else { return UICollectionViewCell() }
         
-        cell.configureGenreCollectionViewCell(args: "Genre")
+        cell.configureGenreCollectionViewCell(args: categories[indexPath.row])
         
         return cell
     }

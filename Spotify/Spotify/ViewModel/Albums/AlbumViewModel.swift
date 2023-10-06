@@ -17,7 +17,6 @@ final class AlbumViewModel {
     
     // MARK: - Init
     init() {
-        
         self.album = PublishSubject<Album>.init()
     }
 }

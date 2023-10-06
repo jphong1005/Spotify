@@ -17,7 +17,6 @@ final class TracksViewModel {
     
     // MARK: - Init
     init() {
-        
         addObserver()
     }
     
@@ -26,7 +25,7 @@ final class TracksViewModel {
         
         Task {
             do {
-                try await APICaller.shared.performGetRecommendations().value
+                try await APICaller.shared.getRecommendations().value
                     .subscribe(onNext: { [weak self] recommendations in
                         self?.recommendations.onNext(recommendations)
                     }, onError: { error in

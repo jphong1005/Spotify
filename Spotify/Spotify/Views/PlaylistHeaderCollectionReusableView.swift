@@ -91,7 +91,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     public func configurePlaylistHeader<T>(args params: T) -> Void {
         
         switch params {
-        case let featuredPlaylist as FeaturedPlaylists.PlayList.SimplifiedPlaylist:
+        case let featuredPlaylist as Playlists.Playlist.SimplifiedPlaylist:
             playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
             playlistNameLabel.text = featuredPlaylist.name
             playlistDescriptionLabel.text = featuredPlaylist.description

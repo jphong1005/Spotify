@@ -19,16 +19,15 @@ class PlaylistViewController: UIViewController {
     }))
     
     // MARK: - Stored-Props
-    private let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist
+    private let playlistItem: Playlists.Playlist.SimplifiedPlaylist
     
-    private let spotifyViewModel: SpotifyViewModel = SpotifyViewModel()
+    private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
     private var tracks: [Playlist.Track.PlaylistTrack] = [Playlist.Track.PlaylistTrack]()
     
     // MARK: - Inits
-    init(item: FeaturedPlaylists.PlayList.SimplifiedPlaylist) {
-        
+    init(item: Playlists.Playlist.SimplifiedPlaylist) {
         playlistItem = item
         
         super.init(nibName: nil, bundle: nil)
@@ -61,7 +60,7 @@ class PlaylistViewController: UIViewController {
         self.collectionView.frame = view.bounds
     }
     
-    private func defaultConfigurePlaylistViewController(with item: FeaturedPlaylists.PlayList.SimplifiedPlaylist) -> Void {
+    private func defaultConfigurePlaylistViewController(with item: Playlists.Playlist.SimplifiedPlaylist) -> Void {
         
         view.backgroundColor = .systemBackground
         
@@ -76,7 +75,7 @@ class PlaylistViewController: UIViewController {
         
         addObserver()
         
-        spotifyViewModel.playlists.playlist
+        playlistsViewModel.playlist
             .observe(on: MainScheduler.instance)
             .bind { [weak self] playlist in
                 guard let _: PlaylistViewController = self else { return }
@@ -90,10 +89,10 @@ class PlaylistViewController: UIViewController {
         
         APICaller.shared.getPlaylist(for: playlistItem)
             .subscribe { [weak self] playlist in
-                self?.spotifyViewModel.playlists.playlist.onNext(playlist)
+                self?.playlistsViewModel.playlist.onNext(playlist)
             } onError: { error in
-                self.spotifyViewModel.playlists.playlist.onError(error)
-            }.disposed(by: spotifyViewModel.playlists.bag)
+                self.playlistsViewModel.playlist.onError(error)
+            }.disposed(by: playlistsViewModel.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {

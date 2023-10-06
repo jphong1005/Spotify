@@ -12,7 +12,7 @@ struct Album: Codable {
     // MARK: - Stored-Props
     let album_type: String
     let total_tracks: Int
-    let available_markets: [String] = ["CA", "BR", "IT"]    //  ISO 3166-1 alpha-2 country code value
+    let available_markets: [String]?    //  ISO 3166-1 alpha-2 country code value
     let external_urls: CommonGround.ExternalURL
     let href: String
     let id: String
@@ -46,7 +46,7 @@ struct Album: Codable {
             
             // MARK: - Stored-Props
             let artists: [CommonGround.SimplifiedArtist]
-            let available_markets: [String] = ["CA", "BR", "IT"]    //  ["CA", "BR", "IT"] -> ISO 3166-1 alpha-2 country code value
+            let available_markets: [String]?    //  ["CA", "BR", "IT"] -> ISO 3166-1 alpha-2 country code value
             let disc_number: Int
             let duration_ms: Int
             let explicit: Bool

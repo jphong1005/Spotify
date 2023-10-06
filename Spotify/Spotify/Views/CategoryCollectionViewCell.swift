@@ -8,7 +8,7 @@
 import UIKit
 import Then
 
-class GenreCollectionViewCell: UICollectionViewCell {
+class CategoryCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Static constant
     static let identifier: String = "GenreCollectionViewCell"
@@ -17,11 +17,6 @@ class GenreCollectionViewCell: UICollectionViewCell {
     private let imageView: UIImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .white
-        $0.image = UIImage(
-            systemName: "music.quarternote.3",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: 50,
-                weight: .regular))
     }
     
     private let label: UILabel = UILabel().then {
@@ -33,15 +28,17 @@ class GenreCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Stored-Prop
     private let colours: [UIColor] = [
-        .systemPink,
-        .systemBlue,
-        .systemPurple,
-        .systemOrange,
-        .systemGreen,
-        .systemRed,
-        .systemYellow,
-        .systemGray,
-        .systemTeal
+        UIColor.systemBlue,
+        UIColor.systemYellow,
+        UIColor.systemRed,
+        UIColor.systemOrange,
+        UIColor.systemGreen,
+        UIColor.systemPurple,
+        UIColor.systemPink,
+        UIColor.systemTeal,
+        UIColor.systemBrown,
+        UIColor.systemGray,
+        UIColor.black
     ]
     
     // MARK: - Inits
@@ -66,23 +63,29 @@ class GenreCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        imageView.image = UIImage(
+            systemName: "music.quarternote.3",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 50,
+                weight: .regular))
         label.text = nil
     }
     
-    public func configureGenreCollectionViewCell(args param: String) -> Void {
+    public func configureGenreCollectionViewCell(args param: CommonGround.Category) -> Void {
         
         contentView.backgroundColor = colours.randomElement()
         contentView.layer.cornerRadius = 5
         contentView.layer.masksToBounds = true
         
-        label.text = param
+        imageView.sd_setImage(with: URL(string: param.icons.first?.url ?? ""))
+        label.text = param.name
     }
     
     private func frameBasedLayout() -> Void {
         
         imageView.frame = CGRect(
             x: contentView.width / 2,
-            y: 0,
+            y: 10,
             width: contentView.width / 2,
             height: contentView.height / 2)
         

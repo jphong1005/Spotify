@@ -22,12 +22,11 @@ class AlbumViewController: UIViewController {
     private let albumItem: CommonGround.SimplifiedAlbum
     private var album: Album? = nil
     
-    private let spotifyViewModel: SpotifyViewModel = SpotifyViewModel()
+    private let albumViewModel: AlbumViewModel = AlbumViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Inits
     init(item: CommonGround.SimplifiedAlbum) {
-        
         albumItem = item
         
         super.init(nibName: nil, bundle: nil)
@@ -75,7 +74,7 @@ class AlbumViewController: UIViewController {
         
         addObserver()
         
-        spotifyViewModel.album.album
+        albumViewModel.album
             .observe(on: MainScheduler.instance)
             .bind { [weak self] album in    //  Get Album
                 guard let _: AlbumViewController = self else { return }
@@ -89,12 +88,12 @@ class AlbumViewController: UIViewController {
         
         APICaller.shared.getAlbum(for: albumItem)
             .subscribe { [weak self] album in
-                self?.spotifyViewModel.album.album
+                self?.albumViewModel.album
                     .onNext(album)
             } onError: { error in
-                self.spotifyViewModel.album.album
+                self.albumViewModel.album
                     .onError(error)
-            }.disposed(by: spotifyViewModel.album.bag)
+            }.disposed(by: albumViewModel.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {

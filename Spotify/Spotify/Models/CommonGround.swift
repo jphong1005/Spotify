@@ -46,7 +46,7 @@ struct CommonGround: Codable {
         // MARK: - Stored-Props
         let album_type: String
         let total_tracks: Int
-        let available_markets: [String] = ["CA", "BR", "IT"]    //  ISO 3166-1 alpha-2 country code value
+        let available_markets: [String]?    //  ISO 3166-1 alpha-2 country code value
         let external_urls: ExternalURL
         let href: String
         let id: String
@@ -102,5 +102,14 @@ struct CommonGround: Codable {
         let id: String
         let type: String
         let uri: String
+    }
+    
+    struct Category: Codable {
+        
+        // MARK: - Stored-Props
+        let href: String
+        let icons: [`Image`]
+        let id: String
+        let name: String
     }
 }

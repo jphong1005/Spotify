@@ -14,7 +14,7 @@ class HomeViewController: UIViewController {
     
     enum HomeSectionType {
         case newReleases(newReleases: NewReleases?)
-        case featuredPlaylists(featuredPlaylists: FeaturedPlaylists?)
+        case featuredPlaylists(featuredPlaylists: Playlists?)
         case recommendations(tracks: Recommendations?)
         
         var headerTitle: String {
@@ -46,7 +46,9 @@ class HomeViewController: UIViewController {
     // MARK: - Stored-Props
     private var sections: [HomeSectionType] = [HomeSectionType]()
     
-    private let spotifyViewModel: SpotifyViewModel = SpotifyViewModel()
+    private let newReleasesViewModel: NewReleasesViewModel = NewReleasesViewModel()
+    private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
+    private let tracksViewModel: TracksViewModel = TracksViewModel()
     private var bag: DisposeBag = DisposeBag()
     
     // MARK: - Methods
@@ -85,18 +87,18 @@ class HomeViewController: UIViewController {
     private func bind() -> Void {
         
         /// 각 ViewModel의 Property를 관찰하는 Observable 선언 및 초기화
-        let newReleasesObservable: BehaviorSubject<NewReleases?> = self.spotifyViewModel.albums.newReleases
-        let featuredPlaylistsObservable: BehaviorSubject<FeaturedPlaylists?> = self.spotifyViewModel.playlists.featuredPlaylists
-        let recommendationsObservable: BehaviorSubject<Recommendations?> = self.spotifyViewModel.tracks.recommendations
+        let newReleasesObservable: BehaviorSubject<NewReleases?> = self.newReleasesViewModel.newReleases
+        let featuredPlaylistsObservable: BehaviorSubject<Playlists?> = self.playlistsViewModel.featuredPlaylists
+        let recommendationsObservable: BehaviorSubject<Recommendations?> = self.tracksViewModel.recommendations
         
         /// Observables를 결합
-        let combinedObservable: Observable<(NewReleases?, FeaturedPlaylists?, Recommendations?)> = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
+        let combinedObservable: Observable<(NewReleases?, Playlists?, Recommendations?)> = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
         
         updateSectionsWhenDataArrives(combinedObservable: combinedObservable)
     }
     
     /// SOLID의 '단일 책임 원칙 (= SRP)'에 의거하여 메서드를 분리
-    private func updateSectionsWhenDataArrives(combinedObservable: Observable<(NewReleases?, FeaturedPlaylists?, Recommendations?)>) -> Void {
+    private func updateSectionsWhenDataArrives(combinedObservable: Observable<(NewReleases?, Playlists?, Recommendations?)>) -> Void {
         
         combinedObservable
             .observe(on: MainScheduler.instance)
@@ -287,7 +289,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             navigationController?.pushViewController(albumVC, animated: true)
             break;
         case .featuredPlaylists(let featuredPlaylists):
-            guard let playlistItem: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
+            guard let playlistItem: Playlists.Playlist.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
             let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
             
             navigationController?.pushViewController(playlistVC, animated: true)
@@ -311,7 +313,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             return newReleases.albums.items.count
         case .featuredPlaylists(let featuredPlaylists):
-            guard let featuredPlaylists: FeaturedPlaylists = featuredPlaylists else { return 0 }
+            guard let featuredPlaylists: Playlists = featuredPlaylists else { return 0 }
             
             return featuredPlaylists.playlists.items.count
         case .recommendations(let reccomendations):
@@ -339,9 +341,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         case .featuredPlaylists(let featuredPlaylists):
             guard let cell: FeaturedPlaylistCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else { return UICollectionViewCell() }
             
-            guard let item: FeaturedPlaylists.PlayList.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
+            guard let item: Playlists.Playlist.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
             
-            cell.configureFeaturedPlaylistCollectionViewCellUI(value: item)
+            cell.configureFeaturedPlaylistCollectionViewCellUI(args: item)
             
             return cell;
         case .recommendations(let recommendations):
