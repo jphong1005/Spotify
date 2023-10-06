@@ -150,15 +150,6 @@ final class APICaller {
         }
     }
     
-    /*
-    public func performGetCategorysPlaylists(args param: CommonGround.Category?) -> Observable<FeaturedPlaylists> {
-        
-        guard let category_id: String = param?.id else { return Observable.empty() }
-        
-        return performRequest(query: "/browse/categories/\(category_id)/playlists?limit=50", method: .get)
-    }
-     */
-    
     /// Tracks
     public func getRecommendations() -> Task<Observable<Recommendations>, Error> {
         
@@ -172,8 +163,6 @@ final class APICaller {
                         seeds.insert(randomGenre)
                     }
                 }
-
-//                return performGetRecommendations(genres: seeds)
                 
                 let seed_genres: String = seeds.joined(separator: ",")
                 
@@ -183,15 +172,6 @@ final class APICaller {
             }
         }
     }
-    
-    /*
-    public func performGetRecommendations(genres: Set<String>) -> Observable<Recommendations> {
-
-        let seeds: String = genres.joined(separator: ",")
-        
-        return performRequest(query: "/recommendations?limit=40&seed_genres=\(seeds)", method: .get)
-    }
-     */
     
     ///  Users
     public func getCurrentUserProfile() -> Observable<User> {

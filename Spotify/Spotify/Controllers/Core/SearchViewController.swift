@@ -141,9 +141,6 @@ extension SearchViewController: UISearchResultsUpdating, UICollectionViewDelegat
         
         let categoryViewController: CategoryViewController = CategoryViewController(category: self.categories[indexPath.row])
         
-//        print(type(of: categories[indexPath.row]))
-//        print("didSelectItemAt value: \(categories[indexPath.row])")
-        
         navigationController?.pushViewController(categoryViewController, animated: true)
     }
     
