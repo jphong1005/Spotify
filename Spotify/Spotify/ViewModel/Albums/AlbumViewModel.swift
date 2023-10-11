@@ -11,7 +11,7 @@ import RxCocoa
 
 final class AlbumViewModel {
     
-    // MARK: - Stored-Prop
+    // MARK: - Stored-Props
     var album: PublishSubject<Album>
     var bag: DisposeBag = DisposeBag()
     

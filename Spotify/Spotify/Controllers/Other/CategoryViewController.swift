@@ -20,14 +20,14 @@ class CategoryViewController: UIViewController {
             }))
     
     // MARK: - Stored-Props
-    let category: CommonGround.Category
-    private var playlists: [Playlists.Playlist.SimplifiedPlaylist] = [Playlists.Playlist.SimplifiedPlaylist]()
+    let category: CommonGroundModel.Category
+    private var playlists: [CommonGroundModel.SimplifiedPlaylist] = [CommonGroundModel.SimplifiedPlaylist]()
     
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Inits
-    init(category: CommonGround.Category) {
+    init(category: CommonGroundModel.Category) {
         self.category = category
         
         super.init(nibName: nil, bundle: nil)
@@ -94,8 +94,7 @@ class CategoryViewController: UIViewController {
             .bind { [weak self] playlists in
                 self?.playlists = playlists.playlists.items.compactMap { $0 }
                 self?.collectionView.reloadData()
-            }
-            .disposed(by: self.bag)
+            }.disposed(by: self.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {

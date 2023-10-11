@@ -19,7 +19,7 @@ class PlaylistViewController: UIViewController {
     }))
     
     // MARK: - Stored-Props
-    private let playlistItem: Playlists.Playlist.SimplifiedPlaylist
+    private let playlistItem: CommonGroundModel.SimplifiedPlaylist
     
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
@@ -27,7 +27,7 @@ class PlaylistViewController: UIViewController {
     private var tracks: [Playlist.Track.PlaylistTrack] = [Playlist.Track.PlaylistTrack]()
     
     // MARK: - Inits
-    init(item: Playlists.Playlist.SimplifiedPlaylist) {
+    init(item: CommonGroundModel.SimplifiedPlaylist) {
         playlistItem = item
         
         super.init(nibName: nil, bundle: nil)
@@ -60,13 +60,23 @@ class PlaylistViewController: UIViewController {
         self.collectionView.frame = view.bounds
     }
     
-    private func defaultConfigurePlaylistViewController(with item: Playlists.Playlist.SimplifiedPlaylist) -> Void {
+    private func defaultConfigurePlaylistViewController(with item: CommonGroundModel.SimplifiedPlaylist) -> Void {
         
         view.backgroundColor = .systemBackground
         
         title = item.name
         
         navigationItem.largeTitleDisplayMode = .never
+    }
+    
+    private func addObserver() -> Void {
+        
+        APICaller.shared.getPlaylist(for: playlistItem)
+            .subscribe { [weak self] playlist in
+                self?.playlistsViewModel.playlist.onNext(playlist)
+            } onError: { error in
+                self.playlistsViewModel.playlist.onError(error)
+            }.disposed(by: playlistsViewModel.bag)
     }
     
     private func bind() -> Void {
@@ -83,16 +93,6 @@ class PlaylistViewController: UIViewController {
                 self?.tracks = playlist.tracks.items
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
-    }
-    
-    private func addObserver() -> Void {
-        
-        APICaller.shared.getPlaylist(for: playlistItem)
-            .subscribe { [weak self] playlist in
-                self?.playlistsViewModel.playlist.onNext(playlist)
-            } onError: { error in
-                self.playlistsViewModel.playlist.onError(error)
-            }.disposed(by: playlistsViewModel.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {

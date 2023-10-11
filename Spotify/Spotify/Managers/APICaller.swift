@@ -57,7 +57,7 @@ final class APICaller {
     ///  PUBLIC, PRIVATE API Methods.
     ///
     /// Albums
-    public func getAlbum(for album: CommonGround.SimplifiedAlbum) -> Observable<Album> {
+    public func getAlbum(for album: CommonGroundModel.SimplifiedAlbum) -> Observable<Album> {
         
         return performRequest(query: "/albums/\(album.id)", method: .get)
     }
@@ -128,7 +128,7 @@ final class APICaller {
     }
     
     /// Playlists
-    public func getPlaylist(for playlist: Playlists.Playlist.SimplifiedPlaylist) -> Observable<Playlist> {
+    public func getPlaylist(for playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Playlist> {
         
         return performRequest(query: "/playlists/\(playlist.id)", method: .get)
     }
@@ -138,7 +138,7 @@ final class APICaller {
         return performRequest(query: "/browse/featured-playlists?limit=20", method: .get)
     }
     
-    public func getCategoryPlaylists(args category: CommonGround.Category) -> Task<Observable<Playlists>, Error> {
+    public func getCategoryPlaylists(args category: CommonGroundModel.Category) -> Task<Observable<Playlists>, Error> {
         
         /// Get Category's Playlists
         return Task(priority: .background) { () -> Observable<Playlists> in
@@ -148,6 +148,12 @@ final class APICaller {
                 throw error
             }
         }
+    }
+    
+    /// Search
+    public func searchForItem(args query: String) -> Observable<SearchResponse> {
+        
+        return performRequest(query: "/search?q=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")&type=album,artist,playlist,track,show,episode,audiobook&limit=10", method: .get)
     }
     
     /// Tracks

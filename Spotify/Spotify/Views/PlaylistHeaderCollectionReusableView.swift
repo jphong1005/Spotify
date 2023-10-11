@@ -85,13 +85,12 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         super.layoutSubviews()
         
         frameBasedLayout()
-        //  applyConstraints()
     }
     
     public func configurePlaylistHeader<T>(args params: T) -> Void {
         
         switch params {
-        case let featuredPlaylist as Playlists.Playlist.SimplifiedPlaylist:
+        case let featuredPlaylist as CommonGroundModel.SimplifiedPlaylist:
             playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
             playlistNameLabel.text = featuredPlaylist.name
             playlistDescriptionLabel.text = featuredPlaylist.description
@@ -140,41 +139,6 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
             y: self.height - 80,
             width: 50,
             height: 50)
-    }
-    
-    private func applyConstraints() -> Void {
-        
-        let imageSize: CGFloat = self.height / 2.0
-        
-        playlistImageView.snp.makeConstraints { make in
-            make.centerX.equalTo(self)
-            make.top.equalTo(self).offset(20)
-            make.width.height.equalTo(imageSize)
-        }
-        
-        playlistNameLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(self).inset(10)
-            make.top.equalTo(self.playlistImageView.snp.bottom)
-            make.height.equalTo(45)
-        }
-        
-        playlistDescriptionLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(self).inset(10)
-            make.top.equalTo(self.playlistNameLabel.snp.bottom)
-            make.height.equalTo(self.playlistNameLabel.snp.height)
-        }
-        
-        playlistOwnerLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(self).inset(10)
-            make.top.equalTo(self.playlistDescriptionLabel.snp.bottom)
-            make.height.equalTo(self.playlistDescriptionLabel.snp.height)
-        }
-        
-        playButton.snp.makeConstraints { make in
-            make.left.equalTo(self.width).offset(80)
-            make.top.equalTo(self.height).offset(80)
-            make.width.height.equalTo(50)
-        }
     }
     
     // MARK: - Event Handler Method

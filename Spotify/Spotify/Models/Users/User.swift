@@ -14,11 +14,11 @@ struct User: Codable {
     let display_name: String
     let email: String
     let explicit_content: ExplicitContent
-    let external_urls: CommonGround.ExternalURL
+    let external_urls: CommonGroundModel.ExternalURL
     //  let followers: CommonGround.Follower
     let href: String
     let id: String
-    let images: [CommonGround.`Image`]
+    let images: [CommonGroundModel.`Image`]
     let product: String
     let type: String
     let uri: String

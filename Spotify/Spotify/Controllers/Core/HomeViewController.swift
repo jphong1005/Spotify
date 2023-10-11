@@ -12,25 +12,6 @@ import Then
 
 class HomeViewController: UIViewController {
     
-    enum HomeSectionType {
-        case newReleases(newReleases: NewReleases?)
-        case featuredPlaylists(featuredPlaylists: Playlists?)
-        case recommendations(tracks: Recommendations?)
-        
-        var headerTitle: String {
-            get {
-                switch self {
-                case .newReleases:
-                    return "New Releases"
-                case .featuredPlaylists:
-                    return "Featured Playlists"
-                case .recommendations:
-                    return "Recommendations"
-                }
-            }
-        }
-    }
-    
     // MARK: - UI Components
     private let collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -279,24 +260,22 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
+        let sectionType: HomeSectionType = sections[indexPath.section]
         
         switch sectionType {
         case .newReleases(let newReleases):
-            guard let albumItem: CommonGround.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
+            guard let albumItem: CommonGroundModel.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
             let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
             
             navigationController?.pushViewController(albumVC, animated: true)
             break;
         case .featuredPlaylists(let featuredPlaylists):
-            guard let playlistItem: Playlists.Playlist.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
+            guard let playlistItem: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
             let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
             
             navigationController?.pushViewController(playlistVC, animated: true)
             break;
         case .recommendations(_):
-            break;
-        default:
             break;
         }
     }
@@ -305,7 +284,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     ///  Required Methods.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let sectionTypes: HomeViewController.HomeSectionType = sections[section]
+        let sectionTypes: HomeSectionType = sections[section]
         
         switch sectionTypes {
         case .newReleases(let newReleases):
@@ -320,32 +299,30 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             guard let reccomendations: Recommendations = reccomendations else { return 0 }
             
             return reccomendations.tracks.count
-        default:
-            return 0
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let sectionType: HomeViewController.HomeSectionType = sections[indexPath.section]
+        let sectionType: HomeSectionType = sections[indexPath.section]
         
         switch sectionType {
         case .newReleases(let newReleases):
             guard let cell: NewReleasesCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewReleasesCollectionViewCell.identifier, for: indexPath) as? NewReleasesCollectionViewCell else { return UICollectionViewCell() }
             
-            guard let item: CommonGround.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return UICollectionViewCell() }
+            guard let item: CommonGroundModel.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureNewReleaseCollectionViewCellUI(value: item)
             
-            return cell;
+            return cell
         case .featuredPlaylists(let featuredPlaylists):
             guard let cell: FeaturedPlaylistCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else { return UICollectionViewCell() }
             
-            guard let item: Playlists.Playlist.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
+            guard let item: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureFeaturedPlaylistCollectionViewCellUI(args: item)
             
-            return cell;
+            return cell
         case .recommendations(let recommendations):
             guard let cell: RecommendationCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendationCollectionViewCell.identifier, for: indexPath) as? RecommendationCollectionViewCell else { return UICollectionViewCell() }
             
@@ -353,7 +330,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             cell.configureRecommendationCollectionViewCell(args: track)
             
-            return cell;
+            return cell
         }
     }
     

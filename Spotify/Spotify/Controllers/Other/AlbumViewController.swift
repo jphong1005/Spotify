@@ -19,14 +19,14 @@ class AlbumViewController: UIViewController {
     }))
     
     // MARK: - Stored-Props
-    private let albumItem: CommonGround.SimplifiedAlbum
+    private let albumItem: CommonGroundModel.SimplifiedAlbum
     private var album: Album? = nil
     
     private let albumViewModel: AlbumViewModel = AlbumViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
     // MARK: - Inits
-    init(item: CommonGround.SimplifiedAlbum) {
+    init(item: CommonGroundModel.SimplifiedAlbum) {
         albumItem = item
         
         super.init(nibName: nil, bundle: nil)
@@ -59,7 +59,7 @@ class AlbumViewController: UIViewController {
         self.collectionView.frame = view.bounds
     }
     
-    private func defaultConfigureAlbumViewController(with albumItem: CommonGround.SimplifiedAlbum) -> Void {
+    private func defaultConfigureAlbumViewController(with albumItem: CommonGroundModel.SimplifiedAlbum) -> Void {
         
         view.backgroundColor = .systemBackground
         

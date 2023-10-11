@@ -72,7 +72,7 @@ class NewReleasesCollectionViewCell: UICollectionViewCell {
         numberOfTracksLabel.text = nil
     }
     
-    public func configureNewReleaseCollectionViewCellUI(value: CommonGround.SimplifiedAlbum) -> Void {
+    public func configureNewReleaseCollectionViewCellUI(value: CommonGroundModel.SimplifiedAlbum) -> Void {
         
         albumCoverImageView.sd_setImage(with: URL(string: value.images.first?.url ?? ""))
         albumNameLabel.text = value.name

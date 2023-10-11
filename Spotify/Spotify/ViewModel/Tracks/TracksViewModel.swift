@@ -12,11 +12,13 @@ import RxCocoa
 final class TracksViewModel {
     
     // MARK: - Stored-Props
-    var recommendations: BehaviorSubject<Recommendations?> = BehaviorSubject(value: nil)
+    var recommendations: BehaviorSubject<Recommendations?>
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
     init() {
+        self.recommendations = BehaviorSubject(value: nil)
+        
         addObserver()
     }
     

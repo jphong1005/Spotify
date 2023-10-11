@@ -1,0 +1,36 @@
+//
+//  EnumModels.swift
+//  Spotify
+//
+//  Created by 홍진표 on 10/10/23.
+//
+
+import Foundation
+
+enum HomeSectionType {
+    case newReleases(newReleases: NewReleases?)
+    case featuredPlaylists(featuredPlaylists: Playlists?)
+    case recommendations(tracks: Recommendations?)
+    
+    var headerTitle: String {
+        get {
+            switch self {
+            case .newReleases:
+                return "New Releases";
+            case .featuredPlaylists:
+                return "Featured Playlists";
+            case .recommendations:
+                return "Recommendations";
+            }
+        }
+    }
+}
+
+enum SearchResult {
+    case track(track: TrackObject?)
+    case artist(artist: CommonGroundModel.ArtistObject?)
+    case album(album: CommonGroundModel.SimplifiedAlbum?)
+    case playlist(playlist: CommonGroundModel.SimplifiedPlaylist?)
+    case show(show: CommonGroundModel.SimplifiedShow?)
+    case audiobook(audiobook: SearchResponse.Audiobook.SimplifiedAudiobookObject?)
+}

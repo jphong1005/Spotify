@@ -7,11 +7,12 @@
 
 import UIKit
 import Then
+import SnapKit
 
 class CategoryCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Static constant
-    static let identifier: String = "GenreCollectionViewCell"
+    static let identifier: String = "CategoryCollectionViewCell"
     
     // MARK: - UI Components
     private let imageView: UIImageView = UIImageView().then {
@@ -57,7 +58,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        frameBasedLayout()
+        //  frameBasedLayout()
+        applyConstraints()
     }
     
     override func prepareForReuse() {
@@ -71,14 +73,14 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         label.text = nil
     }
     
-    public func configureGenreCollectionViewCell(args param: CommonGround.Category) -> Void {
+    public func configureCategoryCollectionViewCell(args category: CommonGroundModel.Category) -> Void {
         
         contentView.backgroundColor = colours.randomElement()
-        contentView.layer.cornerRadius = 5
+        contentView.layer.cornerRadius = 5.0
         contentView.layer.masksToBounds = true
         
-        imageView.sd_setImage(with: URL(string: param.icons.first?.url ?? ""))
-        label.text = param.name
+        imageView.sd_setImage(with: URL(string: category.icons.first?.url ?? ""))
+        label.text = category.name
     }
     
     private func frameBasedLayout() -> Void {
@@ -94,5 +96,22 @@ class CategoryCollectionViewCell: UICollectionViewCell {
             y: contentView.height / 2,
             width: contentView.width - 20,
             height: contentView.height / 2)
+    }
+    
+    private func applyConstraints() -> Void {
+        
+        imageView.snp.makeConstraints { make in
+            make.left.equalTo(contentView.snp.left).offset(contentView.bounds.width / 2)
+            make.top.equalTo(contentView.snp.top).offset(10)
+            make.width.equalTo(contentView.snp.width).dividedBy(2)
+            make.height.equalTo(contentView.snp.height).dividedBy(2)
+        }
+        
+        label.snp.makeConstraints { make in
+            make.left.equalTo(contentView.snp.left).offset(10)
+            make.bottom.equalTo(contentView.snp.bottom)
+            make.width.equalTo(contentView.snp.width).offset(-20)
+            make.height.equalTo(contentView.snp.height).dividedBy(2)
+        }
     }
 }

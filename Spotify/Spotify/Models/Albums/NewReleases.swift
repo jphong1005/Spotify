@@ -10,17 +10,5 @@ import Foundation
 struct NewReleases: Codable {
     
     // MARK: - Stored-Prop
-    let albums: Album
-    
-    struct Album: Codable {
-        
-        // MARK: - Stored-Props
-        let href: String
-        let limit: Int
-        let next: String?
-        let offset: Int
-        let previous: String?
-        let total: Int
-        let items: [CommonGround.SimplifiedAlbum]
-    }
+    let albums: CommonGroundModel.Album
 }

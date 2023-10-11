@@ -67,7 +67,7 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
         creatorNameLabel.text = nil
     }
     
-    public func configureFeaturedPlaylistCollectionViewCellUI(args param: Playlists.Playlist.SimplifiedPlaylist) -> Void {
+    public func configureFeaturedPlaylistCollectionViewCellUI(args param: CommonGroundModel.SimplifiedPlaylist) -> Void {
         
         playlistCoverImageView.sd_setImage(with: URL(string: param.images.first?.url ?? ""))
         playlistNameLabel.text = param.name

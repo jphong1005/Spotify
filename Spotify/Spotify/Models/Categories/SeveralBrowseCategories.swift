@@ -21,6 +21,6 @@ struct SeveralBrowseCategories: Codable {
         let offset: Int
         let previous: String?
         let total: Int
-        let items: [CommonGround.Category]
+        let items: [CommonGroundModel.Category]
     }
 }

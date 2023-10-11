@@ -12,11 +12,13 @@ import RxCocoa
 final class UsersViewModel {
     
     // MARK: - Stored-Props
-    var userProfile: BehaviorSubject<User?> = BehaviorSubject(value: nil)
+    var userProfile: BehaviorSubject<User?>
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
     init() {
+        self.userProfile = BehaviorSubject(value: nil)
+        
         addObserver()
     }
     

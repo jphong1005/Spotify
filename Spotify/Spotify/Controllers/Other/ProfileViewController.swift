@@ -89,7 +89,7 @@ class ProfileViewController: UIViewController {
         label.center = view.center
     }
     
-    private func configureTableViewHeader(with images: [CommonGround.`Image`]) -> Void {
+    private func configureTableViewHeader(with images: [CommonGroundModel.`Image`]) -> Void {
         
         let headerView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: (view.width) / 1.5))
         let imageSize: CGFloat = (headerView.height) / 2

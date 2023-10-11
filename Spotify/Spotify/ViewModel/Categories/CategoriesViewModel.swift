@@ -12,11 +12,13 @@ import RxCocoa
 final class CategoriesViewModel {
     
     // MARK: - Stored-Props
-    var categories: BehaviorSubject<SeveralBrowseCategories?> = BehaviorSubject(value: nil)
+    var categories: BehaviorSubject<SeveralBrowseCategories?>
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
     init() {
+        self.categories = BehaviorSubject(value: nil)
+        
         addObserver()
     }
     

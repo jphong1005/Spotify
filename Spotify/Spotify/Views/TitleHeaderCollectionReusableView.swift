@@ -18,7 +18,7 @@ class TitleHeaderCollectionReusableView: UICollectionReusableView {
     private let headerLabel: UILabel = UILabel().then {
         $0.textColor = .label
         $0.numberOfLines = 1
-        $0.font = .systemFont(ofSize: 20 , weight: .regular)
+        $0.font = .systemFont(ofSize: 20 , weight: .semibold)
     }
     
     // MARK: - Inits
