@@ -9,6 +9,7 @@ import UIKit
 import Then
 import RxSwift
 import RxCocoa
+import SafariServices
 
 class SearchViewController: UIViewController {
     
@@ -114,11 +115,11 @@ class SearchViewController: UIViewController {
         let group: NSCollectionLayoutGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)),
+                heightDimension: .absolute(130)),
             subitem: item,
             count: 2)
         
-        group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
         
         /// Section
         let section: NSCollectionLayoutSection = NSCollectionLayoutSection(group: group)
@@ -213,10 +214,20 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
     // MARK: - SearchResultsViewControllerDelegate Method Implementation
     func didTapResult(args result: SearchResult) {
         
+        var sfSafariVC: SFSafariViewController
+        
         switch result {
-        case .track(track: _):
+        case .track(track: let track):
+            guard let external_urls: URL = URL(string: track?.external_urls.spotify ?? "") else { return }
+            
+            sfSafariVC = SFSafariViewController(url: external_urls)
+            present(sfSafariVC, animated: true)
             break;
-        case .artist(artist: _):
+        case .artist(artist: let artist):
+            guard let external_urls: URL = URL(string: artist?.external_urls.spotify ?? "") else { return }
+            
+            sfSafariVC = SFSafariViewController(url: external_urls)
+            present(sfSafariVC, animated: true)
             break;
         case .album(album: let album):
             guard let album: CommonGroundModel.SimplifiedAlbum = album else { return }
@@ -230,7 +241,11 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             
             navigationController?.pushViewController(playlistVC, animated: true)
             break;
-        case .show(show: _):
+        case .show(show: let show):
+            guard let external_urls: URL = URL(string: show?.external_urls.spotify ?? "") else { return }
+            
+            sfSafariVC = SFSafariViewController(url: external_urls)
+            present(sfSafariVC, animated: true)
             break;
         case .audiobook(audiobook: _):
             break;

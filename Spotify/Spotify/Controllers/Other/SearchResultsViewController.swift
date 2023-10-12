@@ -20,7 +20,9 @@ class SearchResultsViewController: UIViewController {
 
     // MARK: - UI Component
     private let tableView: UITableView = UITableView(frame: .zero, style: .grouped).then {
-        $0.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.backgroundColor = .systemBackground
+        $0.register(DefaultSearchResultTableViewCell.self, forCellReuseIdentifier: DefaultSearchResultTableViewCell.identifier)
+        $0.register(SearchResultSubTitleTableViewCell.self, forCellReuseIdentifier: SearchResultSubTitleTableViewCell.identifier)
         $0.isHidden = true
     }
     
@@ -117,28 +119,35 @@ extension SearchResultsViewController: UITableViewDataSource, UITableViewDelegat
         
         let searchResult: SearchResult = sections[indexPath.section].results[indexPath.row]
         
+        guard let defaultSearchResultTableViewCell: DefaultSearchResultTableViewCell = tableView.dequeueReusableCell(withIdentifier: DefaultSearchResultTableViewCell.identifier, for: indexPath) as? DefaultSearchResultTableViewCell,
+                let searchResultSubTitleTableViewCell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
+        
         switch searchResult {
         case .track(let track):
-            cell.textLabel?.text = track?.name
-            break;
+            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: track)
+            
+            return searchResultSubTitleTableViewCell
         case .artist(artist: let artist):
-            cell.textLabel?.text = artist?.name
-            break;
+            defaultSearchResultTableViewCell.configureDefaultSearchResultTableViewCell(args: artist)
+            
+            return defaultSearchResultTableViewCell
         case .album(album: let album):
-            cell.textLabel?.text = album?.name
-            break;
+            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: album)
+            
+            return searchResultSubTitleTableViewCell
         case .playlist(playlist: let playlist):
-            cell.textLabel?.text = playlist?.name
-            break;
+            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: playlist)
+            
+            return searchResultSubTitleTableViewCell
         case .show(show: let show):
-            cell.textLabel?.text = show?.name
-            break;
+            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: show)
+            
+            return searchResultSubTitleTableViewCell
         case .audiobook(audiobook: let audiobook):
             cell.textLabel?.text = audiobook?.name
-            break;
+            
+            return cell
         }
-        
-        return cell
     }
     
     ///  Optional Methods.
@@ -155,6 +164,8 @@ extension SearchResultsViewController: UITableViewDataSource, UITableViewDelegat
     // MARK: - UITableViewDelegate Method
     ///  Optional Method.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath, animated: true)
         
         let searchResult: SearchResult = sections[indexPath.section].results[indexPath.row]
         

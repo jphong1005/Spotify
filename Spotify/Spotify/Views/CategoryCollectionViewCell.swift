@@ -46,6 +46,9 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        contentView.layer.cornerRadius = 5.0
+        contentView.layer.masksToBounds = true
+        
         contentView.addSubview(imageView)
         contentView.addSubview(label)
     }
@@ -76,8 +79,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     public func configureCategoryCollectionViewCell(args category: CommonGroundModel.Category) -> Void {
         
         contentView.backgroundColor = colours.randomElement()
-        contentView.layer.cornerRadius = 5.0
-        contentView.layer.masksToBounds = true
+        
+        
         
         imageView.sd_setImage(with: URL(string: category.icons.first?.url ?? ""))
         label.text = category.name

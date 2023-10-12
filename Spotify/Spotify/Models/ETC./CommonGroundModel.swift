@@ -121,7 +121,7 @@ struct CommonGroundModel: Codable {
         //  let genres: [String]
         let href: String
         let id: String
-        //  let images: [`Image`]
+        let images: [`Image`]?
         let name: String
         //  let popularity: Int
         let type: String
