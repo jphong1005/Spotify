@@ -9,6 +9,7 @@ import UIKit
 import Then
 import SDWebImage
 import SnapKit
+import SwiftSoup
 
 protocol PlaylistHeaderCollectionReusableViewDelegate: AnyObject {
     
@@ -91,11 +92,24 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
         
         switch params {
         case let featuredPlaylist as CommonGroundModel.SimplifiedPlaylist:
-            playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
-            playlistNameLabel.text = featuredPlaylist.name
-            playlistDescriptionLabel.text = featuredPlaylist.description
-            playlistOwnerLabel.text = featuredPlaylist.owner.display_name
-            break;
+            do {
+                /// Parsing Data
+                let doc: Document = try SwiftSoup.parse(featuredPlaylist.description)
+                
+                /// Get Plain Text
+                let text: String = try doc.text()
+                
+                playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
+                playlistNameLabel.text = featuredPlaylist.name
+                playlistDescriptionLabel.text = text
+                playlistOwnerLabel.text = featuredPlaylist.owner.display_name
+                break;
+            } catch Exception.Error(type: let type, Message: let message) {
+                print("type: \(type)")
+                print("message: \(message)")
+            } catch {
+                print("error: \(error.localizedDescription)")
+            }
         case let album as Album:
             playlistImageView.sd_setImage(with: URL(string: album.images.first?.url ?? ""))
             playlistNameLabel.text = album.name

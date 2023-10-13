@@ -25,5 +25,8 @@ target 'Spotify' do
   
   # Then
   pod 'Then'
+  
+  # SwiftSoup
+  pod 'SwiftSoup'
 
 end
