@@ -115,35 +115,42 @@ extension SearchResultsViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
         let searchResult: SearchResult = sections[indexPath.section].results[indexPath.row]
-        
-        guard let defaultSearchResultTableViewCell: DefaultSearchResultTableViewCell = tableView.dequeueReusableCell(withIdentifier: DefaultSearchResultTableViewCell.identifier, for: indexPath) as? DefaultSearchResultTableViewCell,
-                let searchResultSubTitleTableViewCell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
         
         switch searchResult {
         case .track(let track):
-            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: track)
+            guard let cell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
             
-            return searchResultSubTitleTableViewCell
+            cell.configureSearchResultSubTitleViewCell(args: track)
+            
+            return cell
         case .artist(artist: let artist):
-            defaultSearchResultTableViewCell.configureDefaultSearchResultTableViewCell(args: artist)
+            guard let cell: DefaultSearchResultTableViewCell = tableView.dequeueReusableCell(withIdentifier: DefaultSearchResultTableViewCell.identifier, for: indexPath) as? DefaultSearchResultTableViewCell else { return UITableViewCell() }
             
-            return defaultSearchResultTableViewCell
+            cell.configureDefaultSearchResultTableViewCell(args: artist)
+            
+            return cell
         case .album(album: let album):
-            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: album)
+            guard let cell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
             
-            return searchResultSubTitleTableViewCell
+            cell.configureSearchResultSubTitleViewCell(args: album)
+            
+            return cell
         case .playlist(playlist: let playlist):
-            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: playlist)
+            guard let cell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
             
-            return searchResultSubTitleTableViewCell
+            cell.configureSearchResultSubTitleViewCell(args: playlist)
+            
+            return cell
         case .show(show: let show):
-            searchResultSubTitleTableViewCell.configureSearchResultSubTitleViewCell(args: show)
+            guard let cell: SearchResultSubTitleTableViewCell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubTitleTableViewCell.identifier, for: indexPath) as? SearchResultSubTitleTableViewCell else { return UITableViewCell() }
             
-            return searchResultSubTitleTableViewCell
+            cell.configureSearchResultSubTitleViewCell(args: show)
+            
+            return cell
         case .audiobook(audiobook: let audiobook):
+            let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            
             cell.textLabel?.text = audiobook?.name
             
             return cell
