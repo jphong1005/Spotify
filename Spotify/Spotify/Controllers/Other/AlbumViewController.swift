@@ -25,6 +25,8 @@ class AlbumViewController: UIViewController {
     private let albumViewModel: AlbumViewModel = AlbumViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
+    private var tracks: [Album.Track.SimplifiedTrack] = [Album.Track.SimplifiedTrack]()
+    
     // MARK: - Inits
     init(item: CommonGroundModel.SimplifiedAlbum) {
         albumItem = item
@@ -68,6 +70,18 @@ class AlbumViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
     }
     
+    private func addObserver() -> Void {
+        
+        APICaller.shared.getAlbum(for: albumItem)
+            .subscribe { [weak self] album in
+                self?.albumViewModel.album
+                    .onNext(album)
+            } onError: { error in
+                self.albumViewModel.album
+                    .onError(error)
+            }.disposed(by: albumViewModel.bag)
+    }
+    
     private func bind() -> Void {
         
         disposeBag = DisposeBag()   //  중복구독 방지
@@ -80,20 +94,9 @@ class AlbumViewController: UIViewController {
                 guard let _: AlbumViewController = self else { return }
                 
                 self?.album = album
+                self?.tracks = album.tracks.items
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
-    }
-    
-    private func addObserver() -> Void {
-        
-        APICaller.shared.getAlbum(for: albumItem)
-            .subscribe { [weak self] album in
-                self?.albumViewModel.album
-                    .onNext(album)
-            } onError: { error in
-                self.albumViewModel.album
-                    .onError(error)
-            }.disposed(by: albumViewModel.bag)
     }
     
     private static func configureCollectionViewLayout() -> NSCollectionLayoutSection {
@@ -155,7 +158,6 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     ///  Required Methods.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        //return albums.count
         return album?.tracks.items.count ?? 0
     }
     
@@ -195,12 +197,15 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let track: Album.Track.SimplifiedTrack = tracks[indexPath.row]
+        
+        PlaybackPresenter.startPlayback(from: self, data: track)
     }
     
     // MARK: - PlaylistHeaderCollectionReusableViewDelegate Method Implementation
     func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {
         
-        //  Start playlist play in queue
-        print("Playing All")
+        PlaybackPresenter.startPlayback(from: self, data: tracks)
     }
 }

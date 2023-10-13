@@ -28,7 +28,7 @@ class SearchResultsViewController: UIViewController {
     
     // MARK: - Stored-Props
     private var sections: [SearchSection] = []
-    weak var delegate: SearchResultsViewControllerDelegate?
+    weak var delegate: SearchResultsViewControllerDelegate? //  Dependency Injection
 
     private let searchViewModel: SearchViewModel = SearchViewModel()
     private var bag: DisposeBag = DisposeBag()

@@ -24,7 +24,8 @@ class PlaylistViewController: UIViewController {
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
-    private var tracks: [Playlist.Track.PlaylistTrack] = [Playlist.Track.PlaylistTrack]()
+    private var playlistTracks: [Playlist.Track.PlaylistTrack] = [Playlist.Track.PlaylistTrack]()
+    private var tracks: [TrackObject] = [TrackObject]()
     
     // MARK: - Inits
     init(item: CommonGroundModel.SimplifiedPlaylist) {
@@ -90,7 +91,8 @@ class PlaylistViewController: UIViewController {
             .bind { [weak self] playlist in
                 guard let _: PlaylistViewController = self else { return }
                 
-                self?.tracks = playlist.tracks.items
+                self?.playlistTracks = playlist.tracks.items
+                self?.tracks = playlist.tracks.items.compactMap({ $0.track })
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
     }
@@ -164,7 +166,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     ///  Required Methods.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return tracks.count
+        return playlistTracks.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -173,7 +175,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             withReuseIdentifier: RecommendationCollectionViewCell.identifier,
             for: indexPath) as? RecommendationCollectionViewCell else { return UICollectionViewCell() }
         
-        cell.configureRecommendationCollectionViewCell(args: tracks[indexPath.row])
+        cell.configureRecommendationCollectionViewCell(args: playlistTracks[indexPath.row])
         
         return cell
     }
@@ -203,12 +205,16 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let index: Int = indexPath.row
+        let track: TrackObject = tracks[index]
+        
+        PlaybackPresenter.startPlayback(from: self, data: track)
     }
     
     // MARK: - PlaylistHeaderCollectionReusableViewDelegate Method Implementation
     func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {
         
-        //  Start playlist play in queue
-        print("Playing All")
+        PlaybackPresenter.startPlayback(from: self, data: tracks)
     }
 }

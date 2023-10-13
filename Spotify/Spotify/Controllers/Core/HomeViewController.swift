@@ -275,7 +275,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             navigationController?.pushViewController(playlistVC, animated: true)
             break;
-        case .recommendations(_):
+        case .recommendations(let recommendations):
+            guard let recommendationItem: TrackObject = recommendations?.tracks[indexPath.row] else { return }
+            
+            PlaybackPresenter.startPlayback(from: self, data: recommendationItem)
             break;
         }
     }

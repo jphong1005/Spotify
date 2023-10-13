@@ -218,10 +218,15 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         switch result {
         case .track(track: let track):
+            /*
             guard let external_urls: URL = URL(string: track?.external_urls.spotify ?? "") else { return }
             
             sfSafariVC = SFSafariViewController(url: external_urls)
             present(sfSafariVC, animated: true)
+            break;
+             */
+            
+            PlaybackPresenter.startPlayback(from: self, data: track)
             break;
         case .artist(artist: let artist):
             guard let external_urls: URL = URL(string: artist?.external_urls.spotify ?? "") else { return }
