@@ -73,9 +73,9 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
             artistNameLabel.text = album.artists.first?.name
             break;
         case let playlist as Playlist.Track.PlaylistTrack:
-            albumCoverImageView.sd_setImage(with: URL(string: playlist.track.album.images.first?.url ?? ""))
-            trackNameLabel.text = playlist.track.name
-            artistNameLabel.text = playlist.track.artists.first?.name
+            albumCoverImageView.sd_setImage(with: URL(string: playlist.track?.album.images.first?.url ?? ""))
+            trackNameLabel.text = playlist.track?.name
+            artistNameLabel.text = playlist.track?.artists.first?.name
             break;
         case let recommendation as TrackObject:
             albumCoverImageView.sd_setImage(with: URL(string: recommendation.album.images.first?.url ?? ""))

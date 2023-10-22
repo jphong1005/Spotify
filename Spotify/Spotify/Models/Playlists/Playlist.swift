@@ -13,7 +13,7 @@ struct Playlist: Codable {
     let collaborative: Bool
     let description: String?
     let external_urls: CommonGroundModel.ExternalURL
-    //  let followers: CommonGround.Follower
+    let followers: CommonGroundModel.Follower?
     let href: String
     let id: String
     let images: [CommonGroundModel.`Image`]
@@ -42,13 +42,13 @@ struct Playlist: Codable {
             let added_at: String
             let added_by: AddedBy
             let is_local: Bool
-            let track: TrackObject
+            let track: TrackObject?
             
             struct AddedBy: Codable {
                 
                 // MARK: - Stored-Props
                 let external_urls: CommonGroundModel.ExternalURL
-                //  let followers: CommonGround.Follower
+                let followers: CommonGroundModel.Follower?
                 let href: String
                 let id: String
                 let type: String

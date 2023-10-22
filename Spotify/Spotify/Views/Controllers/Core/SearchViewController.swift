@@ -76,9 +76,9 @@ class SearchViewController: UIViewController {
         navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
-    func bind<T>(firstArgs param1: T, secondArgs param2: UIViewController?) -> Void {
+    func bind<T>(firstArgs firstParams: T, secondArgs SecondParams: UIViewController?) -> Void {
         
-        switch param1 {
+        switch firstParams {
         case let categoriesViewModel as CategoriesViewModel:
             categoriesViewModel.categories
                 .observe(on: MainScheduler.instance)
@@ -91,7 +91,7 @@ class SearchViewController: UIViewController {
             searchViewModel.searchResults
                 .observe(on: MainScheduler.instance)
                 .bind { [weak self] searchResults in
-                    if let searchResultsVC: SearchResultsViewController = param2 as? SearchResultsViewController {
+                    if let searchResultsVC: SearchResultsViewController = SecondParams as? SearchResultsViewController {
                         searchResultsVC.update(args: searchResults)
                     }
                 }.disposed(by: self.bag)
@@ -226,7 +226,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             break;
              */
             
-            PlaybackPresenter.startPlayback(from: self, data: track)
+            PlaybackPresenter.shared.startPlayback(from: self, data: track)
             break;
         case .artist(artist: let artist):
             guard let external_urls: URL = URL(string: artist?.external_urls.spotify ?? "") else { return }

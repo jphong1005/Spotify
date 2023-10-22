@@ -24,7 +24,7 @@ class PlaylistViewController: UIViewController {
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
-    private var playlistTracks: [Playlist.Track.PlaylistTrack] = [Playlist.Track.PlaylistTrack]()
+    private var playlistTracks: [TrackObject] = [TrackObject]()
     private var tracks: [TrackObject] = [TrackObject]()
     
     // MARK: - Inits
@@ -91,8 +91,9 @@ class PlaylistViewController: UIViewController {
             .bind { [weak self] playlist in
                 guard let _: PlaylistViewController = self else { return }
                 
-                self?.playlistTracks = playlist.tracks.items
-                self?.tracks = playlist.tracks.items.compactMap({ $0.track })
+                self?.playlistTracks = playlist.tracks.items.compactMap({ return $0.track?.preview_url != nil ? $0.track : nil })
+                self?.tracks = playlist.tracks.items.compactMap({ return $0.track?.preview_url != nil ? $0.track : nil })
+                
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
     }
@@ -206,15 +207,15 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
         
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        let index: Int = indexPath.row
-        let track: TrackObject = tracks[index]
+        let indexRow: Int = indexPath.row
+        let track: TrackObject = tracks[indexRow]
         
-        PlaybackPresenter.startPlayback(from: self, data: track)
+        PlaybackPresenter.shared.startPlayback(from: self, data: track)
     }
     
     // MARK: - PlaylistHeaderCollectionReusableViewDelegate Method Implementation
     func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {
         
-        PlaybackPresenter.startPlayback(from: self, data: tracks)
+        PlaybackPresenter.shared.startPlayback(from: self, data: tracks)
     }
 }

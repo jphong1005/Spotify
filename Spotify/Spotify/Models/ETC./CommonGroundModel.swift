@@ -46,7 +46,7 @@ struct CommonGroundModel: Codable {
         // MARK: - Stored-Props
         let album_type: String
         let total_tracks: Int
-        let available_markets: [String]?    //  ISO 3166-1 alpha-2 country code value
+        let available_markets: [String]?
         let external_urls: ExternalURL
         let href: String
         let id: String
@@ -54,7 +54,7 @@ struct CommonGroundModel: Codable {
         let name: String
         let release_date: String
         let release_date_precision: String
-        //  let restrictions: CommonGround.Restriction = CommonGround.Restriction(reason: "")   //  market, product, explicit
+        let restrictions: Restriction?
         let type: String
         let uri: String
         let artists: [SimplifiedArtist]
@@ -79,7 +79,7 @@ struct CommonGroundModel: Codable {
         
         // MARK: - Stored-Props
         let external_urls: ExternalURL
-        //  let followers: Follower
+        let followers: Follower?
         let href: String
         let id: String
         let type: String
@@ -117,13 +117,13 @@ struct CommonGroundModel: Codable {
         
         // MARK: - Stored-Props
         let external_urls: ExternalURL
-        //  let followers: Follower
-        //  let genres: [String]
+        let followers: Follower?
+        let genres: [String]?
         let href: String
         let id: String
         let images: [`Image`]?
         let name: String
-        //  let popularity: Int
+        let popularity: Int?
         let type: String
         let uri: String
     }
@@ -200,7 +200,7 @@ struct CommonGroundModel: Codable {
         let id: String
         let images: [`Image`]
         let is_externally_hosted: Bool
-        let is_playable: Bool
+        let is_playable: Bool?
         let languages: [String]
         let name: String
         let release_date: String
@@ -208,7 +208,7 @@ struct CommonGroundModel: Codable {
         let resume_point: ResumePoint?
         let type: String
         let uri: String
-        //  let restrictions: CommonGround.Restriction = CommonGround.Restriction(reason: "")   //  market, product, explicit
+        let restrictions: Restriction?
         let show: SimplifiedShow?
         
         struct ResumePoint: Codable {

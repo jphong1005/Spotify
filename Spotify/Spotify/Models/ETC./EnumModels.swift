@@ -8,9 +8,9 @@
 import Foundation
 
 enum HomeSectionType {
-    case newReleases(newReleases: NewReleases?)
-    case featuredPlaylists(featuredPlaylists: Playlists?)
-    case recommendations(tracks: Recommendations?)
+    case newReleases(albums_items: [CommonGroundModel.SimplifiedAlbum]?)
+    case featuredPlaylists(playlists_items: [CommonGroundModel.SimplifiedPlaylist]?)
+    case recommendations(tracks: [TrackObject]?)
     
     var headerTitle: String {
         get {

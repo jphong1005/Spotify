@@ -72,25 +72,21 @@ class HomeViewController: UIViewController {
         let featuredPlaylistsObservable: BehaviorSubject<Playlists?> = self.playlistsViewModel.featuredPlaylists
         let recommendationsObservable: BehaviorSubject<Recommendations?> = self.tracksViewModel.recommendations
         
-        /// Observables를 결합
-        let combinedObservable: Observable<(NewReleases?, Playlists?, Recommendations?)> = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)    //  Data Stream을 하나로 통합 -> Data의 수신 시점이 다른 문제를 해결할수 있음!
+        /// Observables를 결합 -> Data Stream을 하나로 통합 (= Data의 수신 시점이 다른 문제를 해결)
+        let combinedObservable: Observable<(NewReleases?, Playlists?, Recommendations?)> = Observable.combineLatest(newReleasesObservable, featuredPlaylistsObservable, recommendationsObservable)
         
-        updateSectionsWhenDataArrives(combinedObservable: combinedObservable)
-    }
-    
-    /// SOLID의 '단일 책임 원칙 (= SRP)'에 의거하여 메서드를 분리
-    private func updateSectionsWhenDataArrives(combinedObservable: Observable<(NewReleases?, Playlists?, Recommendations?)>) -> Void {
-        
-        combinedObservable
-            .observe(on: MainScheduler.instance)
+        combinedObservable.observe(on: MainScheduler.instance)
             .bind { [weak self] (newReleasesResponse, featuredPlaylistsResponse, recommendationsResponse) in
-                
-                //  모든 Observable에서 데이터가 도착했으면 아래 블록 실행
+                /// 모든 Observable에서 데이터가 도착했으면 아래 블록 실행
                 guard newReleasesResponse != nil, featuredPlaylistsResponse != nil, recommendationsResponse != nil else { return }
                 
-                self?.sections.append(.newReleases(newReleases: newReleasesResponse))
-                self?.sections.append(.featuredPlaylists(featuredPlaylists: featuredPlaylistsResponse))
-                self?.sections.append(.recommendations(tracks: recommendationsResponse))
+                let newReleases_albums_items: [CommonGroundModel.SimplifiedAlbum]? = newReleasesResponse?.albums.items.compactMap({ return $0 })
+                let featuredPlaylists_playlists_items: [CommonGroundModel.SimplifiedPlaylist]? = featuredPlaylistsResponse?.playlists.items.compactMap({ return $0 })
+                let recommendations_tracks: [TrackObject]? = recommendationsResponse?.tracks.compactMap({ return $0.preview_url != nil ? $0 : nil })
+                
+                self?.sections.append(.newReleases(albums_items: newReleases_albums_items))
+                self?.sections.append(.featuredPlaylists(playlists_items: featuredPlaylists_playlists_items))
+                self?.sections.append(.recommendations(tracks: recommendations_tracks))
                 
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
@@ -264,21 +260,23 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         switch sectionType {
         case .newReleases(let newReleases):
-            guard let albumItem: CommonGroundModel.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return }
+            guard let albumItem: CommonGroundModel.SimplifiedAlbum = newReleases?[indexPath.row] else { return }
+            
             let albumVC: AlbumViewController = AlbumViewController(item: albumItem)
             
             navigationController?.pushViewController(albumVC, animated: true)
             break;
         case .featuredPlaylists(let featuredPlaylists):
-            guard let playlistItem: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return }
+            guard let playlistItem: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?[indexPath.row] else { return }
+            
             let playlistVC: PlaylistViewController = PlaylistViewController(item: playlistItem)
             
             navigationController?.pushViewController(playlistVC, animated: true)
             break;
         case .recommendations(let recommendations):
-            guard let recommendationItem: TrackObject = recommendations?.tracks[indexPath.row] else { return }
+            guard let recommendationItem: TrackObject = recommendations?[indexPath.row] else { return }
             
-            PlaybackPresenter.startPlayback(from: self, data: recommendationItem)
+            PlaybackPresenter.shared.startPlayback(from: self, data: recommendationItem)
             break;
         }
     }
@@ -290,18 +288,9 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let sectionTypes: HomeSectionType = sections[section]
         
         switch sectionTypes {
-        case .newReleases(let newReleases):
-            guard let newReleases: NewReleases = newReleases else { return 0 }
-            
-            return newReleases.albums.items.count
-        case .featuredPlaylists(let featuredPlaylists):
-            guard let featuredPlaylists: Playlists = featuredPlaylists else { return 0 }
-            
-            return featuredPlaylists.playlists.items.count
-        case .recommendations(let reccomendations):
-            guard let reccomendations: Recommendations = reccomendations else { return 0 }
-            
-            return reccomendations.tracks.count
+        case .newReleases(let newReleases): return newReleases?.count ?? 0
+        case .featuredPlaylists(let featuredPlaylists): return featuredPlaylists?.count ?? 0
+        case .recommendations(let recommendations): return recommendations?.count ?? 0
         }
     }
     
@@ -312,24 +301,21 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch sectionType {
         case .newReleases(let newReleases):
             guard let cell: NewReleasesCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: NewReleasesCollectionViewCell.identifier, for: indexPath) as? NewReleasesCollectionViewCell else { return UICollectionViewCell() }
-            
-            guard let item: CommonGroundModel.SimplifiedAlbum = newReleases?.albums.items[indexPath.row] else { return UICollectionViewCell() }
+            guard let item: CommonGroundModel.SimplifiedAlbum = newReleases?[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureNewReleaseCollectionViewCellUI(value: item)
             
             return cell
         case .featuredPlaylists(let featuredPlaylists):
             guard let cell: FeaturedPlaylistCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else { return UICollectionViewCell() }
-            
-            guard let item: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?.playlists.items[indexPath.row] else { return UICollectionViewCell() }
+            guard let item: CommonGroundModel.SimplifiedPlaylist = featuredPlaylists?[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureFeaturedPlaylistCollectionViewCellUI(args: item)
             
             return cell
         case .recommendations(let recommendations):
             guard let cell: RecommendationCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendationCollectionViewCell.identifier, for: indexPath) as? RecommendationCollectionViewCell else { return UICollectionViewCell() }
-            
-            guard let track: TrackObject = recommendations?.tracks[indexPath.row] else { return UICollectionViewCell() }
+            guard let track: TrackObject = recommendations?[indexPath.row] else { return UICollectionViewCell() }
             
             cell.configureRecommendationCollectionViewCell(args: track)
             

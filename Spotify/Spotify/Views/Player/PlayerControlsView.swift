@@ -12,15 +12,18 @@ import Then
 protocol PlayerControlsViewDelegate: AnyObject {
     
     // MARK: - Function Prototypes
-    func playerControlsViewDidTapPause(args playersControlsView: PlayerControlsView) -> Void
-    func playerControlsViewDidTapBackward(args playersControlsView: PlayerControlsView) -> Void
-    func playerControlsViewDidTapForward(args playersControlsView: PlayerControlsView) -> Void
+    func playerControlsViewDidTapPause(args playerControlsView: PlayerControlsView) -> Void
+    func playerControlsViewDidTapBackward(args playerControlsView: PlayerControlsView) -> Void
+    func playerControlsViewDidTapForward(args playerControlsView: PlayerControlsView) -> Void
+    func playerControlsView(firstArgs playerControlsView: PlayerControlsView, secondArgs didSlideSliderValue: Float)
 }
 
 class PlayerControlsView: UIView {
     
-    // MARK: - Stored-prop
+    // MARK: - Stored-Props
     weak var delegate: PlayerControlsViewDelegate?  //  Dependency Injection
+    
+    private var isPlaying: Bool = true
     
     // MARK: - UI Components
     private let nameLabel: UILabel = UILabel().then {
@@ -38,6 +41,7 @@ class PlayerControlsView: UIView {
     
     private let volumeSlider: UISlider = UISlider().then {
         $0.value = 0.5
+        $0.addTarget(self, action: #selector(didSlideSlider(_:)), for: .valueChanged)
     }
     
     private let backButton: UIButton = UIButton().then {
@@ -58,7 +62,7 @@ class PlayerControlsView: UIView {
         $0.addTarget(self, action: #selector(didTapForward(_:)), for: .touchUpInside)
     }
     
-    private let pauseButton: UIButton = UIButton().then {
+    private let playButton: UIButton = UIButton().then {
         $0.tintColor = .label
         $0.setImage(UIImage(systemName: "pause",
                             withConfiguration: UIImage.SymbolConfiguration(pointSize: 30,
@@ -91,10 +95,13 @@ class PlayerControlsView: UIView {
         
         self.addSubview(nameLabel)
         self.addSubview(subTitleLabel)
+        
         self.addSubview(volumeSlider)
+        
         self.addSubview(backButton)
         self.addSubview(forwardButton)
-        self.addSubview(pauseButton)
+        self.addSubview(playButton)
+        
         self.addSubview(shuffleButton)
         self.addSubview(repeatButton)
         
@@ -131,33 +138,46 @@ class PlayerControlsView: UIView {
         
         let buttonSize: CGFloat = 50.0
         
-        backButton.frame = CGRect(x: (pauseButton.left - buttonSize) - 25,
-                                  y: pauseButton.top,
+        backButton.frame = CGRect(x: (playButton.left - buttonSize) - 25,
+                                  y: playButton.top,
                                   width: buttonSize,
                                   height: buttonSize)
         
-        forwardButton.frame = CGRect(x: pauseButton.right + 25,
-                                     y: pauseButton.top,
+        forwardButton.frame = CGRect(x: playButton.right + 25,
+                                     y: playButton.top,
                                      width: buttonSize,
                                      height: buttonSize)
         
-        pauseButton.frame = CGRect(x: (width - buttonSize) / 2, 
+        playButton.frame = CGRect(x: (width - buttonSize) / 2,
                                    y: volumeSlider.bottom + 30,
                                    width: buttonSize,
                                    height: buttonSize)
         
         shuffleButton.frame = CGRect(x: (backButton.left - buttonSize) - 25,
-                                  y: pauseButton.top,
+                                  y: playButton.top,
                                   width: buttonSize,
                                   height: buttonSize)
         
         repeatButton.frame = CGRect(x: forwardButton.right + 25,
-                                  y: pauseButton.top,
+                                  y: playButton.top,
                                   width: buttonSize,
                                   height: buttonSize)
     }
     
+    internal func configurePlayerControlsView(firstArgs name: String, SecondArgs subTitle: String) -> Void {
+        
+        nameLabel.text = name
+        subTitleLabel.text = subTitle
+    }
+    
     // MARK: - Event Handler Methods
+    @objc private func didSlideSlider(_ sender: UISlider) -> Void {
+        
+        let value: Float = sender.value
+        
+        delegate?.playerControlsView(firstArgs: self, secondArgs: value)
+    }
+    
     @objc private func didTapBackward(_ sender: UIButton) -> Void {
         
         delegate?.playerControlsViewDidTapBackward(args: self)
@@ -165,7 +185,19 @@ class PlayerControlsView: UIView {
     
     @objc private func didTapPause(_ sender: UIButton) -> Void {
         
+        self.isPlaying = !isPlaying
+        
         delegate?.playerControlsViewDidTapPause(args: self)
+        
+        //  Update icon
+        let pause: UIImage? = UIImage(systemName: "pause", 
+                                      withConfiguration: UIImage.SymbolConfiguration(pointSize: 30,
+                                                                                     weight: .regular))
+        let play: UIImage? = UIImage(systemName: "play", 
+                                     withConfiguration: UIImage.SymbolConfiguration(pointSize: 30,
+                                                                                    weight: .regular))
+        
+        playButton.setImage(isPlaying ? pause : play, for: .normal)
     }
     
     @objc private func didTapForward(_ sender: UIButton) -> Void {

@@ -7,13 +7,28 @@
 
 import UIKit
 import Then
+import SDWebImage
+import AVFoundation
+
+protocol PlayerViewControllerDelegate: AnyObject {
+    
+    // MARK: - Function Prototyps
+    func didTapPause() -> Void
+    func didTapBackward() -> Void
+    func didTapForward() -> Void
+    func didSlideSlider(args value: Float) -> Void
+}
 
 class PlayerViewController: UIViewController {
-
+    
+    // MARK: - Stored-Props
+    weak var dataSource: PlayerViewDataSource?
+    weak var delegate: PlayerViewControllerDelegate?
+    
     // MARK: - UI Components
     private let playerImageView: UIImageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
-        $0.backgroundColor = .systemBlue
+        $0.contentMode = .scaleAspectFit
+        $0.backgroundColor = .clear
     }
     
     private let playerControlsView: PlayerControlsView = PlayerControlsView()
@@ -26,6 +41,8 @@ class PlayerViewController: UIViewController {
         defaultConfigurePlayerViewController()
         
         playerControlsView.delegate = self
+        
+        configurePlayerViewController()
     }
     
     override func viewDidLayoutSubviews() {
@@ -59,15 +76,24 @@ class PlayerViewController: UIViewController {
                                           height: (view.height - playerImageView.height) - (view.safeAreaInsets.top - view.safeAreaInsets.bottom) - 15)
     }
     
+    private func configurePlayerViewController() -> Void {
+            
+        playerImageView.sd_setImage(with: dataSource?.currentTrackObjectURL)
+        playerControlsView.configurePlayerControlsView(firstArgs: dataSource?.currentTrackObjectName ?? "", SecondArgs: dataSource?.currentTrackObjectSubTitle ?? "")
+    }
+    
+    public func refreshUI() -> Void {
+        
+        configurePlayerViewController()
+    }
+    
     // MARK: - Event Handler Methods
     @objc private func didTapClose(_ sender: UIBarButtonItem) -> Void {
         
         dismiss(animated: true)
     }
     
-    @objc private func didTapAction(_ sender: UIBarButtonItem) -> Void {
-        
-    }
+    @objc private func didTapAction(_ sender: UIBarButtonItem) -> Void {}
 }
 
 // MARK: - Extension ViewController
@@ -76,13 +102,21 @@ extension PlayerViewController: PlayerControlsViewDelegate {
     // MARK: - PlayerControlsViewDelegate Methods Implementation
     func playerControlsViewDidTapPause(args playersControlsView: PlayerControlsView) {
         
+        delegate?.didTapPause()
     }
     
     func playerControlsViewDidTapBackward(args playersControlsView: PlayerControlsView) {
         
+        delegate?.didTapBackward()
     }
     
     func playerControlsViewDidTapForward(args playersControlsView: PlayerControlsView) {
         
+        delegate?.didTapForward()
+    }
+    
+    func playerControlsView(firstArgs playerControlsView: PlayerControlsView, secondArgs didSlideSliderValue: Float) {
+        
+        delegate?.didSlideSlider(args: didSlideSliderValue)
     }
 }

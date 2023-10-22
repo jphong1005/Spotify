@@ -197,15 +197,8 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         collectionView.deselectItem(at: indexPath, animated: true)
-        
-        let track: Album.Track.SimplifiedTrack = tracks[indexPath.row]
-        
-        PlaybackPresenter.startPlayback(from: self, data: track)
     }
     
     // MARK: - PlaylistHeaderCollectionReusableViewDelegate Method Implementation
-    func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {
-        
-        PlaybackPresenter.startPlayback(from: self, data: tracks)
-    }
+    func PlaylistHeaderCollectionReusableViewDidTapPlayAll(header: PlaylistHeaderCollectionReusableView) {}
 }

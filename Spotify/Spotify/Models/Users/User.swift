@@ -15,7 +15,7 @@ struct User: Codable {
     let email: String
     let explicit_content: ExplicitContent
     let external_urls: CommonGroundModel.ExternalURL
-    //  let followers: CommonGround.Follower
+    let followers: CommonGroundModel.Follower?
     let href: String
     let id: String
     let images: [CommonGroundModel.`Image`]
