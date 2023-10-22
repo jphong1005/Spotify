@@ -34,3 +34,8 @@ enum SearchResult {
     case show(show: CommonGroundModel.SimplifiedShow?)
     case audiobook(audiobook: SearchResponse.Audiobook.SimplifiedAudiobookObject?)
 }
+
+enum State {
+    case playlist
+    case album
+}
