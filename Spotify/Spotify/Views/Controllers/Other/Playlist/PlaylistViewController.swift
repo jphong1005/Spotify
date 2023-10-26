@@ -156,7 +156,7 @@ class PlaylistViewController: UIViewController {
         )
         
         vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(vc, animated: true)
+        self.present(vc, animated: true)
     }
 }
 

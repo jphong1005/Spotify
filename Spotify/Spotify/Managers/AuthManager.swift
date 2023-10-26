@@ -28,11 +28,11 @@ final class AuthManager {
     // MARK: - Computed-Props
     public var signInURL: URL? {
         
-        let authorizationURL: String = "\(AuthConstants.strBaseAuthURL)?" +
+        let authorizationURL: String = "\(AuthConstants.baseAuthURL)?" +
         "response_type=code" +
-        "&client_id=\(AuthConstants.strClient_ID)" +
+        "&client_id=\(AuthConstants.client_ID)" +
         "&scope=\(AuthConstants.scopes)" +
-        "&redirect_uri=\(AuthConstants.strRedirect_URI)" +
+        "&redirect_uri=\(AuthConstants.redirect_URI)" +
         "&show_dialog=TRUE"
         
         return URL(string: authorizationURL)
@@ -77,11 +77,11 @@ final class AuthManager {
         
         //  Request Access Token
         //  url
-        guard let url: URL = URL(string: AuthConstants.strToken_URL) else { return }
+        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
         
         //  Header-Params
         let headers: HTTPHeaders = [
-            "Authorization": "Basic \(translate(id: AuthConstants.strClient_ID, secret: AuthConstants.strClient_secret))",
+            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         
@@ -89,7 +89,7 @@ final class AuthManager {
         let form: [String : Any] = [
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": AuthConstants.strRedirect_URI
+            "redirect_uri": AuthConstants.redirect_URI
         ]
         
         AF.request(url,
@@ -171,11 +171,11 @@ final class AuthManager {
         refreshingToken = true
         
         //  url
-        guard let url: URL = URL(string: AuthConstants.strToken_URL) else { return }
+        guard let url: URL = URL(string: AuthConstants.token_URL) else { return }
         
         //  Header-Params
         let headers: HTTPHeaders = [
-            "Authorization": "Basic \(translate(id: AuthConstants.strClient_ID, secret: AuthConstants.strClient_secret))",
+            "Authorization": "Basic \(translate(id: AuthConstants.client_ID, secret: AuthConstants.client_secret))",
             "Content-Type": "application/x-www-form-urlencoded"
         ]
         

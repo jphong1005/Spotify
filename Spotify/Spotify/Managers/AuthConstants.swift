@@ -10,15 +10,15 @@ import Foundation
 struct AuthConstants {
     
     // MARK: - Stored-Props
-    static let strClient_ID: String = AuthConstants.loadSpotifyInfo()["Client_ID"] ?? ""
-    static let strClient_secret: String = AuthConstants.loadSpotifyInfo()["Client_secret"] ?? ""
-    static let strRedirect_URI: String = "https://www.spotify.com"
-    static let strToken_URL: String = "https://accounts.spotify.com/api/token"
+    static let client_ID: String = AuthConstants.loadSpotifyInfo()["Client_ID"] ?? ""
+    static let client_secret: String = AuthConstants.loadSpotifyInfo()["Client_secret"] ?? ""
+    static let redirect_URI: String = "https://www.spotify.com"
+    static let token_URL: String = "https://accounts.spotify.com/api/token"
     
-    static let strBaseAuthURL: String = "https://accounts.spotify.com/authorize"
-    static let scopes = returnScopes(arg: dictListOfScopes)
+    static let baseAuthURL: String = "https://accounts.spotify.com/authorize"
+    static let scopes = returnScopes(arg: listOfScopes)
     
-    private static let dictListOfScopes: [String : [String]] = [
+    private static let listOfScopes: [String : [String]] = [
         "Playlists": ["playlist-read-private", "playlist-modify-private", "playlist-modify-public"],
         "Follow": ["user-follow-read"],
         "Library": ["user-library-modify", "user-library-read"],

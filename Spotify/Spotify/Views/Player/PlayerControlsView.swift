@@ -15,7 +15,7 @@ protocol PlayerControlsViewDelegate: AnyObject {
     func playerControlsViewDidTapPause(args playerControlsView: PlayerControlsView) -> Void
     func playerControlsViewDidTapBackward(args playerControlsView: PlayerControlsView) -> Void
     func playerControlsViewDidTapForward(args playerControlsView: PlayerControlsView) -> Void
-    func playerControlsView(firstArgs playerControlsView: PlayerControlsView, secondArgs didSlideSliderValue: Float)
+    func playerControlsView(first_args playerControlsView: PlayerControlsView, second_args didSlideSliderValue: Float)
 }
 
 class PlayerControlsView: UIView {
@@ -164,7 +164,7 @@ class PlayerControlsView: UIView {
                                   height: buttonSize)
     }
     
-    internal func configurePlayerControlsView(firstArgs name: String, SecondArgs subTitle: String) -> Void {
+    public func configurePlayerControlsView(first_args name: String, second_args subTitle: String) -> Void {
         
         nameLabel.text = name
         subTitleLabel.text = subTitle
@@ -175,7 +175,7 @@ class PlayerControlsView: UIView {
         
         let value: Float = sender.value
         
-        delegate?.playerControlsView(firstArgs: self, secondArgs: value)
+        delegate?.playerControlsView(first_args: self, second_args: value)
     }
     
     @objc private func didTapBackward(_ sender: UIButton) -> Void {

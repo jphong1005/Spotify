@@ -15,6 +15,7 @@ final class PlaylistsViewModel {
     var playlist: PublishSubject<Playlist>
     var featuredPlaylists: BehaviorSubject<Playlists?>
     var categoryPlaylists: PublishSubject<Playlists>
+    var getCurrentUsersPlaylists: BehaviorSubject<Playlists.Playlist?>
     var bag: DisposeBag = DisposeBag()
     
     // MARK: - Init
@@ -22,6 +23,7 @@ final class PlaylistsViewModel {
         self.playlist = PublishSubject<Playlist>.init()
         self.featuredPlaylists = BehaviorSubject(value: nil)
         self.categoryPlaylists = PublishSubject<Playlists>.init()
+        self.getCurrentUsersPlaylists = BehaviorSubject(value: nil)
         
         addObserver()
     }
@@ -34,6 +36,13 @@ final class PlaylistsViewModel {
                 self?.featuredPlaylists.onNext(featuredPlaylist)
             } onError: { error in
                 self.featuredPlaylists.onError(error)
+            }.disposed(by: self.bag)
+        
+        APICaller.shared.getCurrentUsersPlaylists()
+            .subscribe { [weak self] playlist in
+                self?.getCurrentUsersPlaylists.onNext(playlist)
+            } onError: { error in
+                self.getCurrentUsersPlaylists.onError(error)
             }.disposed(by: self.bag)
     }
 }

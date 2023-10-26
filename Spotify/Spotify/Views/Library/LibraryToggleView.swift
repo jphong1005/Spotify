@@ -80,7 +80,7 @@ class LibraryToggleView: UIView {
         }
     }
     
-    internal func updateForState(args params: State) -> Void {
+    public func updateForState(args params: State) -> Void {
         
         self.state = params
         

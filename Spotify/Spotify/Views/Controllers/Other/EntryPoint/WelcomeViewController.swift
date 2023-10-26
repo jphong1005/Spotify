@@ -78,14 +78,14 @@ class WelcomeViewController: UIViewController {
             
             alert.addAction(UIAlertAction(title: "Dismiss",
                                           style: .cancel))
-            present(alert, animated: true)
+            self.present(alert, animated: true)
             return
         }
         
         let tabBarVC: TabBarViewController = TabBarViewController()
         
         tabBarVC.modalPresentationStyle = .fullScreen
-        present(tabBarVC, animated: true)
+        self.present(tabBarVC, animated: true)
     }
 }
 

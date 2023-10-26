@@ -58,7 +58,7 @@ class SearchViewController: UIViewController {
         
         configureCollectionView()
         
-        bind(firstArgs: categoriesViewModel, secondArgs: nil)
+        bind(first_args: categoriesViewModel, second_args: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -76,7 +76,7 @@ class SearchViewController: UIViewController {
         navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
-    func bind<T>(firstArgs firstParams: T, secondArgs SecondParams: UIViewController?) -> Void {
+    func bind<T>(first_args firstParams: T, second_args SecondParams: UIViewController?) -> Void {
         
         switch firstParams {
         case let categoriesViewModel as CategoriesViewModel:
@@ -187,7 +187,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         //  Perform Search
         addObserver(args: query)
-        bind(firstArgs: searchViewModel, secondArgs: searchResultsVC)
+        bind(first_args: searchViewModel, second_args: searchResultsVC)
     }
     
     private func addObserver(args query: String) -> Void {
@@ -218,21 +218,13 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         switch result {
         case .track(track: let track):
-            /*
-            guard let external_urls: URL = URL(string: track?.external_urls.spotify ?? "") else { return }
-            
-            sfSafariVC = SFSafariViewController(url: external_urls)
-            present(sfSafariVC, animated: true)
-            break;
-             */
-            
             PlaybackPresenter.shared.startPlayback(from: self, data: track)
             break;
         case .artist(artist: let artist):
             guard let external_urls: URL = URL(string: artist?.external_urls.spotify ?? "") else { return }
             
             sfSafariVC = SFSafariViewController(url: external_urls)
-            present(sfSafariVC, animated: true)
+            self.present(sfSafariVC, animated: true)
             break;
         case .album(album: let album):
             guard let album: CommonGroundModel.SimplifiedAlbum = album else { return }
@@ -250,7 +242,7 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
             guard let external_urls: URL = URL(string: show?.external_urls.spotify ?? "") else { return }
             
             sfSafariVC = SFSafariViewController(url: external_urls)
-            present(sfSafariVC, animated: true)
+            self.present(sfSafariVC, animated: true)
             break;
         case .audiobook(audiobook: _):
             break;

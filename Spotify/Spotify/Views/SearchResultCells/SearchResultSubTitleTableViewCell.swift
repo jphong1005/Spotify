@@ -102,7 +102,7 @@ class SearchResultSubTitleTableViewCell: UITableViewCell {
             subTitleLabel.text = album.artists.first?.name
             break;
         case let playlist as CommonGroundModel.SimplifiedPlaylist:
-            iconImageView.sd_setImage(with: URL(string: playlist.images.first?.url ?? ""))
+            iconImageView.sd_setImage(with: URL(string: playlist.images.first?.url ?? ""), placeholderImage: UIImage(systemName: "photo"))
             label.text = playlist.name
             subTitleLabel.text = playlist.owner.display_name
             break;

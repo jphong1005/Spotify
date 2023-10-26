@@ -79,7 +79,7 @@ class PlayerViewController: UIViewController {
     private func configurePlayerViewController() -> Void {
             
         playerImageView.sd_setImage(with: dataSource?.currentTrackObjectURL)
-        playerControlsView.configurePlayerControlsView(firstArgs: dataSource?.currentTrackObjectName ?? "", SecondArgs: dataSource?.currentTrackObjectSubTitle ?? "")
+        playerControlsView.configurePlayerControlsView(first_args: dataSource?.currentTrackObjectName ?? "", second_args: dataSource?.currentTrackObjectSubTitle ?? "")
     }
     
     public func refreshUI() -> Void {
@@ -115,7 +115,7 @@ extension PlayerViewController: PlayerControlsViewDelegate {
         delegate?.didTapForward()
     }
     
-    func playerControlsView(firstArgs playerControlsView: PlayerControlsView, secondArgs didSlideSliderValue: Float) {
+    func playerControlsView(first_args playerControlsView: PlayerControlsView, second_args didSlideSliderValue: Float) {
         
         delegate?.didSlideSlider(args: didSlideSliderValue)
     }

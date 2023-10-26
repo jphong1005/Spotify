@@ -54,6 +54,20 @@ class LibraryViewController: UIViewController {
         
         view.addSubview(self.scrollView)
         view.addSubview(self.libraryToggleView)
+        
+        navigationBarUI()
+    }
+    
+    private func navigationBarUI() -> Void {
+        
+        switch libraryToggleView.state {
+        case .playlist:
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAddPlaylists(_:)))
+            break;
+        case .album:
+            navigationItem.rightBarButtonItem = nil
+            break;
+        }
     }
     
     private func frameBasedLayout() -> Void {
@@ -93,19 +107,27 @@ class LibraryViewController: UIViewController {
                                             height: self.scrollView.height)
         libraryAlbumsVC.didMove(toParent: self)
     }
+    
+    // MARK: - Event Handler Methods
+    @objc private func didTapAddPlaylists(_ sender: UIBarButtonItem) -> Void {
+        
+        libraryPlaylistsVC.showCreatePlaylistsAlert()
+    }
 }
 
 // MARK: - Extension ViewController
 extension LibraryViewController: UIScrollViewDelegate, LibraryToggleViewDelegate {
     
-    // MARK: - UIScrollViewDelegate Method
+    // MARK: - UIScrollViewDelegate Method Implementation
     /// Optional Method.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if (self.scrollView.contentOffset.x >= (view.width - 100)) {
             libraryToggleView.updateForState(args: .album)
+            navigationBarUI()
         } else {
             libraryToggleView.updateForState(args: .playlist)
+            navigationBarUI()
         }
     }
     
@@ -113,10 +135,12 @@ extension LibraryViewController: UIScrollViewDelegate, LibraryToggleViewDelegate
     func libraryToggleViewDidTapPlaylists(toggleView playlists: LibraryToggleView) {
         
         self.scrollView.setContentOffset(.zero, animated: true)
+        navigationBarUI()
     }
     
     func libraryToggleViewDidTapAlbums(toggleView albums: LibraryToggleView) {
         
         self.scrollView.setContentOffset(CGPoint(x: view.width, y: 0), animated: true)
+        navigationBarUI()
     }
 }

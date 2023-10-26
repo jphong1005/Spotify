@@ -30,22 +30,20 @@ final class APICaller {
                 let headers: HTTPHeaders = HTTPHeaders([
                     "Authorization": "Bearer \(token)"
                 ])
+                guard let query: String = query else { return }
                 
-                if let query: String = query {
-                    AF.request(APICaller.defaultEndPoint + query,
-                               method: .get,
-                               headers: headers)
-                    .validate(statusCode: 200 ..< 300)
-                    .validate(contentType: ["application/json"])
-                    .responseDecodable(of: T.self,
-                                       queue: DispatchQueue.global(qos: .background)) { response in
-                        switch response.result {
-                        case .success(let data):
-                            observser.onNext(data)
-                            observser.onCompleted(); break;
-                        case .failure(let error):
-                            observser.onError(error); break;
-                        }
+                AF.request(APICaller.defaultEndPoint + query,
+                           method: .get,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .responseDecodable(of: T.self, queue: DispatchQueue.global(qos: .background)) { response in
+                    switch response.result {
+                    case .success(let data):
+                        observser.onNext(data)
+                        observser.onCompleted(); break;
+                    case .failure(let error):
+                        observser.onError(error); break;
                     }
                 }
             }
@@ -131,6 +129,64 @@ final class APICaller {
     public func getPlaylist(for playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Playlist> {
         
         return performRequest(query: "/playlists/\(playlist.id)", method: .get)
+    }
+    
+    public func getCurrentUsersPlaylists() -> Observable<Playlists.Playlist> {
+        
+        return performRequest(query: "/me/playlists?limit=50", method: .get)
+    }
+    
+    public func createPlaylist(args playlistName: String) -> Observable<Void> {
+        
+        let body_params: Parameters = [
+            "name": playlistName
+        ]
+        
+        /// 값을 emits 할 필요가 없기 때문에, 값이 없는 Sequence만 생성함.
+        return Observable.create { observer in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint + "/me",
+                           method: .get,
+                           encoding: JSONEncoding.default,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .responseDecodable(of: User.self, queue: DispatchQueue.global(qos: .background)) { response in
+                    switch response.result {
+                    case .success(let data):
+                        AF.request(APICaller.defaultEndPoint + "/users/\(data.id)/playlists",
+                                   method: .post,
+                                   parameters: body_params,
+                                   encoding: JSONEncoding.default,
+                                   headers: headers)
+                        .validate(statusCode: 200 ..< 300)
+                        .validate(contentType: ["application/json"])
+                        .responseDecodable(of: Playlist.self, queue: DispatchQueue.global(qos: .background)) { response in
+                            switch response.result {
+                            case .success(let data):
+                                
+                                /// Create Playlist Data 로그 출력
+                                dump(data)
+                                
+                                observer.onNext(())
+                                observer.onCompleted(); break;
+                            case .failure(let error):
+                                observer.onError(error); break;
+                            }
+                        }
+                        break;
+                    case .failure(let error):
+                        observer.onError(error); break;
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
     }
     
     public func getFeaturedPlaylists() -> Observable<Playlists> {
