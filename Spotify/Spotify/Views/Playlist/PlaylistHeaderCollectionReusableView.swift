@@ -99,7 +99,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
                 /// Get Plain Text
                 let text: String = try doc.text()
                 
-                playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""))
+                playlistImageView.sd_setImage(with: URL(string: featuredPlaylist.images.first?.url ?? ""), placeholderImage: UIImage(systemName: "photo"))
                 playlistNameLabel.text = featuredPlaylist.name
                 playlistDescriptionLabel.text = text
                 playlistOwnerLabel.text = featuredPlaylist.owner.display_name
@@ -111,7 +111,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
                 print("error: \(error.localizedDescription)")
             }
         case let album as Album:
-            playlistImageView.sd_setImage(with: URL(string: album.images.first?.url ?? ""))
+            playlistImageView.sd_setImage(with: URL(string: album.images.first?.url ?? ""), placeholderImage: UIImage(systemName: "photo"))
             playlistNameLabel.text = album.name
             playlistDescriptionLabel.text = "Release Date: \(String.formattedDate(args: album.release_date))"
             playlistOwnerLabel.text = album.artists.first?.name

@@ -118,7 +118,7 @@ class LibraryViewController: UIViewController {
 // MARK: - Extension ViewController
 extension LibraryViewController: UIScrollViewDelegate, LibraryToggleViewDelegate {
     
-    // MARK: - UIScrollViewDelegate Method Implementation
+    // MARK: - UIScrollViewDelegate Method
     /// Optional Method.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         

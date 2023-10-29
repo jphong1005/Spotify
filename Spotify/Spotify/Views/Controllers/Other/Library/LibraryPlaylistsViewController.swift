@@ -23,9 +23,9 @@ class LibraryPlaylistsViewController: UIViewController {
     // MARK: - Stored-Props
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag()
-//    , disposeBag: DisposeBag = DisposeBag()
     
-    private var playlists: [CommonGroundModel.SimplifiedPlaylist?] = []
+    public var playlists: [CommonGroundModel.SimplifiedPlaylist?] = []
+    public var selectionHandler: ((CommonGroundModel.SimplifiedPlaylist) -> Void)?
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -41,12 +41,22 @@ class LibraryPlaylistsViewController: UIViewController {
         self.tableView.delegate = self
         
         bind()
+        
+        if (selectionHandler != nil) {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(didTapClose(_:)))
+        }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         frameBasedLayout()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updatePlaylists()
     }
     
     private func defaultConfigureLibraryPlaylistsViewController() -> Void {
@@ -83,16 +93,18 @@ class LibraryPlaylistsViewController: UIViewController {
             } onError: { error in
                 self.playlistsViewModel.getCurrentUsersPlaylists.onError(error)
             }.disposed(by: playlistsViewModel.bag)
-
     }
     
     private func bind() -> Void {
         
         playlistsViewModel.getCurrentUsersPlaylists
             .observe(on: MainScheduler.instance)
-            .bind { [weak self] playlists in
-                self?.playlists = playlists?.items ?? []
+            .bind { [weak self] playlist in
+                guard let playlist: Playlists.Playlist = playlist else { return }
+                    
+                self?.playlists = playlist.items
                 self?.updateUI()
+
             }.disposed(by: self.bag)
     }
     
@@ -108,6 +120,18 @@ class LibraryPlaylistsViewController: UIViewController {
             actionLabelView.isHidden = true
             self.tableView.isHidden = false
         }
+    }
+    
+    private func updatePlaylists() -> Void {
+        
+        APICaller.shared.getCurrentUsersPlaylists()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] playlist in
+                self?.playlists = playlist.items
+                self?.updateUI()
+            }, onError: { error in
+                print("error: \(error.localizedDescription)")
+            }).disposed(by: self.bag)
     }
     
     public func showCreatePlaylistsAlert() -> Void {
@@ -130,6 +154,12 @@ class LibraryPlaylistsViewController: UIViewController {
         
         self.present(alert, animated: true)
     }
+    
+    // MARK: - Event Handler Method
+    @objc private func didTapClose(_ sender: UIBarButtonItem) -> Void {
+        
+        self.dismiss(animated: true)
+    }
 }
 
 // MARK: - Extension ViewController
@@ -142,7 +172,7 @@ extension LibraryPlaylistsViewController: ActionLabelViewDelegate, UITableViewDa
     }
     
     // MARK: - UITableViewDataSource Methods
-    ///  Required Methods.
+    /// Required Methods.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return playlists.count
@@ -163,4 +193,22 @@ extension LibraryPlaylistsViewController: ActionLabelViewDelegate, UITableViewDa
     }
     
     // MARK: - ActionLabelViewDelegate Methods
+    /// Optional Method.
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+         
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        guard let playlist: CommonGroundModel.SimplifiedPlaylist = self.playlists[indexPath.row] else { return }
+        
+        guard selectionHandler == nil else {
+            selectionHandler?(playlist)
+            self.dismiss(animated: true)
+            
+            return
+        }
+        
+        let playlistVC: PlaylistViewController = PlaylistViewController(item: playlist)
+        
+        self.navigationController?.pushViewController(playlistVC, animated: true)
+    }
 }

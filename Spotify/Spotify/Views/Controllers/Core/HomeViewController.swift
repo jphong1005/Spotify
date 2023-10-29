@@ -48,6 +48,8 @@ class HomeViewController: UIViewController {
         navigationBarUI()
         
         view.addSubview(spinner)
+        
+        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -90,15 +92,6 @@ class HomeViewController: UIViewController {
                 
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
-    }
-    
-    private func navigationBarUI() -> Void {
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "gear"),
-            style: .done,
-            target: self,
-            action: #selector(didTapSettings(_:)))
     }
     
     private static func configureCollectionViewLayout(section: Int) -> NSCollectionLayoutSection {
@@ -238,12 +231,67 @@ class HomeViewController: UIViewController {
         self.collectionView.register(TitleHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleHeaderCollectionReusableView.identifier)
     }
     
+    private func navigationBarUI() -> Void {
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .done,
+            target: self,
+            action: #selector(didTapSettings(_:)))
+    }
+    
+    private func addLongTapGesture() -> Void {
+        
+        let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        self.collectionView.isUserInteractionEnabled = true
+        self.collectionView.addGestureRecognizer(gesture)
+    }
+    
     // MARK: - Event Handler Method
     @objc func didTapSettings(_ sender: UIBarButtonItem) -> Void {
         
         let settingsVC: SettingsViewController = SettingsViewController()
         
         navigationController?.pushViewController(settingsVC, animated: true)
+    }
+    
+    @objc func didLongPress(_ sender: UILongPressGestureRecognizer) -> Void {
+        
+        guard sender.state == .began else { return }
+        
+        let touchPoint: CGPoint = sender.location(in: self.collectionView)
+        guard let indexPath: IndexPath = self.collectionView.indexPathForItem(at: touchPoint),
+                indexPath.section == 2 else { return }
+        
+        do {
+            let trackObjects = try self.tracksViewModel.recommendations.value()?.tracks.compactMap({ return $0.preview_url != nil ? $0 : nil })
+            guard let trackObject: TrackObject = trackObjects?[indexPath.row] else { return }
+            let actionSheet: UIAlertController = UIAlertController(title: trackObject.name,
+                                                                   message: "Would you like to add this to a playlist?",
+                                                                   preferredStyle: .actionSheet)
+            
+            actionSheet.addAction(UIAlertAction(title: "CANCEL", style: .cancel))
+            actionSheet.addAction(UIAlertAction(title: "ADD TO PLAYLIST", style: .default, handler: { [weak self] _ in
+                DispatchQueue.main.async {
+                    let libraryPlaylistsVC: LibraryPlaylistsViewController = LibraryPlaylistsViewController()
+                    
+                    libraryPlaylistsVC.selectionHandler = { playlist in
+                        APICaller.shared.addItemsToPlaylist(first_args: trackObject, second_args: playlist)
+                            .subscribe(onDisposed: {
+                                print("SUCCESS")
+                            })
+                    }
+                    
+                    libraryPlaylistsVC.title = "Select Playlist"
+                    self?.present(UINavigationController(rootViewController: libraryPlaylistsVC), animated: true)
+                }
+            }))
+            
+            self.present(actionSheet, animated: true )
+        } catch {
+            print("error: \(error.localizedDescription)")
+        }
     }
 }
 

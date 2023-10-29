@@ -22,7 +22,7 @@ final class APICaller {
     private init() {}
     
     // MARK: - Methods
-    ///  PRIVATE Helper Method.
+    // MARK: - PRIVATE Helper Method.
     private func performRequest<T: Codable>(query: String?, method: HTTPMethod?, params: Parameters? = nil, headers: HTTPHeaders? = nil) -> Observable<T> {
         
         return Observable.create { observser in
@@ -52,9 +52,8 @@ final class APICaller {
         }.asObservable()
     }
     
-    ///  PUBLIC, PRIVATE API Methods.
-    ///
-    /// Albums
+    // MARK: - PUBLIC, PRIVATE API Methods.
+    // MARK: - Albums
     public func getAlbum(for album: CommonGroundModel.SimplifiedAlbum) -> Observable<Album> {
         
         return performRequest(query: "/albums/\(album.id)", method: .get)
@@ -65,7 +64,7 @@ final class APICaller {
         return performRequest(query: "/browse/new-releases?limit=50", method: .get)
     }
     
-    /// Categories
+    // MARK: - Categories
     public func getSeveralBrowseCategories() -> Observable<SeveralBrowseCategories> {
         
         return performRequest(query: "/browse/categories?limit=50", method: .get)
@@ -97,7 +96,7 @@ final class APICaller {
         }
     }
     
-    /// Genres
+    // MARK: - Genres
     private func getAvailableGenreSeeds() async throws -> Genre {
         
         /// .withCheckedThrowingContinuation()를 사용함으로써 비동기 코드 블록 내에서 값을 반환 or 오류를 던짐
@@ -125,10 +124,57 @@ final class APICaller {
         }
     }
     
-    /// Playlists
+    // MARK: - Playlists
     public func getPlaylist(for playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Playlist> {
         
         return performRequest(query: "/playlists/\(playlist.id)", method: .get)
+    }
+    
+    
+    public func addItemsToPlaylist(first_args track: TrackObject, second_args playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Void> {
+        
+        let body_param: Parameters = [
+            "uris": ["spotify:track:\(track.id)"]
+        ]
+        
+        return Observable.create { observer in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint + "/playlists/\(playlist.id)/tracks",
+                           method: .post,
+                           parameters: body_param,
+                           encoding: JSONEncoding.default,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .response(queue: DispatchQueue.global(qos: .background)) { reponse in
+                    switch reponse.result {
+                    case .success(let data):
+                        do {
+                            guard let safeData: Data = data else { return }
+                            
+                            let data: Any = try JSONSerialization.jsonObject(with: safeData, options: .fragmentsAllowed)
+                            if let uris: [String : Any] = data as? [String: Any], uris["snapshot_id"] as? String != nil {
+                                print("uris: \(uris)")
+                                
+                                observer.onNext(())
+                                observer.onCompleted(); break;
+                            }
+                        } catch {
+                            print("error: \(error.localizedDescription)")
+                        }
+                        break;
+                    case .failure(let error):
+                        observer.onError(error); break;
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
     }
     
     public func getCurrentUsersPlaylists() -> Observable<Playlists.Playlist> {
@@ -206,13 +252,13 @@ final class APICaller {
         }
     }
     
-    /// Search
+    // MARK: - Search
     public func searchForItem(args query: String) -> Observable<SearchResponse> {
         
         return performRequest(query: "/search?q=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")&type=album,artist,playlist,track,show,episode,audiobook&limit=10", method: .get)
     }
     
-    /// Tracks
+    // MARK: - Tracks
     public func getRecommendations() -> Task<Observable<Recommendations>, Error> {
         
         return Task(priority: .background) { () -> Observable<Recommendations> in
@@ -235,7 +281,7 @@ final class APICaller {
         }
     }
     
-    ///  Users
+    // MARK: - Users
     public func getCurrentUserProfile() -> Observable<User> {
         
         return performRequest(query: "/me", method: .get)

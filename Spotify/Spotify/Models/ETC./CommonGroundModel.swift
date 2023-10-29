@@ -146,6 +146,7 @@ struct CommonGroundModel: Codable {
         let collaborative: Bool
         let description: String
         let external_urls: ExternalURL
+        let followers: Follower?
         let href: String
         let id: String
         let images: [`Image`]
