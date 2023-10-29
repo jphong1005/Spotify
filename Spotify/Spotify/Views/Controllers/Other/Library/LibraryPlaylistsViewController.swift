@@ -131,7 +131,7 @@ class LibraryPlaylistsViewController: UIViewController {
                 self?.updateUI()
             }, onError: { error in
                 print("error: \(error.localizedDescription)")
-            }).disposed(by: self.bag)
+            }).disposed(by: playlistsViewModel.bag)
     }
     
     public func showCreatePlaylistsAlert() -> Void {
@@ -208,6 +208,8 @@ extension LibraryPlaylistsViewController: ActionLabelViewDelegate, UITableViewDa
         }
         
         let playlistVC: PlaylistViewController = PlaylistViewController(item: playlist)
+        
+        playlistVC.isOwner = true
         
         self.navigationController?.pushViewController(playlistVC, animated: true)
     }

@@ -130,12 +130,9 @@ final class APICaller {
         return performRequest(query: "/playlists/\(playlist.id)", method: .get)
     }
     
-    
     public func addItemsToPlaylist(first_args track: TrackObject, second_args playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Void> {
         
-        let body_param: Parameters = [
-            "uris": ["spotify:track:\(track.id)"]
-        ]
+        let body_param: Parameters = ["uris": ["spotify:track:\(track.id)"]]
         
         return Observable.create { observer in
             AuthManager.shared.withValidToken { token in
@@ -177,6 +174,50 @@ final class APICaller {
         }
     }
     
+    public func removePlaylistItems(first_args track: TrackObject, second_args playlist: CommonGroundModel.SimplifiedPlaylist) -> Observable<Void> {
+        
+        let body_param: Parameters = ["tracks": [["uri": "spotify:track:\(track.id)"]]]
+        
+        return Observable.create { observer in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint + "/playlists/\(playlist.id)/tracks",
+                           method: .delete,
+                           parameters: body_param,
+                           encoding: JSONEncoding.default,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .response(queue: DispatchQueue.global(qos: .background)) { reponse in
+                    switch reponse.result {
+                    case .success(let data):
+                        do {
+                            guard let safeData: Data = data else { return }
+                            
+                            let data: Any = try JSONSerialization.jsonObject(with: safeData, options: .fragmentsAllowed)
+                            if let uris: [String : Any] = data as? [String: Any], uris["snapshot_id"] as? String != nil {
+                                print("uris: \(uris)")
+                                
+                                observer.onNext(())
+                                observer.onCompleted(); break;
+                            }
+                        } catch {
+                            print("error: \(error.localizedDescription)")
+                        }
+                        break;
+                    case .failure(let error):
+                        observer.onError(error); break;
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
     public func getCurrentUsersPlaylists() -> Observable<Playlists.Playlist> {
         
         return performRequest(query: "/me/playlists?limit=50", method: .get)
@@ -184,9 +225,7 @@ final class APICaller {
     
     public func createPlaylist(args playlistName: String) -> Observable<Void> {
         
-        let body_params: Parameters = [
-            "name": playlistName
-        ]
+        let body_params: Parameters = ["name": playlistName]
         
         /// 값을 emits 할 필요가 없기 때문에, 값이 없는 Sequence만 생성함.
         return Observable.create { observer in

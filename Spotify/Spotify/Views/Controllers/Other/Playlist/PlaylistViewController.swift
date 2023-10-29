@@ -24,8 +24,8 @@ class PlaylistViewController: UIViewController {
     private let playlistsViewModel: PlaylistsViewModel = PlaylistsViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
-    private var playlistTracks: [TrackObject] = [TrackObject]()
     private var tracks: [TrackObject] = [TrackObject]()
+    public var isOwner: Bool = false
     
     // MARK: - Inits
     init(item: CommonGroundModel.SimplifiedPlaylist) {
@@ -53,6 +53,10 @@ class PlaylistViewController: UIViewController {
         configureCollectionView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare(_:)))
+        
+        let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        
+        self.collectionView.addGestureRecognizer(gesture)
     }
     
     override func viewDidLayoutSubviews() {
@@ -91,9 +95,7 @@ class PlaylistViewController: UIViewController {
             .bind { [weak self] playlist in
                 guard let _: PlaylistViewController = self else { return }
                 
-                self?.playlistTracks = playlist.tracks.items.compactMap({ return $0.track?.preview_url != nil ? $0.track : nil })
                 self?.tracks = playlist.tracks.items.compactMap({ return $0.track?.preview_url != nil ? $0.track : nil })
-                
                 self?.collectionView.reloadData()
             }.disposed(by: self.bag)
     }
@@ -158,16 +160,53 @@ class PlaylistViewController: UIViewController {
         vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         self.present(vc, animated: true)
     }
+    
+    @objc private func didLongPress(_ sender: UILongPressGestureRecognizer) -> Void {
+        
+        guard sender.state == .began else { return }
+        
+        let touchPoint: CGPoint = sender.location(in: self.collectionView)
+        guard let indexPath: IndexPath = self.collectionView.indexPathForItem(at: touchPoint) else { return }
+        
+        let actionSheet: UIAlertController = UIAlertController(title: tracks[indexPath.row].name, message: "Would you like to remove this from the playlist?", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "CANCEL", style: .cancel))
+        actionSheet.addAction(UIAlertAction(title: "REMOVE", style: .destructive, handler: { [weak self] _ in
+            guard let strongSelf = self else { return }
+            
+                APICaller.shared.removePlaylistItems(first_args: strongSelf.tracks[indexPath.row], second_args: strongSelf.playlistItem)
+                .observe(on: MainScheduler.instance)
+                    .subscribe {
+                        print("REMOVED")
+                        strongSelf.tracks.remove(at: indexPath.row)
+                        strongSelf.collectionView.reloadData()
+                    }
+        }))
+        
+        self.present(actionSheet, animated: true)
+    }
 }
 
 // MARK: - Extension ViewController
 extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewDataSource, PlaylistHeaderCollectionReusableViewDelegate {
     
+    // MARK: - UICollectionViewDelegate Methods
+    ///  Optional Method.
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let indexRow: Int = indexPath.row
+        let track: TrackObject = tracks[indexRow]
+        
+        PlaybackPresenter.shared.startPlayback(from: self, data: track)
+    }
+    
     // MARK: - UICollectionViewDataSource Methods
     ///  Required Methods.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return playlistTracks.count
+        return tracks.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -176,7 +215,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             withReuseIdentifier: RecommendationCollectionViewCell.identifier,
             for: indexPath) as? RecommendationCollectionViewCell else { return UICollectionViewCell() }
         
-        cell.configureRecommendationCollectionViewCell(args: playlistTracks[indexPath.row])
+        cell.configureRecommendationCollectionViewCell(args: tracks[indexPath.row])
         
         return cell
     }
@@ -201,16 +240,6 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
         header.delegate = self
         
         return header
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        collectionView.deselectItem(at: indexPath, animated: true)
-        
-        let indexRow: Int = indexPath.row
-        let track: TrackObject = tracks[indexRow]
-        
-        PlaybackPresenter.shared.startPlayback(from: self, data: track)
     }
     
     // MARK: - PlaylistHeaderCollectionReusableViewDelegate Method Implementation
