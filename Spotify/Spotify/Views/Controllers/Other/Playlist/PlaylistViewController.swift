@@ -172,7 +172,7 @@ class PlaylistViewController: UIViewController {
         
         actionSheet.addAction(UIAlertAction(title: "CANCEL", style: .cancel))
         actionSheet.addAction(UIAlertAction(title: "REMOVE", style: .destructive, handler: { [weak self] _ in
-            guard let strongSelf = self else { return }
+            guard let strongSelf: PlaylistViewController = self else { return }
             
                 APICaller.shared.removePlaylistItems(first_args: strongSelf.tracks[indexPath.row], second_args: strongSelf.playlistItem)
                 .observe(on: MainScheduler.instance)

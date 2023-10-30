@@ -68,7 +68,7 @@ class RecommendationCollectionViewCell: UICollectionViewCell {
     public func configureRecommendationCollectionViewCell<T>(args params : T) -> Void {
         
         switch params {
-        case let album as Album.Track.SimplifiedTrack:
+        case let album as CommonGroundModel.Track.SimplifiedTrack:
             trackNameLabel.text = album.name
             artistNameLabel.text = album.artists.first?.name
             break;

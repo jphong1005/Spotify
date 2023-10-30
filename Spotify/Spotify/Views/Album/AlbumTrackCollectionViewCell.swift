@@ -54,7 +54,7 @@ class AlbumTrackCollectionViewCell: UICollectionViewCell {
         artistNameLabel.text = nil
     }
     
-    public func configureAlbumTrackCollectionViewCell(args album: Album.Track.SimplifiedTrack?) -> Void {
+    public func configureAlbumTrackCollectionViewCell(args album: CommonGroundModel.Track.SimplifiedTrack?) -> Void {
         
         trackNameLabel.text = album?.name
         artistNameLabel.text = album?.artists.first?.name

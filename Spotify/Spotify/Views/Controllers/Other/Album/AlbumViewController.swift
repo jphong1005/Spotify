@@ -25,7 +25,7 @@ class AlbumViewController: UIViewController {
     private let albumViewModel: AlbumViewModel = AlbumViewModel()
     private var bag: DisposeBag = DisposeBag(), disposeBag: DisposeBag = DisposeBag()
     
-    private var tracks: [Album.Track.SimplifiedTrack] = [Album.Track.SimplifiedTrack]()
+    private var tracks: [CommonGroundModel.Track.SimplifiedTrack] = [CommonGroundModel.Track.SimplifiedTrack]()
     
     // MARK: - Inits
     init(item: CommonGroundModel.SimplifiedAlbum) {
@@ -68,6 +68,7 @@ class AlbumViewController: UIViewController {
         title = albumItem.name
         
         navigationItem.largeTitleDisplayMode = .never
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapActions(_:)))
     }
     
     private func addObserver() -> Void {
@@ -91,11 +92,11 @@ class AlbumViewController: UIViewController {
         albumViewModel.album
             .observe(on: MainScheduler.instance)
             .bind { [weak self] album in    //  Get Album
-                guard let _: AlbumViewController = self else { return }
+                guard let self: AlbumViewController = self else { return }
                 
-                self?.album = album
-                self?.tracks = album.tracks.items
-                self?.collectionView.reloadData()
+                self.album = album
+                self.tracks = album.tracks.items
+                self.collectionView.reloadData()
             }.disposed(by: self.bag)
     }
     
@@ -148,6 +149,24 @@ class AlbumViewController: UIViewController {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: PlaylistHeaderCollectionReusableView.identifier)
         self.collectionView.register(AlbumTrackCollectionViewCell.self, forCellWithReuseIdentifier: AlbumTrackCollectionViewCell.identifier)
+    }
+    
+    // MARK: - Event Handler Method
+    @objc private func didTapActions(_ sender: UIBarButtonItem) -> Void {
+        
+        let actionSheet: UIAlertController = UIAlertController(title: album?.name, message: "Actions", preferredStyle: .actionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "CANCEL", style: .cancel))
+        actionSheet.addAction(UIAlertAction(title: "SAVE ALBUM", style: .default, handler: { [weak self] _ in
+            guard let strongSelf: AlbumViewController = self, let album: Album = strongSelf.album else { return }
+            
+            APICaller.shared.saveAlbumsForCurrentUser(args: album)
+                .subscribe(onDisposed:  {
+                    print("Saved")
+                })
+        }))
+        
+        self.present(actionSheet, animated: true)
     }
 }
 

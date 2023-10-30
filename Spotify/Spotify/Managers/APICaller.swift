@@ -59,6 +59,48 @@ final class APICaller {
         return performRequest(query: "/albums/\(album.id)", method: .get)
     }
     
+    public func getUsersSavedAlbums() -> Observable<Albums> {
+        
+        return performRequest(query: "/me/albums", method: .get)
+    }
+    
+    public func saveAlbumsForCurrentUser(args album: Album) -> Observable<Void> {
+        
+        return Observable.create { observer in
+            AuthManager.shared.withValidToken { token in
+                let headers: HTTPHeaders = HTTPHeaders([
+                    "Authorization": "Bearer \(token)"
+                ])
+                
+                AF.request(APICaller.defaultEndPoint + "/me/albums?ids=\(album.id)",
+                           method: .put,
+                           headers: headers)
+                .validate(statusCode: 200 ..< 300)
+                .validate(contentType: ["application/json"])
+                .response(queue: DispatchQueue.global(qos: .background)) { reponse in
+                    switch reponse.result {
+                    case .success(let data):
+                        do {
+                            guard let safeData: Data = data else { return }
+                            let decodedData: Any = try JSONSerialization.jsonObject(with: safeData, options: .fragmentsAllowed)
+                            
+                            print("decodedData: \(decodedData)")
+                            
+                            observer.onNext(())
+                            observer.onCompleted(); break;
+                        } catch {
+                            print("error: \(error.localizedDescription)")
+                        }
+                    case .failure(let error):
+                        observer.onError(error); break;
+                    }
+                }
+            }
+            
+            return Disposables.create()
+        }
+    }
+    
     public func getNewReleases() -> Observable<NewReleases> {
         
         return performRequest(query: "/browse/new-releases?limit=50", method: .get)
@@ -153,8 +195,8 @@ final class APICaller {
                         do {
                             guard let safeData: Data = data else { return }
                             
-                            let data: Any = try JSONSerialization.jsonObject(with: safeData, options: .fragmentsAllowed)
-                            if let uris: [String : Any] = data as? [String: Any], uris["snapshot_id"] as? String != nil {
+                            let decodedData: Any = try JSONSerialization.jsonObject(with: safeData, options: .fragmentsAllowed)
+                            if let uris: [String : Any] = decodedData as? [String: Any], uris["snapshot_id"] as? String != nil {
                                 print("uris: \(uris)")
                                 
                                 observer.onNext(())

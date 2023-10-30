@@ -14,7 +14,7 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
         
         settingTabBarUI()
     }
@@ -40,7 +40,7 @@ class TabBarViewController: UITabBarController {
         libraryVC.tabBarItem.selectedImage = UIImage(systemName: "square.filled.on.square")
         libraryVC.navigationBar.tintColor = .label
         
-        tabBar.tintColor = .label
+        self.tabBar.tintColor = .label
         
         setViewControllers([homeVC, searchVC, libraryVC], animated: false)
     }

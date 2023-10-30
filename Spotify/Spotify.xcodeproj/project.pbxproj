@@ -28,6 +28,8 @@
 		E8575B082AA708160063A4D5 /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8575B072AA708160063A4D5 /* Authorization.swift */; };
 		E859A5F62ACEB1D300A1F642 /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E859A5F52ACEB1D300A1F642 /* CategoriesViewModel.swift */; };
 		E859A5F82ACEB47500A1F642 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E859A5F72ACEB47500A1F642 /* CategoryViewController.swift */; };
+		E85BD53B2AEFB43B002A7D83 /* Albums.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85BD53A2AEFB43B002A7D83 /* Albums.swift */; };
+		E85BD53D2AEFCA67002A7D83 /* Notification.Name+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85BD53C2AEFCA67002A7D83 /* Notification.Name+.swift */; };
 		E86075C62AD52B6300F24CB7 /* EnumModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86075C52AD52B6300F24CB7 /* EnumModels.swift */; };
 		E86075C82AD572AF00F24CB7 /* SearchSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86075C72AD572AF00F24CB7 /* SearchSectionModel.swift */; };
 		E861B5DD2AD9600900AB8D19 /* PlayerControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861B5DC2AD9600900AB8D19 /* PlayerControlsView.swift */; };
@@ -98,6 +100,8 @@
 		E8575B072AA708160063A4D5 /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		E859A5F52ACEB1D300A1F642 /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
 		E859A5F72ACEB47500A1F642 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		E85BD53A2AEFB43B002A7D83 /* Albums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Albums.swift; sourceTree = "<group>"; };
+		E85BD53C2AEFCA67002A7D83 /* Notification.Name+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+.swift"; sourceTree = "<group>"; };
 		E86075C52AD52B6300F24CB7 /* EnumModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumModels.swift; sourceTree = "<group>"; };
 		E86075C72AD572AF00F24CB7 /* SearchSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSectionModel.swift; sourceTree = "<group>"; };
 		E861B5DC2AD9600900AB8D19 /* PlayerControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerControlsView.swift; sourceTree = "<group>"; };
@@ -258,6 +262,7 @@
 				E82B11962AA1DBAD00FC1C6D /* UIView+.swift */,
 				E81442542ACAA98F00386AE8 /* DateFormatter+.swift */,
 				E81442562ACAAA1300386AE8 /* String+.swift */,
+				E85BD53C2AEFCA67002A7D83 /* Notification.Name+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -521,6 +526,7 @@
 			isa = PBXGroup;
 			children = (
 				E86D56452AC03A1F00BD3E1F /* Album.swift */,
+				E85BD53A2AEFB43B002A7D83 /* Albums.swift */,
 				E81F0B8C2AB30C68008D44F7 /* NewReleases.swift */,
 			);
 			path = Albums;
@@ -706,6 +712,7 @@
 				E8169FBF2AC6AF94009B4AD2 /* TitleHeaderCollectionReusableView.swift in Sources */,
 				E859A5F62ACEB1D300A1F642 /* CategoriesViewModel.swift in Sources */,
 				E89D04BA2AA0B4F600C4829C /* CommonGroundModel.swift in Sources */,
+				E85BD53D2AEFCA67002A7D83 /* Notification.Name+.swift in Sources */,
 				E863946E2AADBB1B00BB4EB0 /* SettingsModels.swift in Sources */,
 				E89D04AF2AA0B42700C4829C /* WelcomeViewController.swift in Sources */,
 				E81442552ACAA98F00386AE8 /* DateFormatter+.swift in Sources */,
@@ -739,6 +746,7 @@
 				E81F0B8D2AB30C68008D44F7 /* NewReleases.swift in Sources */,
 				E8A168372AB5CF050096C8E0 /* NewReleasesViewModel.swift in Sources */,
 				E81F0B912AB3205F008D44F7 /* Genre.swift in Sources */,
+				E85BD53B2AEFB43B002A7D83 /* Albums.swift in Sources */,
 				E867EB9D2AD7C699004CE25B /* DefaultSearchResultTableViewCell.swift in Sources */,
 				E8379EFB2AD934BC0078CD76 /* PlaybackPresenter.swift in Sources */,
 				E89D04A02AA0B3BA00C4829C /* TabBarViewController.swift in Sources */,

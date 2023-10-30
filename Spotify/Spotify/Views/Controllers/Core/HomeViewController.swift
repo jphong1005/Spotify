@@ -278,9 +278,17 @@ class HomeViewController: UIViewController {
                     
                     libraryPlaylistsVC.selectionHandler = { playlist in
                         APICaller.shared.addItemsToPlaylist(first_args: trackObject, second_args: playlist)
-                            .subscribe(onDisposed: {
-                                print("SUCCESS")
-                            })
+                            .subscribe { [weak self] _ in
+                                let success: Bool = true
+                                let message: String = success ? "Success" : "Fail"
+                                
+                                let alert = UIAlertController(title: "ADD TO PLAYLIST!", message: message, preferredStyle: .alert)
+                                
+                                alert.addAction(UIAlertAction(title: "CANCEL", style: .default))
+                                self?.present(alert, animated: true)
+                            } onError: { error in
+                                print("error: \(error.localizedDescription)")
+                            }
                     }
                     
                     libraryPlaylistsVC.title = "Select Playlist"
