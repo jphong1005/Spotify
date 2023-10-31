@@ -16,7 +16,7 @@ final class AuthManager {
     static let shared: AuthManager = AuthManager()
     
     // MARK: - Static constant & Stored-Prop
-    private static let serviceName: String = Bundle.main.bundleIdentifier ?? "UNKOWN VALUE"
+    private static let serviceName: String = Bundle.main.bundleIdentifier ?? ""
     private let keychain: Keychain = Keychain(service: serviceName)
     
     private var refreshingToken: Bool = false
@@ -228,6 +228,19 @@ final class AuthManager {
             }
         } else if let token: String = accessToken {
             completionHandler(token)
+        }
+    }
+    
+    public func signOut(completionHandler: (Bool) -> Void) -> Void {
+        
+        do {
+            try keychain.remove("access_token")
+            try keychain.remove("refresh_token")
+            try keychain.remove("expiration_date")
+            
+            completionHandler(true)
+        } catch (let error) {
+            print("error: \(error.localizedDescription)")
         }
     }
 }

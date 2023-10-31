@@ -73,7 +73,28 @@ class SettingsViewController: UIViewController {
         navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
     
-    private func signOutTapped() -> Void {}
+    private func signOutTapped() -> Void {
+        
+        let alert: UIAlertController = UIAlertController(title: "Sign Out", message: "Are you sure?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "CANCEL", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
+            AuthManager.shared.signOut { [weak self] boolean in
+                if (boolean == true) {
+                    DispatchQueue.main.async {
+                        let rootVC: UINavigationController = UINavigationController(rootViewController: WelcomeViewController())
+                        
+                        rootVC.modalPresentationStyle = .fullScreen
+                        self?.present(rootVC, animated: true, completion: {
+                            self?.navigationController?.popViewController(animated: false)
+                        })
+                    }
+                }
+            }
+        }))
+        
+        self.present(alert, animated: true)
+    }
 }
 
 // MARK: - Extension ViewController
