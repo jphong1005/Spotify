@@ -7,40 +7,63 @@
 
 import UIKit
 import SnapKit
+import Then
 
 class WelcomeViewController: UIViewController {
     
-    // MARK: - UI Component
+    // MARK: - UI Components
     private let signIn: UIButton = {
         
         let button: UIButton = UIButton()
         
         button.backgroundColor = .white
         button.setTitle("Sign In with Spotify", for: .normal)
-        button.setTitleColor(.blue, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(didTapSignIn(_:)), for: .touchUpInside)
         
         return button
     }()
     
+    private let overlayView: UIView = UIView().then {
+        $0.backgroundColor = .black
+        $0.alpha = 0.5
+    }
+    
+    private let logoImageView: UIImageView = UIImageView().then {
+        $0.image = UIImage(named: "logo")
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private let label: UILabel = UILabel().then {
+        $0.text = "Listen Millions \n of Songs on \n the go."
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
+        $0.textColor = .white
+        $0.font = .systemFont(ofSize: 30, weight: .semibold)
+    }
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .systemGreen
+        view.backgroundColor = .systemBackground
         
         title = "Spotify"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
         
+        view.addSubview(overlayView)
         view.addSubview(signIn)
+        view.addSubview(self.label)
+        view.addSubview(logoImageView)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        self.overlayView.frame = view.bounds
         applyConstraints()
     }
     
@@ -49,8 +72,21 @@ class WelcomeViewController: UIViewController {
         signIn.snp.makeConstraints { make in
             make.left.right.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-30)
         }
+        
+        logoImageView.snp.makeConstraints { make in
+            make.centerX.equalTo(view.safeAreaLayoutGuide)
+            make.centerY.equalTo(view.safeAreaLayoutGuide).offset(-100)
+            make.width.height.equalTo(150)
+        }
+
+        label.snp.makeConstraints { make in
+            make.centerX.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(logoImageView.snp.bottom).offset(30)
+            make.height.equalTo(150)
+        }
+
     }
     
     // MARK: - Event Handler Methods
