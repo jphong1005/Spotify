@@ -161,9 +161,13 @@ class AlbumViewController: UIViewController {
             guard let strongSelf: AlbumViewController = self, let album: Album = strongSelf.album else { return }
             
             APICaller.shared.saveAlbumsForCurrentUser(args: album)
-                .subscribe(onDisposed:  {
+                .subscribe { error in
+                    HapticsManager.shared.vibrate(for: .error)
+                } onCompleted: {
                     print("Saved")
-                })
+                    
+                    HapticsManager.shared.vibrate(for: .success)
+                }
         }))
         
         self.present(actionSheet, animated: true)

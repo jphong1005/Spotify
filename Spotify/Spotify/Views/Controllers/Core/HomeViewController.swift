@@ -312,6 +312,8 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.deselectItem(at: indexPath, animated: true)
         
+        HapticsManager.shared.vibrateForSelection()
+        
         let sectionType: HomeSectionType = sections[indexPath.section]
         
         switch sectionType {

@@ -164,6 +164,8 @@ extension LibraryAlbumsViewController: ActionLabelViewDelegate, UITableViewDataS
          
         tableView.deselectRow(at: indexPath, animated: true)
         
+        HapticsManager.shared.vibrateForSelection()
+        
         guard let album = self.albums[indexPath.row] else { return }
         
         let playlistVC: AlbumViewController = AlbumViewController(item: album)

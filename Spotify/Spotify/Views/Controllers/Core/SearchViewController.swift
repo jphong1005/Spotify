@@ -144,6 +144,8 @@ extension SearchViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         collectionView.deselectItem(at: indexPath, animated: true)
         
+        HapticsManager.shared.vibrateForSelection()
+        
         let categoryVC: CategoryViewController = CategoryViewController(category: self.categories[indexPath.row])
         
         navigationController?.pushViewController(categoryVC, animated: true)
