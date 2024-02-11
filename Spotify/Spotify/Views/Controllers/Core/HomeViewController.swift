@@ -90,7 +90,9 @@ class HomeViewController: UIViewController {
                 self?.sections.append(.featuredPlaylists(playlists_items: featuredPlaylists_playlists_items))
                 self?.sections.append(.recommendations(tracks: recommendations_tracks))
                 
-                self?.collectionView.reloadData()
+                DispatchQueue.main.async {
+                    self?.collectionView.reloadData()
+                }
             }.disposed(by: self.bag)
     }
     

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		767CCB82A24B79E01905ADB7 /* Pods_Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5FEA4E0038859C128A25ABE /* Pods_Spotify.framework */; };
+		93AF714B2B78CAE3001923B9 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 93AF714A2B78CAE3001923B9 /* Secrets.xcconfig */; };
 		E81442552ACAA98F00386AE8 /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81442542ACAA98F00386AE8 /* DateFormatter+.swift */; };
 		E81442572ACAAA1300386AE8 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81442562ACAAA1300386AE8 /* String+.swift */; };
 		E8169FBF2AC6AF94009B4AD2 /* TitleHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8169FBE2AC6AF94009B4AD2 /* TitleHeaderCollectionReusableView.swift */; };
@@ -74,6 +75,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		93AF714A2B78CAE3001923B9 /* Secrets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		9912FA87323356BB6701D6B9 /* Pods-Spotify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Spotify.debug.xcconfig"; path = "Target Support Files/Pods-Spotify/Pods-Spotify.debug.xcconfig"; sourceTree = "<group>"; };
 		D5FEA4E0038859C128A25ABE /* Pods_Spotify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Spotify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA6722484043C53E1E8B4395 /* Pods-Spotify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Spotify.release.xcconfig"; path = "Target Support Files/Pods-Spotify/Pods-Spotify.release.xcconfig"; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 		E83F9BFF2AA072CF00231762 /* Spotify */ = {
 			isa = PBXGroup;
 			children = (
+				93AF714A2B78CAE3001923B9 /* Secrets.xcconfig */,
 				E83F9C002AA072CF00231762 /* AppDelegate.swift */,
 				E83F9C022AA072CF00231762 /* SceneDelegate.swift */,
 				E89D04B42AA0B4F600C4829C /* Models */,
@@ -646,6 +649,7 @@
 			files = (
 				E83F9C0D2AA072CF00231762 /* LaunchScreen.storyboard in Resources */,
 				E83F9C0A2AA072CF00231762 /* Assets.xcassets in Resources */,
+				93AF714B2B78CAE3001923B9 /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
